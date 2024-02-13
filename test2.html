@@ -122,10 +122,6 @@
 
     <script>
         companies = {
-            "SmartCook Technologies": {
-                "home appliances": ["smart-oven-stove"],
-                "smart lighting": ["dimming", "color-changing", "motion-sensing"]
-            },
             "BrightLight Solutions": {
                 "smart lighting": ["dimming", "color-changing", "motion-sensing"]
             },
@@ -214,210 +210,165 @@
                 "home appliances": ["smart-refrigerator", "smart-oven-stove"]
             },
             "IntelliLiving Technologies": {
-                "home automation": ["automated-lighting", "automated-hvac"], 
-                "home appliances": ["smart-refrigerator", "smart-oven-stove"]
+                "home automation": ["automated-lighting", "automated-hvac"]
             }
         }
-        let selectedCriteria = {};
-        var criteriaCount = 0;
         window.addEventListener('load', function() {
-            updateCheckboxCounts();
+            countMatchingCompanies();
         });
-        // Function to update the checkboxes with counts
-        function updateCheckboxCounts() {
-            // Update service area checkboxes
-            document.querySelectorAll('.service-area').forEach(function(checkbox) {
-                checkbox.nextElementSibling.innerText = checkbox.nextElementSibling.innerText.replace(/\(\d+\/\d+\)/, "(" + checkServiceWithCriteria(checkbox) + "/" + checkServiceWithoutCriteria(checkbox) + ")");
-            });
+        // Function to count and log the number of companies matching the criteria
+function countMatchingCompanies() {
+    var selectedCriteria = {};
+    var totalCount = 0;
+    var serviceAreaCounts = {};
+    var functionalityCounts = {};
 
-            // Update functionality checkboxes
-            document.querySelectorAll('.functionality').forEach(function(checkbox) {
-                checkbox.nextElementSibling.innerText = checkbox.nextElementSibling.innerText.replace(/\(\d+\/\d+\)/, "(" + checkFunctionalityWithCriteria(checkbox) + "/" + checkFunctionalityWithoutCriteria(checkbox) + ")");
-            });
-        }
+    // Check each checkbox for selection
+    document.querySelectorAll('input[type="checkbox"][class="functionality"]:checked').forEach(function(input) {
+        var category = input.name;
+        var option = input.value;
 
-
-        function checkServiceWithoutCriteria(checkbox){
-            let count = 0;
-            for (var company in companies) {
-                if (companies[company].hasOwnProperty(checkbox.value)) {
-                    count++;
+        // If it's a main category checkbox, store the category name
+        if (input.className === 'service-area') {
+            if (!selectedCriteria.hasOwnProperty(category)) {
+                selectedCriteria[category] = [];
+            }
+        } else { // If it's an option checkbox
+            if (!selectedCriteria.hasOwnProperty(category)) {
+                selectedCriteria[category] = [option];
+            } else {
+                if (!selectedCriteria[category].includes(option)) {
+                    selectedCriteria[category].push(option);
                 }
             }
-            return count;
         }
+    });
 
-        function checkServiceWithCriteria(checkbox){
-            let count = 0;
-            for (var company in companies) {
-                var satisfiesAllCriteria = true;
-                //console.log(company);
-                // Check if the company satisfies all selected criteria
-                if(criteriaCount!=0){
-                    //console.log(company);
-                    //console.log(criteriaCount);
-                    for (var category in selectedCriteria) {
-                        // console.log(category);
-                        if(!companies[company].hasOwnProperty(category)){
-                            satisfiesAllCriteria = false;
-                            break;
-                        }
-                        else{
-                            if (!companies[company][category].hasOwnProperty(selectedCriteria[category])) {
-                                // console.log(!companies[company][category].hasOwnProperty(selectedCriteria[category]));
-                                satisfiesAllCriteria = false;
-                                break;
-                            }
-                        }
-                    }
-                }
-                else{
-                    //console.log(checkbox.value);
-                    if(!companies[company].hasOwnProperty(checkbox.value)){
-                        satisfiesAllCriteria = false;
-                    }
-                }
-                
+    // Iterate through each company and check if it satisfies all selected criteria
+    for (var company in companies) {
+        var satisfiesAllCriteria = true;
 
-                // If the company satisfies all selected criteria, check if it provides the additional functionality
-                if (satisfiesAllCriteria ) {
-                    //if(companies[company][checkbox.name].includes(checkbox.value)){
-                        count++;
-                    //}
-                }
-                // console.log(companies[company][checkbox.name]);
-                // console.log(checkbox.value);
+        for (var category in selectedCriteria) {
+            if (!companies[company][category]) {
+                satisfiesAllCriteria = false;
+                break;
             }
-            return count;
-        }
+            var companyOptions = companies[company][category];
+            var selectedOptions = selectedCriteria[category];
 
-        function checkFunctionalityWithoutCriteria(checkbox){
-            let count = 0;
-            for (var company in companies) {
-                for (var category in companies[company]) {
-                    console.log(companies[company][category]);
-                    console.log(checkbox.value);
-                    console.log(companies[company][category].includes(checkbox.value));
-                    if (companies[company][category].includes(checkbox.value)) {
-                        count++;
-                        console.log(count);
-                        break; // Break out of the inner loop once the functionality is found for this company
-                    }
+            for (var i = 0; i < selectedOptions.length; i++) {
+                if (!companyOptions.includes(selectedOptions[i])) {
+                    satisfiesAllCriteria = false;
+                    break;
                 }
             }
-            console.log("Official count - " + count);
-            return count;
-        }
-
-        function checkFunctionalityWithCriteria(checkbox) {
-            let count = 0;
-
-            for (var company in companies) {
-                var satisfiesAllCriteria = true;
-                // console.log(company);
-                // Check if the company satisfies all selected criteria
-                if(criteriaCount==0){
-                    if(companies[company].hasOwnProperty(checkbox.name)){//&&companies[company][checkbox.name].hasOwnProperty(checkbox.value)
-                        // console.log(companies[company][checkbox.name]);
-                        // console.log(checkbox.value);
-                        // console.log(companies[company][checkbox.name][checkbox.value]);
-                        count++;
-                        // console.log(count);
-                        continue;
-                    }
-                }
-                else{
-                    for (var category in selectedCriteria) {
-                        // console.log(!companies[company][category].hasOwnProperty(selectedCriteria[category]));
-                        if (!companies[company][category].hasOwnProperty(selectedCriteria[category])) {
-                            satisfiesAllCriteria = false;
-                            break;
-                        }
-                    }
-                }
-                
-
-                // If the company satisfies all selected criteria, check if it provides the additional functionality
-                if (satisfiesAllCriteria ) {
-                    //if(companies[company][checkbox.name].includes(checkbox.value)){
-                        count++;
-                    //}
-                }
-                // console.log(companies[company][checkbox.name]);
-                // console.log(checkbox.value);
+            if (!satisfiesAllCriteria) {
+                break;
             }
-
-            return count;
         }
+        if (satisfiesAllCriteria) {
+            totalCount++;
 
-        function addCriteria(input){
-            criteriaCount++;
-            document.querySelectorAll('input[type="checkbox"][class="functionality"]:checked').forEach(function(input) {
-                var category = input.name;
-                var option = input.value;
-
-                // If it's a main category checkbox, store the category name
-                if (input.className === 'service-area') {
-                    if (!selectedCriteria.hasOwnProperty(category)) {
-                        selectedCriteria[category] = [];
-                    }
-                } else { // If it's an option checkbox
-                    if (!selectedCriteria.hasOwnProperty(category)) {
-                        selectedCriteria[category] = [option];
-                    } else {
-                        if (!selectedCriteria[category].includes(option)) {
-                            selectedCriteria[category].push(option);
-                        }
-                    }
-                }
-            });
-        }
-
-        // Add event listeners to show options based on user selections
-        document.querySelectorAll('input[type="checkbox"]').forEach(function(input) {
-            input.addEventListener('change', function() {
-                var relatedOptionsDivId = this.name + 'Options';
-                var relatedOptionsDiv = document.getElementById(relatedOptionsDivId);
-
-                if (relatedOptionsDiv) { // Check if the related options div exists
-                    if (this.checked) {
-                        relatedOptionsDiv.style.display = 'block';
-                    } else {
-                        relatedOptionsDiv.style.display = 'none';
-                    }
-                }
-
-                // Call the function to count and log matching companies
-                addCriteria(input);
-                updateCheckboxCounts();
-
-            });
-        });
-
-        // Add JavaScript logic to handle form submission and data processing
-        document.getElementById('questionnaireForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form submission
-
-            // Gather user responses
-            var formData = new FormData(this);
-            var responses = {};
-            for (var pair of formData.entries()) {
-                if (responses.hasOwnProperty(pair[0])) {
-                    if (!Array.isArray(responses[pair[0]])) {
-                        responses[pair[0]] = [responses[pair[0]]];
-                    }
-                    responses[pair[0]].push(pair[1]);
+            // Count companies providing each service area and functionality
+            for (var category in companies[company]) {
+                if (!serviceAreaCounts[category]) {
+                    serviceAreaCounts[category] = 1;
                 } else {
-                    responses[pair[0]] = pair[1];
+                    serviceAreaCounts[category]++;
+                }
+                companies[company][category].forEach(function(option) {
+                    if (!functionalityCounts[option]) {
+                        functionalityCounts[option] = 1;
+                    } else {
+                        functionalityCounts[option]++;
+                    }
+                });
+            }
+        }
+    }
+
+    // Update the checkboxes with counts
+    updateCheckboxCounts(serviceAreaCounts, functionalityCounts);
+
+    // Log the total number of companies matching all selected criteria
+    console.log("Total number of companies matching selected criteria: " + totalCount);
+}
+
+// Function to update the checkboxes with counts
+function updateCheckboxCounts(serviceAreaCounts, functionalityCounts) {
+    // Update service area checkboxes
+    document.querySelectorAll('.service-area').forEach(function(checkbox) {
+        var category = checkbox.name;
+        var count = serviceAreaCounts[category] || 0;
+        checkbox.nextElementSibling.innerText = checkbox.nextElementSibling.innerText.replace(/\(\d+\/\d+\)/, "(" + count + "/" + Object.keys(companies).length + ")");
+    });
+
+    // Update functionality checkboxes
+    document.querySelectorAll('.functionality').forEach(function(checkbox) {
+        var option = checkbox.value;
+        var count = functionalityCounts[option] || 0;
+        checkbox.nextElementSibling.innerText = checkbox.nextElementSibling.innerText.replace(/\(\d+\/\d+\)/, "(" + count + "/" + Object.keys(companies).length + ")");
+    });
+}
+
+// Add event listeners to show options based on user selections
+document.querySelectorAll('input[type="checkbox"]').forEach(function(input) {
+    input.addEventListener('change', function() {
+        var relatedOptionsDivId = this.name + 'Options';
+        var relatedOptionsDiv = document.getElementById(relatedOptionsDivId);
+
+        if (relatedOptionsDiv) { // Check if the related options div exists
+            if (this.checked) {
+                relatedOptionsDiv.style.display = 'block';
+            } else {
+                relatedOptionsDiv.style.display = 'none';
+
+                // If checkbox is unchecked, remove its option and category from selectedCriteria
+                var category = this.name;
+                var option = this.value;
+                if (selectedCriteria.hasOwnProperty(category)) {
+                    var index = selectedCriteria[category].indexOf(option);
+                    if (index !== -1) {
+                        selectedCriteria[category].splice(index, 1);
+                        if (selectedCriteria[category].length === 0) {
+                            delete selectedCriteria[category];
+                        }
+                    }
                 }
             }
+        }
 
-            // Display responses (for demonstration purposes)
-            console.log('User Responses:', responses);
+        // Call the function to count and log matching companies
+        countMatchingCompanies();
+    });
+});
 
-            // You can now send the responses to a server for further processing
-            // or perform any other actions based on the user's input.
-        });
+// Add JavaScript logic to handle form submission and data processing
+document.getElementById('questionnaireForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent form submission
+
+    // Gather user responses
+    var formData = new FormData(this);
+    var responses = {};
+    for (var pair of formData.entries()) {
+        if (responses.hasOwnProperty(pair[0])) {
+            if (!Array.isArray(responses[pair[0]])) {
+                responses[pair[0]] = [responses[pair[0]]];
+            }
+            responses[pair[0]].push(pair[1]);
+        } else {
+            responses[pair[0]] = pair[1];
+        }
+    }
+
+    // Display responses (for demonstration purposes)
+    console.log('User Responses:', responses);
+
+    // You can now send the responses to a server for further processing
+    // or perform any other actions based on the user's input.
+});
+
+
     </script>
 </body>
 </html>
