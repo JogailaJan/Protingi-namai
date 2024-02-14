@@ -43,10 +43,6 @@
         vertical-align: middle;
     }
 
-    .service-area{
-        display: none;
-    }
-
     input[type="submit"] {
         display: block;
         width: 100%;
@@ -65,17 +61,17 @@
     }
 
     .checkbox-container {
-    display: flex;
-    align-items: center;
-  }
+        display: flex;
+        align-items: center;
+    }
 
-  .checkbox-container input[type="checkbox"] {
-    margin-right: 10px;
-  }
+    .checkbox-container input[type="checkbox"] {
+        margin-right: 10px;
+    }
 
-  .checkbox-container h2 {
-    margin: 0;
-  }
+    .checkbox-container h2 {
+        margin: 10px 10px 10px 10px;
+    }
 
 </style>
 </head>
@@ -94,7 +90,7 @@
 
         <div class="checkbox-container">
             <input type="checkbox" name="lighting" value="lighting" class="service-area">
-            <h2>Lighting (<span>0/0</span>)</h2>
+            <h2 onclick="toggleVisibility('lightingOptions')">Lighting (<span>0/0</span>)</h2>
         </div>
         <div id="lightingOptions" style="display: none;">
             <label><input type="checkbox" name="lighting" value="switching" class="functionality"> Switching (<span>0/0</span>)</label><br>
@@ -105,9 +101,9 @@
 
         <div class="checkbox-container">
             <input type="checkbox" name="security" value="security" class="service-area">
-            <h2>Security (<span>0/0</span>)</h2>
+            <h2 onclick="toggleVisibility('securityOptions')">Security (<span>0/0</span>)</h2>
         </div>
-        <div id="lightingOptions" style="display: none;">
+        <div id="securityOptions" style="display: none;">
             <label><input type="checkbox" name="security" value="storm-rain-satellite-unit" class="functionality"> Storm/Rain Satellite Unit(<span>0/0</span>)</label><br>
             <label><input type="checkbox" name="security" value="storm-rain-universal-transmitter" class="functionality"> Storm/Rain Universal Transmitter (<span>0/0</span>)</label><br>
             <label><input type="checkbox" name="security" value="storm-rain" class="functionality"> Storm/Rain (<span>0/0</span>)</label><br>
@@ -115,14 +111,15 @@
             <!-- Add more options as needed -->
         </div>
     
-        <input type="submit" value="Submit">
-
+        <!-- <input type="submit" value="Submit"> -->
+        <ul id="matchingSystemsList"></ul>
+    </form>
     <script>
         const systemsData = {
             system1: {
                 name: 'LB MANAGEMENT',
                 link: 'http://system1',
-                functionalities: ['bluetooth-LE', 'wireless'],
+                communicationStandartAndMedia: ['bluetooth-LE', 'wireless'],
                 serviceAreas: {
                     lighting: ['switching'],
                     blinds: ['blinds'],
@@ -132,7 +129,7 @@
             system2: {
                 name: 'eNet SMART HOME',
                 link: 'http://system2',
-                functionalities: ['eNet', 'wireless', 'REG-bus'],
+                communicationStandartAndMedia: ['eNet', 'wireless', 'REG-bus'],
                 serviceAreas: {
                     lighting: ['switching'],
                     blinds: ['blinds'],
@@ -145,7 +142,7 @@
             system3: {
                 name: 'KNX SMART VISU SERVER',
                 link: 'http://system3',
-                functionalities: ['KNX', 'IP', 'wireless', 'TP', 'ethernet'],
+                communicationStandartAndMedia: ['KNX', 'IP', 'wireless', 'TP', 'ethernet'],
                 serviceAreas: {
                     lighting: ['switching', 'colour'],
                     blinds: ['blinds', 'skylights'],
@@ -160,7 +157,7 @@
             system4: {
                 name: 'KNX VISU PRO SERVER',
                 link: 'http://system4',
-                functionalities: ['KNX', 'IP', 'wireless', 'TP', 'ethernet'],
+                communicationStandartAndMedia: ['KNX', 'IP', 'wireless', 'TP', 'ethernet'],
                 serviceAreas: {
                     lighting: ['switching', 'colour', 'sequences'],
                     blinds: ['blinds', 'skylights'],
@@ -175,136 +172,34 @@
         };
 
         let selectedCriteria = {};
-        var criteriaCount = 0;
-        window.addEventListener('load', function() {
-            updateCheckboxCounts();
+        let criteriaCount = 0;
+
+        function toggleVisibility(id) {
+            var optionsDiv = document.getElementById(id);
+            optionsDiv.style.display = optionsDiv.style.display === "none" ? "block" : "none";
+        }
+
+        function countFunctionalityWithoutCriteria() {
+            const checkboxes = document.querySelectorAll(".functionality");
+            checkboxes.forEach(function(checkbox) {
+                const func = checkbox.value;
+                let count = 0;
+                for (const system in systemsData) {
+                    const serviceAreas = systemsData[system].serviceAreas;
+                    for (const area in serviceAreas) {
+                        if (serviceAreas[area].includes(func)) {
+                            count++;
+                            break;
+                        }
+                    }
+                }
+                checkbox.nextElementSibling.innerText =  "0" + "/" + count;
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            countFunctionalityWithoutCriteria();
         });
-        // Function to update the checkboxes with counts
-        function updateCheckboxCounts() {
-            // Update service area checkboxes
-            document.querySelectorAll('.service-area').forEach(function(checkbox) {
-                checkbox.nextElementSibling.innerText = checkbox.nextElementSibling.innerText.replace(/\(\d+\/\d+\)/, "(" + checkServiceWithCriteria(checkbox) + "/" + checkServiceWithoutCriteria(checkbox) + ")");
-            });
-
-            // Update functionality checkboxes
-            document.querySelectorAll('.functionality').forEach(function(checkbox) {
-                checkbox.nextElementSibling.innerText = checkbox.nextElementSibling.innerText.replace(/\(\d+\/\d+\)/, "(" + checkFunctionalityWithCriteria(checkbox) + "/" + checkFunctionalityWithoutCriteria(checkbox) + ")");
-            });
-        }
-
-
-        function checkServiceWithoutCriteria(checkbox){
-            let count = 0;
-            for (var company in companies) {
-                if (companies[company].hasOwnProperty(checkbox.value)) {
-                    count++;
-                }
-            }
-            return count;
-        }
-
-        function checkServiceWithCriteria(checkbox){
-            let count = 0;
-            for (var company in companies) {
-                var satisfiesAllCriteria = true;
-                //console.log(company);
-                // Check if the company satisfies all selected criteria
-                if(criteriaCount!=0){
-                    //console.log(company);
-                    //console.log(criteriaCount);
-                    for (var category in selectedCriteria) {
-                        // console.log(category);
-                        if(!companies[company].hasOwnProperty(category)){
-                            satisfiesAllCriteria = false;
-                            break;
-                        }
-                        else{
-                            if (!companies[company][category].hasOwnProperty(selectedCriteria[category])) {
-                                // console.log(!companies[company][category].hasOwnProperty(selectedCriteria[category]));
-                                satisfiesAllCriteria = false;
-                                break;
-                            }
-                        }
-                    }
-                }
-                else{
-                    //console.log(checkbox.value);
-                    if(!companies[company].hasOwnProperty(checkbox.value)){
-                        satisfiesAllCriteria = false;
-                    }
-                }
-                
-
-                // If the company satisfies all selected criteria, check if it provides the additional functionality
-                if (satisfiesAllCriteria ) {
-                    //if(companies[company][checkbox.name].includes(checkbox.value)){
-                        count++;
-                    //}
-                }
-                // console.log(companies[company][checkbox.name]);
-                // console.log(checkbox.value);
-            }
-            return count;
-        }
-
-        function checkFunctionalityWithoutCriteria(checkbox){
-            let count = 0;
-            for (var company in companies) {
-                for (var category in companies[company]) {
-                    console.log(companies[company][category]);
-                    console.log(checkbox.value);
-                    console.log(companies[company][category].includes(checkbox.value));
-                    if (companies[company][category].includes(checkbox.value)) {
-                        count++;
-                        console.log(count);
-                        break; // Break out of the inner loop once the functionality is found for this company
-                    }
-                }
-            }
-            console.log("Official count - " + count);
-            return count;
-        }
-
-        function checkFunctionalityWithCriteria(checkbox) {
-            let count = 0;
-
-            for (var company in companies) {
-                var satisfiesAllCriteria = true;
-                // console.log(company);
-                // Check if the company satisfies all selected criteria
-                if(criteriaCount==0){
-                    if(companies[company].hasOwnProperty(checkbox.name)){//&&companies[company][checkbox.name].hasOwnProperty(checkbox.value)
-                        // console.log(companies[company][checkbox.name]);
-                        // console.log(checkbox.value);
-                        // console.log(companies[company][checkbox.name][checkbox.value]);
-                        count++;
-                        // console.log(count);
-                        continue;
-                    }
-                }
-                else{
-                    for (var category in selectedCriteria) {
-                        // console.log(!companies[company][category].hasOwnProperty(selectedCriteria[category]));
-                        if (!companies[company][category].hasOwnProperty(selectedCriteria[category])) {
-                            satisfiesAllCriteria = false;
-                            break;
-                        }
-                    }
-                }
-                
-
-                // If the company satisfies all selected criteria, check if it provides the additional functionality
-                if (satisfiesAllCriteria ) {
-                    //if(companies[company][checkbox.name].includes(checkbox.value)){
-                        count++;
-                    //}
-                }
-                // console.log(companies[company][checkbox.name]);
-                // console.log(checkbox.value);
-            }
-
-            return count;
-        }
 
         function addCriteria(input){
             criteriaCount++;
@@ -326,54 +221,75 @@
                         }
                     }
                 }
+
+                // Print out the added criteria
+                console.log("Added criteria:", category, "-", option);
             });
         }
 
-        // Add event listeners to show options based on user selections
-        document.querySelectorAll('input[type="checkbox"]').forEach(function(input) {
-            input.addEventListener('change', function() {
-                var relatedOptionsDivId = this.name + 'Options';
-                var relatedOptionsDiv = document.getElementById(relatedOptionsDivId);
+            // Function to remove criteria when checkbox is unchecked
+        function removeCriteria(input) {
+            const category = input.name;
+            const option = input.value;
 
-                if (relatedOptionsDiv) { // Check if the related options div exists
-                    if (this.checked) {
-                        relatedOptionsDiv.style.display = 'block';
-                    } else {
-                        relatedOptionsDiv.style.display = 'none';
-                    }
+            // If it's a main category checkbox, do nothing
+            if (input.className === 'service-area') {
+                return;
+            }
+
+            // If it's an option checkbox and it's unchecked
+            if (!input.checked) {
+                // If the category exists in selectedCriteria
+                if (selectedCriteria.hasOwnProperty(category)) {
+                    // Remove the option from selectedCriteria[category]
+                    selectedCriteria[category] = selectedCriteria[category].filter(item => item !== option);
+                    // Print out the removed criteria
+                    console.log("Removed criteria:", category, "-", option);
                 }
+            }
+        }
 
+        document.querySelectorAll('input[type="checkbox"][class="functionality"]').forEach(function(input) {
+            input.addEventListener('change', function() {
                 // Call the function to count and log matching companies
-                addCriteria(input);
-                updateCheckboxCounts();
-
+                if (this.checked) {
+                    addCriteria(input);
+                } else {
+                    removeCriteria(input);
+                }
+                printMatchingSystems();
+                //updateCheckboxCounts();
             });
         });
 
-        // Add JavaScript logic to handle form submission and data processing
-        document.getElementById('questionnaireForm').addEventListener('submit', function(event) {
-            event.preventDefault(); // Prevent form submission
-
-            // Gather user responses
-            var formData = new FormData(this);
-            var responses = {};
-            for (var pair of formData.entries()) {
-                if (responses.hasOwnProperty(pair[0])) {
-                    if (!Array.isArray(responses[pair[0]])) {
-                        responses[pair[0]] = [responses[pair[0]]];
+        function printMatchingSystems() {
+            const matchingSystems = [];
+            // Iterate through each system
+            for (const system in systemsData) {
+                let meetsCriteria = true;
+                // Iterate through each selected criteria
+                for (const category in selectedCriteria) {
+                    const selectedOptions = selectedCriteria[category];
+                    // Check if the system has all selected options for this category
+                    if (!selectedOptions.every(option => systemsData[system].serviceAreas[category].includes(option))) {
+                        meetsCriteria = false;
+                        break;
                     }
-                    responses[pair[0]].push(pair[1]);
-                } else {
-                    responses[pair[0]] = pair[1];
+                }
+                // If the system meets all criteria, add its name to the matching systems array
+                if (meetsCriteria) {
+                    matchingSystems.push(systemsData[system].name);
                 }
             }
-
-            // Display responses (for demonstration purposes)
-            console.log('User Responses:', responses);
-
-            // You can now send the responses to a server for further processing
-            // or perform any other actions based on the user's input.
-        });
+            // Display the names of matching systems in the list
+            const matchingSystemsList = document.getElementById('matchingSystemsList');
+            matchingSystemsList.innerHTML = ''; // Clear previous content
+            matchingSystems.forEach(system => {
+                const listItem = document.createElement('li');
+                listItem.textContent = system;
+                matchingSystemsList.appendChild(listItem);
+            });
+        }
     </script>
 </body>
 </html>
