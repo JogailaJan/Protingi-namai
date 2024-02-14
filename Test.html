@@ -86,101 +86,32 @@
     <label><input type="checkbox" name="lighting" value="ethernet" class="functionality"> Ethernet (<span>0/0</span>)</label><br> -->
     <h1>Smart Home System Questionnaire</h1>
     <form id="questionnaireForm">
-      <div class="checkbox-container">
-        <input
-          type="checkbox"
-          name="lighting"
-          value="lighting"
-          class="service-area"
-        />
-        <h2 onclick="toggleVisibility('lightingOptions')">
-          Lighting (<span>0/0</span>)
-        </h2>
-      </div>
-      <div id="lightingOptions" style="display: none">
-        <label
-          ><input
-            type="checkbox"
-            name="lighting"
-            value="switching"
-            class="functionality"
-          />
-          Switching (<span>0/0</span>)</label
-        ><br />
-        <label
-          ><input
-            type="checkbox"
-            name="lighting"
-            value="colour"
-            class="functionality"
-          />
-          Colour (<span>0/0</span>)</label
-        ><br />
-        <label
-          ><input
-            type="checkbox"
-            name="lighting"
-            value="sequences"
-            class="functionality"
-          />
-          Sequences (<span>0/0</span>)</label
-        ><br />
-        <!-- Add more options as needed -->
-      </div>
 
-      <div class="checkbox-container">
-        <input
-          type="checkbox"
-          name="security"
-          value="security"
-          class="service-area"
-        />
-        <h2 onclick="toggleVisibility('securityOptions')">
-          Security (<span>0/0</span>)
-        </h2>
-      </div>
-      <div id="securityOptions" style="display: none">
-        <label
-          ><input
-            type="checkbox"
-            name="security"
-            value="storm-rain-satellite-unit"
-            class="functionality"
-          />
-          Storm/Rain Satellite Unit(<span>0/0</span>)</label
-        ><br />
-        <label
-          ><input
-            type="checkbox"
-            name="security"
-            value="storm-rain-universal-transmitter"
-            class="functionality"
-          />
-          Storm/Rain Universal Transmitter (<span>0/0</span>)</label
-        ><br />
-        <label
-          ><input
-            type="checkbox"
-            name="security"
-            value="storm-rain"
-            class="functionality"
-          />
-          Storm/Rain (<span>0/0</span>)</label
-        ><br />
-        <label
-          ><input
-            type="checkbox"
-            name="security"
-            value="leakage"
-            class="functionality"
-          />
-          Leakage (<span>0/0</span>)</label
-        ><br />
-        <!-- Add more options as needed -->
-      </div>
+        <div class="checkbox-container">
+            <input type="checkbox" name="lighting" value="lighting" class="service-area">
+            <h2 onclick="toggleVisibility('lightingOptions')">Lighting (<span>0/0</span>)</h2>
+        </div>
+        <div id="lightingOptions" style="display: none;">
+            <label><input type="checkbox" name="lighting" value="switching" class="functionality"> Switching (<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="lighting" value="colour" class="functionality"> Colour (<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="lighting" value="sequences" class="functionality"> Sequences (<span>0/0</span>)</label><br>
+            <!-- Add more options as needed -->
+        </div>
 
-      <!-- <input type="submit" value="Submit"> -->
-      <ul id="matchingSystemsList"></ul>
+        <div class="checkbox-container">
+            <input type="checkbox" name="security" value="security" class="service-area">
+            <h2 onclick="toggleVisibility('securityOptions')">Security (<span>0/0</span>)</h2>
+        </div>
+        <div id="securityOptions" style="display: none;">
+            <label><input type="checkbox" name="security" value="storm-rain-satellite-unit" class="functionality"> Storm/Rain Satellite Unit(<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="security" value="storm-rain-universal-transmitter" class="functionality"> Storm/Rain Universal Transmitter (<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="security" value="storm-rain" class="functionality"> Storm/Rain (<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="security" value="leakage" class="functionality"> Leakage (<span>0/0</span>)</label><br>
+            <!-- Add more options as needed -->
+        </div>
+    
+        <!-- <input type="submit" value="Submit"> -->
+        <ul id="matchingSystemsList"></ul>
     </form>
     <script>
       const systemsData = {
@@ -251,46 +182,41 @@
         },
       };
 
-      let selectedCriteria = {};
-      let criteriaCount = 0;
+        let selectedCriteria = {};
+        let criteriaCount = 0;
 
-      function toggleVisibility(id) {
-        var optionsDiv = document.getElementById(id);
-        optionsDiv.style.display =
-          optionsDiv.style.display === "none" ? "block" : "none";
-      }
+        function toggleVisibility(id) {
+            var optionsDiv = document.getElementById(id);
+            optionsDiv.style.display = optionsDiv.style.display === "none" ? "block" : "none";
+        }
 
-      function countFunctionalityWithoutCriteria() {
-        const checkboxes = document.querySelectorAll(".functionality");
-        checkboxes.forEach(function (checkbox) {
-          const func = checkbox.value;
-          let count = 0;
-          for (const system in systemsData) {
-            const serviceAreas = systemsData[system].serviceAreas;
-            for (const area in serviceAreas) {
-              if (serviceAreas[area].includes(func)) {
-                count++;
-                break;
-              }
-            }
-          }
-          checkbox.nextElementSibling.innerText = "0" + "/" + count;
+        function countFunctionalityWithoutCriteria() {
+            const checkboxes = document.querySelectorAll(".functionality");
+            checkboxes.forEach(function(checkbox) {
+                const func = checkbox.value;
+                let count = 0;
+                for (const system in systemsData) {
+                    const serviceAreas = systemsData[system].serviceAreas;
+                    for (const area in serviceAreas) {
+                        if (serviceAreas[area].includes(func)) {
+                            count++;
+                            break;
+                        }
+                    }
+                }
+                checkbox.nextElementSibling.innerText =  "0" + "/" + count;
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            countFunctionalityWithoutCriteria();
         });
-      }
 
-      document.addEventListener("DOMContentLoaded", function () {
-        countFunctionalityWithoutCriteria();
-      });
-
-      function addCriteria(input) {
-        criteriaCount++;
-        document
-          .querySelectorAll(
-            'input[type="checkbox"][class="functionality"]:checked'
-          )
-          .forEach(function (input) {
-            var category = input.name;
-            var option = input.value;
+        function addCriteria(input){
+            criteriaCount++;
+            document.querySelectorAll('input[type="checkbox"][class="functionality"]:checked').forEach(function(input) {
+                var category = input.name;
+                var option = input.value;
 
             // If it's a main category checkbox, store the category name
             if (input.className === "service-area") {
@@ -352,40 +278,34 @@
           });
         });
 
-      function printMatchingSystems() {
-        const matchingSystems = [];
-        // Iterate through each system
-        for (const system in systemsData) {
-          let meetsCriteria = true;
-          // Iterate through each selected criteria
-          for (const category in selectedCriteria) {
-            const selectedOptions = selectedCriteria[category];
-            // Check if the system has all selected options for this category
-            if (
-              !selectedOptions.every((option) =>
-                systemsData[system].serviceAreas[category].includes(option)
-              )
-            ) {
-              meetsCriteria = false;
-              break;
+        function printMatchingSystems() {
+            const matchingSystems = [];
+            // Iterate through each system
+            for (const system in systemsData) {
+                let meetsCriteria = true;
+                // Iterate through each selected criteria
+                for (const category in selectedCriteria) {
+                    const selectedOptions = selectedCriteria[category];
+                    // Check if the system has all selected options for this category
+                    if (!selectedOptions.every(option => systemsData[system].serviceAreas[category].includes(option))) {
+                        meetsCriteria = false;
+                        break;
+                    }
+                }
+                // If the system meets all criteria, add its name to the matching systems array
+                if (meetsCriteria) {
+                    matchingSystems.push(systemsData[system].name);
+                }
             }
-          }
-          // If the system meets all criteria, add its name to the matching systems array
-          if (meetsCriteria) {
-            matchingSystems.push(systemsData[system].name);
-          }
+            // Display the names of matching systems in the list
+            const matchingSystemsList = document.getElementById('matchingSystemsList');
+            matchingSystemsList.innerHTML = ''; // Clear previous content
+            matchingSystems.forEach(system => {
+                const listItem = document.createElement('li');
+                listItem.textContent = system;
+                matchingSystemsList.appendChild(listItem);
+            });
         }
-        // Display the names of matching systems in the list
-        const matchingSystemsList = document.getElementById(
-          "matchingSystemsList"
-        );
-        matchingSystemsList.innerHTML = ""; // Clear previous content
-        matchingSystems.forEach((system) => {
-          const listItem = document.createElement("li");
-          listItem.textContent = system;
-          matchingSystemsList.appendChild(listItem);
-        });
-      }
     </script>
   </body>
 </html>
