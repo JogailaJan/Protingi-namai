@@ -63,161 +63,118 @@
     input[type="submit"]:hover {
         background-color: #45a049;
     }
+
+    .checkbox-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .checkbox-container input[type="checkbox"] {
+    margin-right: 10px;
+  }
+
+  .checkbox-container h2 {
+    margin: 0;
+  }
+
 </style>
 </head>
 <body>
+    <!-- Gal kazkada prireiks, tik name reiks pakeist -->
+    <!-- <label><input type="checkbox" name="lighting" value="bluetooth-LE" class="functionality"> Bluetooth LE (<span>0/0</span>)</label><br>
+    <label><input type="checkbox" name="lighting" value="eNet" class="functionality"> eNet (<span>0/0</span>)</label><br>
+    <label><input type="checkbox" name="lighting" value="KNX" class="functionality"> KNX (<span>0/0</span>)</label><br>
+    <label><input type="checkbox" name="lighting" value="IP" class="functionality"> IP (<span>0/0</span>)</label><br>
+    <label><input type="checkbox" name="lighting" value="wireless" class="functionality"> Wireless (<span>0/0</span>)</label><br>
+    <label><input type="checkbox" name="lighting" value="REG-bus" class="functionality"> REG bus (<span>0/0</span>)</label><br>
+    <label><input type="checkbox" name="lighting" value="TP" class="functionality"> TP (<span>0/0</span>)</label><br>
+    <label><input type="checkbox" name="lighting" value="ethernet" class="functionality"> Ethernet (<span>0/0</span>)</label><br> -->
     <h1>Smart Home System Questionnaire</h1>
     <form id="questionnaireForm">
-        <label class="main-category"><input type="checkbox" name="lighting" value="smart lighting" class="service-area"> <h2>Lighting (<span>0/0</span>)</h2></label>
+
+        <div class="checkbox-container">
+            <input type="checkbox" name="lighting" value="lighting" class="service-area">
+            <h2>Lighting (<span>0/0</span>)</h2>
+        </div>
         <div id="lightingOptions" style="display: none;">
-            <p>What type of smart lighting controls are you interested in? (Check all that apply)</p>
-            <label><input type="checkbox" name="smart lighting" value="dimming" class="functionality"> Dimming (<span>0/0</span>)</label><br>
-            <label><input type="checkbox" name="smart lighting" value="color-changing" class="functionality"> Color-changing (<span>0/0</span>)</label><br>
-            <label><input type="checkbox" name="smart lighting" value="motion-sensing" class="functionality"> Motion sensing (<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="lighting" value="switching" class="functionality"> Switching (<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="lighting" value="colour" class="functionality"> Colour (<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="lighting" value="sequences" class="functionality"> Sequences (<span>0/0</span>)</label><br>
             <!-- Add more options as needed -->
         </div>
-    
-        <label class="main-category"><input type="checkbox" name="hvac" value="smart HVAC" class="service-area"> <h2>Heating, Ventilation, and Air Conditioning (HVAC) (<span>0/0</span>)</h2></label>
-        <div id="hvacOptions" style="display: none;">
-            <p>What kind of smart heating/cooling system are you interested in?</p>
-            <label><input type="checkbox" name="smart HVAC" value="programmable-thermostat" class="functionality"> Programmable thermostat (<span>0/0</span>)</label><br>
-            <label><input type="checkbox" name="smart HVAC" value="learning-thermostat" class="functionality"> Learning thermostat (<span>0/0</span>)</label><br>
-            <!-- Add more options as needed -->
+
+        <div class="checkbox-container">
+            <input type="checkbox" name="security" value="security" class="service-area">
+            <h2>Security (<span>0/0</span>)</h2>
         </div>
-    
-        <label class="main-category"><input type="checkbox" name="security" value="security" class="service-area"> <h2>Security (<span>0/0</span>)</h2></label>
-        <div id="securityOptions" style="display: none;">
-            <p>What security features are you interested in? (Check all that apply)</p>
-            <label><input type="checkbox" name="security" value="smart-locks" class="functionality"> Smart locks (<span>0/0</span>)</label><br>
-            <label><input type="checkbox" name="security" value="door-window-sensors" class="functionality"> Door/window sensors (<span>0/0</span>)</label><br>
-            <label><input type="checkbox" name="security" value="surveillance-cameras" class="functionality"> Surveillance cameras (<span>0/0</span>)</label><br>
-            <!-- Add more options as needed -->
-        </div>
-    
-        <label class="main-category"><input type="checkbox" name="entertainment" value="entertainment" class="service-area"> <h2>Entertainment and Multimedia (<span>0/0</span>)</h2></label>
-        <div id="entertainmentOptions" style="display: none;">
-            <p>What multimedia devices do you want to control smartly? (Check all that apply)</p>
-            <label><input type="checkbox" name="entertainment" value="smart-tvs" class="functionality"> Smart TVs (<span>0/0</span>)</label><br>
-            <label><input type="checkbox" name="entertainment" value="streaming-devices" class="functionality"> Streaming devices (<span>0/0</span>)</label><br>
-            <!-- Add more options as needed -->
-        </div>
-    
-        <label class="main-category"><input type="checkbox" name="appliances" value="home appliances" class="service-area"> <h2>Home Appliances (<span>0/0</span>)</h2></label>
-        <div id="appliancesOptions" style="display: none;">
-            <p>What types of smart appliances are you interested in? (Check all that apply)</p>
-            <label><input type="checkbox" name="home appliances" value="smart-refrigerator" class="functionality"> Smart refrigerator (<span>0/0</span>)</label><br>
-            <label><input type="checkbox" name="home appliances" value="smart-oven-stove" class="functionality"> Smart oven/stove (<span>0/0</span>)</label><br>
-            <!-- Add more options as needed -->
-        </div>
-    
-        <label class="main-category"><input type="checkbox" name="automation" value="home automation" class="service-area"><h2>Home Automation (<span>0/0</span>)</h2> </label>
-        <div id="automationOptions" style="display: none;">
-            <p>What automation scenarios are you interested in? (Check all that apply)</p>
-            <label><input type="checkbox" name="home automation" value="automated-lighting" class="functionality"> Automated lighting (<span>0/0</span>)</label><br>
-            <label><input type="checkbox" name="home automation" value="automated-hvac" class="functionality"> Automated HVAC adjustments (<span>0/0</span>)</label><br>
+        <div id="lightingOptions" style="display: none;">
+            <label><input type="checkbox" name="security" value="storm-rain-satellite-unit" class="functionality"> Storm/Rain Satellite Unit(<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="security" value="storm-rain-universal-transmitter" class="functionality"> Storm/Rain Universal Transmitter (<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="security" value="storm-rain" class="functionality"> Storm/Rain (<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="security" value="leakage" class="functionality"> Leakage (<span>0/0</span>)</label><br>
             <!-- Add more options as needed -->
         </div>
     
         <input type="submit" value="Submit">
 
     <script>
-        companies = {
-            "SmartCook Technologies": {
-                "home appliances": ["smart-oven-stove"],
-                "smart lighting": ["dimming", "color-changing", "motion-sensing"]
-            },
-            "BrightLight Solutions": {
-                "smart lighting": ["dimming", "color-changing", "motion-sensing"]
-            },
-            "EcoHVAC Technologies": {
-                "smart HVAC": ["programmable-thermostat", "learning-thermostat"]
-            },
-            "SecureHome Innovations": {
-                "security": ["smart-locks", "door-window-sensors", "surveillance-cameras"]
-            },
-            "EntertainEase Inc.": {
-                "entertainment": ["smart-tvs", "streaming-devices"]
-            },
-            "SmartAppliance Solutions": {
-                "home appliances": ["smart-refrigerator", "smart-oven-stove"]
-            },
             "IntelliHome Automation": {
-                "home automation": ["automated-lighting", "automated-hvac"]
+        const systemsData = {
+            system1: {
+                name: 'LB MANAGEMENT',
+                link: 'http://system1',
+                functionalities: ['bluetooth-LE', 'wireless'],
+                serviceAreas: {
+                    lighting: ['switching'],
+                    blinds: ['blinds'],
+                    security: ['storm-rain-satellite-unit']
+                }
             },
-            "LuxeLighting Technologies": {
-                "smart lighting": ["dimming", "color-changing"]
+            system2: {
+                name: 'eNet SMART HOME',
+                link: 'http://system2',
+                functionalities: ['eNet', 'wireless', 'REG-bus'],
+                serviceAreas: {
+                    lighting: ['switching'],
+                    blinds: ['blinds'],
+                    security: ['storm-rain-universal-transmitter'],
+                    hvac: ['radiator-thermostat'],
+                    scenes: ['scenes-via-wall-transmitter'],
+                    energy: ['energy-measurement']
+                }
             },
-            "ClimateControl Systems": {
-                "smart HVAC": ["programmable-thermostat"]
+            system3: {
+                name: 'KNX SMART VISU SERVER',
+                link: 'http://system3',
+                functionalities: ['KNX', 'IP', 'wireless', 'TP', 'ethernet'],
+                serviceAreas: {
+                    lighting: ['switching', 'colour'],
+                    blinds: ['blinds', 'skylights'],
+                    security: ['storm-rain', 'leakage'],
+                    hvac: ['radiator-thermostat', 'boiler'],
+                    scenes: ['scenes-via-wall-transmitter', 'over-100-scenes'],
+                    energy: ['energy-measurement'],
+                    weather: ['weather-forecast'],
+                    windowAndDoorMonitoring: ['window-and-door-monitoring']
+                }
             },
-            "SafeGuard Security Systems": {
-                "security": ["smart-locks", "surveillance-cameras"]
-            },
-            "TechEntertainment Solutions": {
-                "entertainment": ["smart-tvs", "streaming-devices"]
-            },
-            "KitchenInnovate": {
-                "home appliances": ["smart-refrigerator"]
-            },
-            "AutomatedLiving Solutions": {
-                "home automation": ["automated-lighting", "automated-hvac"]
-            },
-            "AmbientLighting Co.": {
-                "smart lighting": ["dimming"]
-            },
-            "EnergyEfficient HVAC": {
-                "smart HVAC": ["learning-thermostat"]
-            },
-            "SecureTech Home Solutions": {
-                "security": ["door-window-sensors", "surveillance-cameras"]
-            },
-            "MediaMastery Solutions": {
-                "entertainment": ["smart-tvs"]
-            },
-            "SmartKitchen Innovations": {
-                "home appliances": ["smart-oven-stove"]
-            },
-            "IntelligentHome Technologies": {
-                "home automation": ["automated-lighting", "automated-hvac"]
-            },
-            "GlowLighting Systems": {
-                "smart lighting": ["color-changing", "motion-sensing"]
-            },
-            "EcoComfort Solutions": {
-                "smart HVAC": ["programmable-thermostat"]
-            },
-            "SecureZone Technologies": {
-                "security": ["smart-locks", "door-window-sensors"]
-            },
-            "MediaControl Solutions": {
-                "entertainment": ["streaming-devices"]
-            },
-            "SmartCooking Technologies": {
-                "home appliances": ["smart-oven-stove"]
-            },
-            "HomeTech Automation": {
-                "home automation": ["automated-lighting", "automated-hvac"]
-            },
-            "BrightHome Lighting": {
-                "smart lighting": ["dimming", "color-changing"]
-            },
-            "ClimateMaster Systems": {
-                "smart HVAC": ["programmable-thermostat", "learning-thermostat"]
-            },
-            "SafeHome Security": {
-                "security": ["smart-locks", "surveillance-cameras"]
-            },
-            "SmartMedia Solutions": {
-                "entertainment": ["smart-tvs", "streaming-devices"]
-            },
-            "KitchenTech Innovations": {
-                "home appliances": ["smart-refrigerator", "smart-oven-stove"]
-            },
-            "IntelliLiving Technologies": {
-                "home automation": ["automated-lighting", "automated-hvac"], 
-                "home appliances": ["smart-refrigerator", "smart-oven-stove"]
+            system4: {
+                name: 'KNX VISU PRO SERVER',
+                link: 'http://system4',
+                functionalities: ['KNX', 'IP', 'wireless', 'TP', 'ethernet'],
+                serviceAreas: {
+                    lighting: ['switching', 'colour', 'sequences'],
+                    blinds: ['blinds', 'skylights'],
+                    security: ['storm-rain', 'leakage'],
+                    hvac: ['radiator-thermostat', 'boiler'],
+                    scenes: ['scenes-via-wall-transmitter', 'unlimited-scenes'],
+                    energy: ['energy-measurement', 'SENEC-Home-battery-storage'],
+                    weather: ['weather-forecast', 'creation-of-rules'],
+                    windowAndDoorMonitoring: ['window-and-door-monitoring']
+                }
             }
-        }
+        };
+
         let selectedCriteria = {};
         var criteriaCount = 0;
         window.addEventListener('load', function() {
