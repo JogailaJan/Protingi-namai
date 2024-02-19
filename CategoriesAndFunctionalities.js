@@ -1,33 +1,48 @@
 const data = [
     {
-      mainCategory: 'Category A',
-      value: 'Value A', // Add a value field for main categories
+      name: 'Lighting',
+      value: 'lighting',
       subCategories: [
         {
-          name: 'Subcategory 1',
-          group: 'Value A', // Add a group field for subcategories
-          value: 'Value 1'
+          name: 'Switching',
+          group: 'lighting',
+          value: 'switching'
         },
         {
-          name: 'Subcategory 2',
-          group: 'Value A',
-          value: 'Value 2'
+          name: 'Colour',
+          group: 'lighting',
+          value: 'colour'
+        },
+        {
+          name: 'Sequences',
+          group: 'lighting',
+          value: 'sequences'
         }
       ]
     },
     {
-      mainCategory: 'Category B',
-      value: 'Value B',
+      name: 'Security',
+      value: 'security',
       subCategories: [
         {
-          name: 'Subcategory 3',
-          group: 'Value B',
-          value: 'Value 3'
+          name: 'Storm/Rain Satellite Unit',
+          group: 'security',
+          value: 'storm-rain-satellite-unit'
         },
         {
-          name: 'Subcategory 4',
-          group: 'Value B',
-          value: 'Value 4'
+          name: 'Storm/Rain Universal Transmitter',
+          group: 'security',
+          value: 'storm-rain-universal-transmitter'
+        },
+        {
+          name: 'Storm/Rain',
+          group: 'security',
+          value: 'storm-rain'
+        },
+        {
+          name: 'Leakage',
+          group: 'security',
+          value: 'leakage'
         }
       ]
     }
