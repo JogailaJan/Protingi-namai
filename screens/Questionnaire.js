@@ -9,53 +9,25 @@ const Questionnaire = () => {
 
   const handleMainCategoryPress = (value) => {
     setSelectedItems(prevState => {
-      const mainCategoryIndex = prevState.mainCategories.findIndex(category => category.value === value);
-
+      const mainCategoryIndex = prevState.mainCategories.findIndex(item => item.value === value);
       if (mainCategoryIndex !== -1) {
-        // Category exists, remove it
-        const updatedMainCategories = [...prevState.mainCategories];
-        updatedMainCategories.splice(mainCategoryIndex, 1);
-        
-        return {
-          ...prevState,
-          mainCategories: updatedMainCategories
-        };
+        prevState.mainCategories.splice(mainCategoryIndex, 1);
       } else {
-        // Category doesn't exist, add it
-        return {
-          ...prevState,
-          mainCategories: [
-            ...prevState.mainCategories,
-            { name: `Maincategory ${prevState.mainCategories.length + 1}`, value }
-          ]
-        };
+        prevState.mainCategories.push({ name: `Maincategory ${prevState.mainCategories.length + 1}`, value });
       }
+      return { ...prevState };
     });
   };
 
   const handleSubCategoryPress = (group, value) => {
     setSelectedItems(prevState => {
-      const subCategoryIndex = prevState.subCategories.findIndex(category => category.value === value && category.group === group);
-
+      const subCategoryIndex = prevState.subCategories.findIndex(item => item.group === group && item.value === value);
       if (subCategoryIndex !== -1) {
-        // Category exists, remove it
-        const updatedSubCategories = [...prevState.subCategories];
-        updatedSubCategories.splice(subCategoryIndex, 1);
-
-        return {
-          ...prevState,
-          subCategories: updatedSubCategories
-        };
+        prevState.subCategories.splice(subCategoryIndex, 1);
       } else {
-        // Category doesn't exist, add it
-        return {
-          ...prevState,
-          subCategories: [
-            ...prevState.subCategories,
-            { name: `Subcategory ${prevState.subCategories.length + 1}`, group, value }
-          ]
-        };
+        prevState.subCategories.push({ name: `Subcategory ${prevState.subCategories.length + 1}`, group, value });
       }
+      return { ...prevState };
     });
   };
 
