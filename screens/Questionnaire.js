@@ -2,87 +2,132 @@ import { StatusBar } from 'expo-status-bar';
 import Checkbox from 'expo-checkbox';
 import { StyleSheet, Text, View, Button, FlatList, TouchableOpacity} from 'react-native';
 import React, { useState } from 'react';
-import data from '../CategoriesAndFunctionalities';
+import serviceAreas from '../ServiceAreasAndFunctionalities';
+import systems from '../Systems';
 
 
 const Questionnaire = () => {
-  const [selectedItems, setSelectedItems] = useState({ subCategories: [], mainCategories: [] });
-  const [subCategoryVisibility, setSubCategoryVisibility] = useState(Array(data.length).fill(false));
+  const [selectedItems, setSelectedItems] = useState({ functionalities: [], serviceAreas: [] });
+  const [functionalityVisibility, setFunctionalityVisibility] = useState(Array(serviceAreas.length).fill(false));
 
-  const handleMainCategoryCheckboxPress = (value) => {
+  const handleServiceAreaCheckboxPress = (value) => {
     setSelectedItems(prevState => {
-      const mainCategoryIndex = prevState.mainCategories.findIndex(item => item.value === value);
-      if (mainCategoryIndex !== -1) {
-        prevState.mainCategories.splice(mainCategoryIndex, 1);
+      const serviceAreaIndex = prevState.serviceAreas.findIndex(item => item.value === value);
+      if (serviceAreaIndex !== -1) {
+        prevState.serviceAreas.splice(serviceAreaIndex, 1);
       } else {
-        prevState.mainCategories.push({ value });
+        prevState.serviceAreas.push({ value });
       }
       return { ...prevState };
     });
   };
 
-  const toggleSubCategoryVisibility = (index) => {
-    setSubCategoryVisibility(prevState => {
+  const toggleFunctionalityVisibility = (index) => {
+    setFunctionalityVisibility(prevState => {
       const newState = [...prevState];
       newState[index] = !newState[index];
       return newState;
     });
   };
 
-  const handleMainCategoryTextPress = (index) => {
-    toggleSubCategoryVisibility(index);
+  const handleServiceAreaTextPress = (index) => {
+    toggleFunctionalityVisibility(index);
   };
 
-  const handleSubCategoryPress = (group, value) => {
+  const handleFunctionalityPress = (group, value) => {
     setSelectedItems(prevState => {
-      const subCategoryIndex = prevState.subCategories.findIndex(item => item.group === group && item.value === value);
-      if (subCategoryIndex !== -1) {
-        prevState.subCategories.splice(subCategoryIndex, 1);
+      const functionalityIndex = prevState.functionalities.findIndex(item => item.group === group && item.value === value);
+      if (functionalityIndex !== -1) {
+        prevState.functionalities.splice(functionalityIndex, 1);
       } else {
-        prevState.subCategories.push({ group, value });
+        prevState.functionalities.push({ group, value });
       }
       return { ...prevState };
     });
   };
 
+  function filterSystems() {
+    const filteredSystems = [];
+    systems.forEach(system => {
+        let meetsCriteria = true;
+        // Check serviceAreas
+        if (selectedItems.serviceAreas && selectedItems.serviceAreas.length > 0) {
+            selectedItems.serviceAreas.forEach(category => {
+                const serviceArea = system.serviceAreas.find(area => area.name === category.value);
+                if (!serviceArea) {
+                    meetsCriteria = false;
+                }
+            });
+        }
+        // Check functionalities
+        if (selectedItems.functionalities && selectedItems.functionalities.length > 0) {
+            selectedItems.functionalities.forEach(functionality => {
+                const serviceArea = system.serviceAreas.find(area => area.name === functionality.group);
+                if (!serviceArea) {
+                    meetsCriteria = false;
+                } else {
+                    if (!serviceArea.functionalities || !serviceArea.functionalities.includes(functionality.value)) {
+                        meetsCriteria = false;
+                    }
+                }
+            });
+        }
+        if (meetsCriteria) {
+            filteredSystems.push(system.name);
+        }
+    });
+    return filteredSystems;
+}
+
   // Log the updated list whenever selectedItems changes
   React.useEffect(() => {
     console.log("Updated list:", selectedItems);
+    console.log(filterSystems());
   }, [selectedItems]);
 
   return (
     <View>
       <FlatList
-        data={data}
+        data={serviceAreas}
         renderItem={({ item, index }) => (
-          <View style={styles.mainCategoryContainer}>
+          <View style={styles.serviceAreaContainer}>
             <View style={styles.row}>
               <Checkbox
-                value={selectedItems.mainCategories.some(category => category.value === item.value)}
-                onValueChange={() => handleMainCategoryCheckboxPress(item.value)}
+                value={selectedItems.serviceAreas.some(category => category.value === item.value)}
+                onValueChange={() => handleServiceAreaCheckboxPress(item.value)}
               />
-              <TouchableOpacity onPress={() => handleMainCategoryTextPress(index)}>
-                <Text style={styles.mainCategoryText}>{item.name}</Text>
+              <TouchableOpacity onPress={() => handleServiceAreaTextPress(index)}>
+                <Text style={styles.serviceAreaText}>{item.name}</Text>
               </TouchableOpacity>
             </View>
             <View style={styles.separator}></View>
-            {subCategoryVisibility[index] && (
+            {functionalityVisibility[index] && (
               <FlatList
-                data={item.subCategories}
-                renderItem={({ item: subCategory }) => (
-                  <TouchableOpacity onPress={() => handleSubCategoryPress(subCategory.group, subCategory.value)}>
+                data={item.functionalities}
+                renderItem={({ item: functionality }) => (
+                  <TouchableOpacity onPress={() => handleFunctionalityPress(functionality.group, functionality.value)}>
                     <View style={styles.row}>
                       <Checkbox
-                        value={selectedItems.subCategories.some(category => category.value === subCategory.value && category.group === subCategory.group)}
-                        onValueChange={() => handleSubCategoryPress(subCategory.group, subCategory.value)}
+                        value={selectedItems.functionalities.some(category => category.value === functionality.value && category.group === functionality.group)}
+                        onValueChange={() => handleFunctionalityPress(functionality.group, functionality.value)}
                       />
-                      <Text>{subCategory.name}</Text>
+                      <Text>{functionality.name}</Text>
                     </View>
                   </TouchableOpacity>
                 )}
-                keyExtractor={(subCategory, index) => index.toString()}
+                keyExtractor={(functionality, index) => index.toString()}
               />
             )}
+          </View>
+        )}
+        keyExtractor={(item, index) => index.toString()}
+      />
+      {/* Systems */}
+      <FlatList
+        data={filterSystems()}
+        renderItem={({ item }) => (
+          <View style={styles.systemContainer}>
+            <Text>{item}</Text>
           </View>
         )}
         keyExtractor={(item, index) => index.toString()}
@@ -105,11 +150,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  mainCategoryContainer: {
+  serviceAreaContainer: {
     marginBottom: 10, // Adjust as needed
     paddingLeft: 10,
   },
-  mainCategoryText: {
+  serviceAreaText: {
     fontSize: 30,
     fontWeight: 'bold',
     marginLeft: 8, // Adjust as needed

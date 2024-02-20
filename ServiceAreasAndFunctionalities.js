@@ -1,8 +1,8 @@
-const data = [
+const serviceAreas = [
     {
       name: 'Lighting',
       value: 'lighting',
-      subCategories: [
+      functionalities: [
         {
           name: 'Switching',
           group: 'lighting',
@@ -23,7 +23,7 @@ const data = [
     {
       name: 'Security',
       value: 'security',
-      subCategories: [
+      functionalities: [
         {
           name: 'Storm/Rain Satellite Unit',
           group: 'security',
@@ -45,10 +45,31 @@ const data = [
           value: 'leakage'
         }
       ]
-    }
+    },
+    {
+      name: 'Weather',
+      value: 'weather',
+      functionalities: [
+        {
+          name: 'Weather forecast',
+          group: 'weather',
+          value: 'weather-forecast'
+        },
+        {
+          name: 'Weather station',
+          group: 'weather',
+          value: 'weather-station'
+        },
+        {
+          name: 'Creation of rules',
+          group: 'weather',
+          value: 'creation-of-rules'
+        }
+      ]
+    },
   ];
   
-  export default data;
+  export default serviceAreas;
   
   const data1 = [
     {

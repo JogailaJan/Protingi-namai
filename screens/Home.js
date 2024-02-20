@@ -4,7 +4,6 @@ import { StyleSheet, Text, View, Button} from 'react-native';
 export default function Home({ navigation }) {
   return (
     <View style={styles.container}>
-      <StatusBar hidden/>{/* Paslepia laika ir visas kitas piktogramas telefono virsuje */}
       <Button title="Smart Home" onPress={() => navigation.navigate("Smart Home")}/>
       <Button title="Systems Description" onPress={() => navigation.navigate("Systems Description")}/>
       <Button title="Areas Description" onPress={() => navigation.navigate("Areas Description")}/>
