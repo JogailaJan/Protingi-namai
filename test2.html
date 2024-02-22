@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Home System Questionnaire</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f4f4f4;
+    }
+
+    h1 {
+        text-align: center;
+        color: #333;
+    }
+
+    form {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        margin-top: 20px;
+        margin-bottom: 10px;
+        color: #555;
+        display: inline-block; /* Added */
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    input[type="checkbox"] {
+        margin-right: 5px;
+        vertical-align: middle;
+    }
+
+    .service-area{
+        display: none;
+    }
+
+    input[type="submit"] {
+        display: block;
+        width: 100%;
+        padding: 10px;
+        margin-top: 20px;
+        background-color: #4CAF50;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #45a049;
+    }
+</style>
+</head>
+<body>
+    <h1>Smart Home System Questionnaire</h1>
+    <form id="questionnaireForm">
+        <label class="main-category"><input type="checkbox" name="lighting" value="smart lighting" class="service-area"> <h2>Lighting (<span>0/0</span>)</h2></label>
+        <div id="lightingOptions" style="display: none;">
+            <p>What type of smart lighting controls are you interested in? (Check all that apply)</p>
+            <label><input type="checkbox" name="smart lighting" value="dimming" class="functionality"> Dimming (<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="smart lighting" value="color-changing" class="functionality"> Color-changing (<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="smart lighting" value="motion-sensing" class="functionality"> Motion sensing (<span>0/0</span>)</label><br>
+            <!-- Add more options as needed -->
+        </div>
+    
+        <label class="main-category"><input type="checkbox" name="hvac" value="smart HVAC" class="service-area"> <h2>Heating, Ventilation, and Air Conditioning (HVAC) (<span>0/0</span>)</h2></label>
+        <div id="hvacOptions" style="display: none;">
+            <p>What kind of smart heating/cooling system are you interested in?</p>
+            <label><input type="checkbox" name="smart HVAC" value="programmable-thermostat" class="functionality"> Programmable thermostat (<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="smart HVAC" value="learning-thermostat" class="functionality"> Learning thermostat (<span>0/0</span>)</label><br>
+            <!-- Add more options as needed -->
+        </div>
+    
+        <label class="main-category"><input type="checkbox" name="security" value="security" class="service-area"> <h2>Security (<span>0/0</span>)</h2></label>
+        <div id="securityOptions" style="display: none;">
+            <p>What security features are you interested in? (Check all that apply)</p>
+            <label><input type="checkbox" name="security" value="smart-locks" class="functionality"> Smart locks (<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="security" value="door-window-sensors" class="functionality"> Door/window sensors (<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="security" value="surveillance-cameras" class="functionality"> Surveillance cameras (<span>0/0</span>)</label><br>
+            <!-- Add more options as needed -->
+        </div>
+    
+        <label class="main-category"><input type="checkbox" name="entertainment" value="entertainment" class="service-area"> <h2>Entertainment and Multimedia (<span>0/0</span>)</h2></label>
+        <div id="entertainmentOptions" style="display: none;">
+            <p>What multimedia devices do you want to control smartly? (Check all that apply)</p>
+            <label><input type="checkbox" name="entertainment" value="smart-tvs" class="functionality"> Smart TVs (<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="entertainment" value="streaming-devices" class="functionality"> Streaming devices (<span>0/0</span>)</label><br>
+            <!-- Add more options as needed -->
+        </div>
+    
+        <label class="main-category"><input type="checkbox" name="appliances" value="home appliances" class="service-area"> <h2>Home Appliances (<span>0/0</span>)</h2></label>
+        <div id="appliancesOptions" style="display: none;">
+            <p>What types of smart appliances are you interested in? (Check all that apply)</p>
+            <label><input type="checkbox" name="home appliances" value="smart-refrigerator" class="functionality"> Smart refrigerator (<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="home appliances" value="smart-oven-stove" class="functionality"> Smart oven/stove (<span>0/0</span>)</label><br>
+            <!-- Add more options as needed -->
+        </div>
+    
+        <label class="main-category"><input type="checkbox" name="automation" value="home automation" class="service-area"><h2>Home Automation (<span>0/0</span>)</h2> </label>
+        <div id="automationOptions" style="display: none;">
+            <p>What automation scenarios are you interested in? (Check all that apply)</p>
+            <label><input type="checkbox" name="home automation" value="automated-lighting" class="functionality"> Automated lighting (<span>0/0</span>)</label><br>
+            <label><input type="checkbox" name="home automation" value="automated-hvac" class="functionality"> Automated HVAC adjustments (<span>0/0</span>)</label><br>
+            <!-- Add more options as needed -->
+        </div>
+    
+        <input type="submit" value="Submit">
+
+    <script>
+        companies = {
+            "BrightLight Solutions": {
+                "smart lighting": ["dimming", "color-changing", "motion-sensing"]
+            },
+            "EcoHVAC Technologies": {
+                "smart HVAC": ["programmable-thermostat", "learning-thermostat"]
+            },
+            "SecureHome Innovations": {
+                "security": ["smart-locks", "door-window-sensors", "surveillance-cameras"]
+            },
+            "EntertainEase Inc.": {
+                "entertainment": ["smart-tvs", "streaming-devices"]
+            },
+            "SmartAppliance Solutions": {
+                "home appliances": ["smart-refrigerator", "smart-oven-stove"]
+            },
+            "IntelliHome Automation": {
+                "home automation": ["automated-lighting", "automated-hvac"]
+            },
+            "LuxeLighting Technologies": {
+                "smart lighting": ["dimming", "color-changing"]
+            },
+            "ClimateControl Systems": {
+                "smart HVAC": ["programmable-thermostat"]
+            },
+            "SafeGuard Security Systems": {
+                "security": ["smart-locks", "surveillance-cameras"]
+            },
+            "TechEntertainment Solutions": {
+                "entertainment": ["smart-tvs", "streaming-devices"]
+            },
+            "KitchenInnovate": {
+                "home appliances": ["smart-refrigerator"]
+            },
+            "AutomatedLiving Solutions": {
+                "home automation": ["automated-lighting", "automated-hvac"]
+            },
+            "AmbientLighting Co.": {
+                "smart lighting": ["dimming"]
+            },
+            "EnergyEfficient HVAC": {
+                "smart HVAC": ["learning-thermostat"]
+            },
+            "SecureTech Home Solutions": {
+                "security": ["door-window-sensors", "surveillance-cameras"]
+            },
+            "MediaMastery Solutions": {
+                "entertainment": ["smart-tvs"]
+            },
+            "SmartKitchen Innovations": {
+                "home appliances": ["smart-oven-stove"]
+            },
+            "IntelligentHome Technologies": {
+                "home automation": ["automated-lighting", "automated-hvac"]
+            },
+            "GlowLighting Systems": {
+                "smart lighting": ["color-changing", "motion-sensing"]
+            },
+            "EcoComfort Solutions": {
+                "smart HVAC": ["programmable-thermostat"]
+            },
+            "SecureZone Technologies": {
+                "security": ["smart-locks", "door-window-sensors"]
+            },
+            "MediaControl Solutions": {
+                "entertainment": ["streaming-devices"]
+            },
+            "SmartCooking Technologies": {
+                "home appliances": ["smart-oven-stove"]
+            },
+            "HomeTech Automation": {
+                "home automation": ["automated-lighting", "automated-hvac"]
+            },
+            "BrightHome Lighting": {
+                "smart lighting": ["dimming", "color-changing"]
+            },
+            "ClimateMaster Systems": {
+                "smart HVAC": ["programmable-thermostat", "learning-thermostat"]
+            },
+            "SafeHome Security": {
+                "security": ["smart-locks", "surveillance-cameras"]
+            },
+            "SmartMedia Solutions": {
+                "entertainment": ["smart-tvs", "streaming-devices"]
+            },
+            "KitchenTech Innovations": {
+                "home appliances": ["smart-refrigerator", "smart-oven-stove"]
+            },
+            "IntelliLiving Technologies": {
+                "home automation": ["automated-lighting", "automated-hvac"]
+            }
+        }
+        window.addEventListener('load', function() {
+            countMatchingCompanies();
+        });
+        // Function to count and log the number of companies matching the criteria
+function countMatchingCompanies() {
+    var selectedCriteria = {};
+    var totalCount = 0;
+    var serviceAreaCounts = {};
+    var functionalityCounts = {};
+
+    // Check each checkbox for selection
+    document.querySelectorAll('input[type="checkbox"][class="functionality"]:checked').forEach(function(input) {
+        var category = input.name;
+        var option = input.value;
+
+        // If it's a main category checkbox, store the category name
+        if (input.className === 'service-area') {
+            if (!selectedCriteria.hasOwnProperty(category)) {
+                selectedCriteria[category] = [];
+            }
+        } else { // If it's an option checkbox
+            if (!selectedCriteria.hasOwnProperty(category)) {
+                selectedCriteria[category] = [option];
+            } else {
+                if (!selectedCriteria[category].includes(option)) {
+                    selectedCriteria[category].push(option);
+                }
+            }
+        }
+    });
+
+    // Iterate through each company and check if it satisfies all selected criteria
+    for (var company in companies) {
+        var satisfiesAllCriteria = true;
+
+        for (var category in selectedCriteria) {
+            if (!companies[company][category]) {
+                satisfiesAllCriteria = false;
+                break;
+            }
+            var companyOptions = companies[company][category];
+            var selectedOptions = selectedCriteria[category];
+
+            for (var i = 0; i < selectedOptions.length; i++) {
+                if (!companyOptions.includes(selectedOptions[i])) {
+                    satisfiesAllCriteria = false;
+                    break;
+                }
+            }
+            if (!satisfiesAllCriteria) {
+                break;
+            }
+        }
+        if (satisfiesAllCriteria) {
+            totalCount++;
+
+            // Count companies providing each service area and functionality
+            for (var category in companies[company]) {
+                if (!serviceAreaCounts[category]) {
+                    serviceAreaCounts[category] = 1;
+                } else {
+                    serviceAreaCounts[category]++;
+                }
+                companies[company][category].forEach(function(option) {
+                    if (!functionalityCounts[option]) {
+                        functionalityCounts[option] = 1;
+                    } else {
+                        functionalityCounts[option]++;
+                    }
+                });
+            }
+        }
+    }
+
+    // Update the checkboxes with counts
+    updateCheckboxCounts(serviceAreaCounts, functionalityCounts);
+
+    // Log the total number of companies matching all selected criteria
+    console.log("Total number of companies matching selected criteria: " + totalCount);
+}
+
+// Function to update the checkboxes with counts
+function updateCheckboxCounts(serviceAreaCounts, functionalityCounts) {
+    // Update service area checkboxes
+    document.querySelectorAll('.service-area').forEach(function(checkbox) {
+        var category = checkbox.name;
+        var count = serviceAreaCounts[category] || 0;
+        checkbox.nextElementSibling.innerText = checkbox.nextElementSibling.innerText.replace(/\(\d+\/\d+\)/, "(" + count + "/" + Object.keys(companies).length + ")");
+    });
+
+    // Update functionality checkboxes
+    document.querySelectorAll('.functionality').forEach(function(checkbox) {
+        var option = checkbox.value;
+        var count = functionalityCounts[option] || 0;
+        checkbox.nextElementSibling.innerText = checkbox.nextElementSibling.innerText.replace(/\(\d+\/\d+\)/, "(" + count + "/" + Object.keys(companies).length + ")");
+    });
+}
+
+// Add event listeners to show options based on user selections
+document.querySelectorAll('input[type="checkbox"]').forEach(function(input) {
+    input.addEventListener('change', function() {
+        var relatedOptionsDivId = this.name + 'Options';
+        var relatedOptionsDiv = document.getElementById(relatedOptionsDivId);
+
+        if (relatedOptionsDiv) { // Check if the related options div exists
+            if (this.checked) {
+                relatedOptionsDiv.style.display = 'block';
+            } else {
+                relatedOptionsDiv.style.display = 'none';
+
+                // If checkbox is unchecked, remove its option and category from selectedCriteria
+                var category = this.name;
+                var option = this.value;
+                if (selectedCriteria.hasOwnProperty(category)) {
+                    var index = selectedCriteria[category].indexOf(option);
+                    if (index !== -1) {
+                        selectedCriteria[category].splice(index, 1);
+                        if (selectedCriteria[category].length === 0) {
+                            delete selectedCriteria[category];
+                        }
+                    }
+                }
+            }
+        }
+
+        // Call the function to count and log matching companies
+        countMatchingCompanies();
+    });
+});
+
+// Add JavaScript logic to handle form submission and data processing
+document.getElementById('questionnaireForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent form submission
+
+    // Gather user responses
+    var formData = new FormData(this);
+    var responses = {};
+    for (var pair of formData.entries()) {
+        if (responses.hasOwnProperty(pair[0])) {
+            if (!Array.isArray(responses[pair[0]])) {
+                responses[pair[0]] = [responses[pair[0]]];
+            }
+            responses[pair[0]].push(pair[1]);
+        } else {
+            responses[pair[0]] = pair[1];
+        }
+    }
+
+    // Display responses (for demonstration purposes)
+    console.log('User Responses:', responses);
+
+    // You can now send the responses to a server for further processing
+    // or perform any other actions based on the user's input.
+});
+
+
+    </script>
+</body>
+</html>
