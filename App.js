@@ -10,36 +10,71 @@ import FavoritesScreen from "./screens/Favorites";
 const Stack = createNativeStackNavigator();
 const starEmpty = require("./star-empty.png");
 
-
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
-        <Stack.Screen 
-          name="Home" 
-          component={HomeScreen} 
-          options={{ 
-            title: 'Home',
-            headerStyle: { backgroundColor: 'white' },
-            headerTintColor: 'black',
-            headerTitleStyle: { fontWeight: 'bold' },
-          }} 
+        <Stack.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            title: "Išmanūs Namai",
+            headerStyle: { backgroundColor: "black" },
+            headerTintColor: "white",
+            headerTitleStyle: { fontWeight: "bold" },
+          }}
         />
-        <Stack.Screen 
-          name="Questionnaire" 
-          component={QuestionnaireScreen} 
-          options={{ 
-            title: 'Questionnaire',
-            headerStyle: { backgroundColor: 'black' },
-            headerTintColor: 'white',
-            headerTitleStyle: { fontWeight: 'bold' },
-          }} 
+        <Stack.Screen
+          name="Questionnaire"
+          component={QuestionnaireScreen}
+          options={{
+            title: "Klausimynas",
+            headerStyle: { backgroundColor: "black" },
+            headerTintColor: "white",
+            headerTitleStyle: { fontWeight: "bold" },
+          }}
         />
-        <Stack.Screen name="Smart Home" component={SmartHomeScreen} options={{ title: 'Smart Home' }} />
-        <Stack.Screen name="Systems Description" component={SystemsDescriptionScreen} options={{ title: 'Systems Description' }} />
-        <Stack.Screen name="Areas Description" component={AreasDescriptionScreen} options={{ title: 'Areas Description' }} />
-        <Stack.Screen name="Favorites" component={FavoritesScreen} options={{ title: 'Favorites' }} />
+        <Stack.Screen
+          name="Smart Home"
+          component={SmartHomeScreen}
+          options={{
+            title: "Išmanūs Namai",
+            headerStyle: { backgroundColor: "black" },
+            headerTintColor: "white",
+            headerTitleStyle: { fontWeight: "bold" },
+          }}
+        />
+        <Stack.Screen
+          name="Systems Description"
+          component={SystemsDescriptionScreen}
+          options={{
+            title: "Sistemų Aprašymai",
+            headerStyle: { backgroundColor: "black" },
+            headerTintColor: "white",
+            headerTitleStyle: { fontWeight: "bold" },
+          }}
+        />
+        <Stack.Screen
+          name="Areas Description"
+          component={AreasDescriptionScreen}
+          options={{
+            title: "Sričių Aprašymai",
+            headerStyle: { backgroundColor: "black" },
+            headerTintColor: "white",
+            headerTitleStyle: { fontWeight: "bold" },
+          }}
+        />
+        <Stack.Screen
+          name="Favorites"
+          component={FavoritesScreen}
+          options={{
+            title: "Mėgstamiausi",
+            headerStyle: { backgroundColor: "black" },
+            headerTintColor: "white",
+            headerTitleStyle: { fontWeight: "bold" },
+          }}
+        />
       </Stack.Navigator>
-    </NavigationContainer>                                                                            
+    </NavigationContainer>
   );
 }
