@@ -42,7 +42,7 @@ export default function Home({ navigation }) {
       </TouchableOpacity>
       <View style={styles.line}></View>
       <View style={styles.footer}>
-        <TouchableOpacity onPress={goToHome}>
+        <TouchableOpacity onPress={() => navigation.navigate("Favorites")}>
           <Image
             source={require("../photos/namas.png")}
             style={styles.footerImage}
