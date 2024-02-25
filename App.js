@@ -19,7 +19,7 @@ export default function App() {
           name="Home" 
           component={HomeScreen} 
           options={{ 
-            title: 'Home',
+            title: 'Pagrindinis',
             headerStyle: { backgroundColor: 'white' },
             headerTintColor: 'black',
             headerTitleStyle: { fontWeight: 'bold' },
@@ -29,16 +29,16 @@ export default function App() {
           name="Questionnaire" 
           component={QuestionnaireScreen} 
           options={{ 
-            title: 'Questionnaire',
+            title: 'Klausimynas',
             headerStyle: { backgroundColor: 'green' },
             headerTintColor: 'white',
             headerTitleStyle: { fontWeight: 'bold' },
           }} 
         />
-        <Stack.Screen name="Smart Home" component={SmartHomeScreen} options={{ title: 'Smart Home' }} />
-        <Stack.Screen name="Systems Description" component={SystemsDescriptionScreen} options={{ title: 'Systems Description' }} />
-        <Stack.Screen name="Areas Description" component={AreasDescriptionScreen} options={{ title: 'Areas Description' }} />
-        <Stack.Screen name="Favorites" component={FavoritesScreen} options={{ title: 'Favorites' }} />
+        <Stack.Screen name="Smart Home" component={SmartHomeScreen} options={{ title: 'Išmanieji namai' }} />
+        <Stack.Screen name="Systems Description" component={SystemsDescriptionScreen} options={{ title: 'Sistemų aprašymai' }} />
+        <Stack.Screen name="Areas Description" component={AreasDescriptionScreen} options={{ title: 'Paslaugų aprašymai' }} />
+        <Stack.Screen name="Favorites" component={FavoritesScreen} options={{ title: 'Išsaugotos konfigūracijos' }} />
       </Stack.Navigator>
     </NavigationContainer>                                                                            
   );

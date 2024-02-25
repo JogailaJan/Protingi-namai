@@ -4,11 +4,11 @@ import { StyleSheet, Text, View, Button} from 'react-native';
 export default function Home({ navigation }) {
   return (
     <View style={styles.container}>
-      <Button title="Smart Home" onPress={() => navigation.navigate("Smart Home")}/>
-      <Button title="Systems Description" onPress={() => navigation.navigate("Systems Description")}/>
-      <Button title="Areas Description" onPress={() => navigation.navigate("Areas Description")}/>
-      <Button title="Questionnaire" onPress={() => navigation.navigate("Questionnaire")}/>
-      <Button title="Favorites" onPress={() => navigation.navigate("Favorites")}/>
+      <Button title="Išmanieji namai" onPress={() => navigation.navigate("Smart Home")}/>
+      <Button title="Sistemų aprašymai" onPress={() => navigation.navigate("Systems Description")}/>
+      <Button title="Paslaugų aprašymai" onPress={() => navigation.navigate("Areas Description")}/>
+      <Button title="Klausimynas" onPress={() => navigation.navigate("Questionnaire")}/>
+      <Button title="Išsaugotos konfigūracijos" onPress={() => navigation.navigate("Favorites")}/>
     </View>
   );
 }
