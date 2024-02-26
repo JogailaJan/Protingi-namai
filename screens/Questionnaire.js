@@ -6,13 +6,13 @@ import serviceAreas from '../ServiceAreasAndFunctionalities';
 import systems from '../Systems';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SaveConfigurationModal from '../components/SaveConfigurationModal';
+import PDFDownloadButton from '../components/PDFDownloadButton'; // Import the PDFDownloadButton component
 
 const STORAGE_KEY = 'savedConfigurations';
 
-
 const Questionnaire = ({ route }) => {
-  const { selectedConfiguration } = route.params || {}; // Access selected configuration from route.params
-  
+  const { selectedConfiguration } = route.params || {};
+
   const [selectedItems, setSelectedItems] = useState({ functionalities: [], serviceAreas: [] });
   const [functionalityVisibility, setFunctionalityVisibility] = useState(Array(serviceAreas.length).fill(false));
   const [savedConfigurations, setSavedConfigurations] = useState([]);
@@ -23,14 +23,12 @@ const Questionnaire = ({ route }) => {
     if (selectedConfiguration) {
       handleSave(selectedConfiguration.name);
     } else {
-      // Prompt for configuration name when saving a new configuration
       setIsModalVisible(true);
     }
   };
-  
+
   const handleSave = async (name) => {
     if (selectedConfiguration) {
-      // Update the existing configuration
       const updatedConfigurations = savedConfigurations.map(config => {
         if (config.name === selectedConfiguration.name) {
           return { name: selectedConfiguration.name, items: selectedItems };
@@ -40,7 +38,6 @@ const Questionnaire = ({ route }) => {
       setSavedConfigurations(updatedConfigurations);
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedConfigurations));
     } else {
-      // Save a new configuration
       saveConfiguration(name);
     }
     setIsModalVisible(false);
@@ -59,7 +56,6 @@ const Questionnaire = ({ route }) => {
       }
     };
     
-    // Load saved configurations when component mounts
     loadSavedConfigurations();
   }, []);
   
@@ -68,10 +64,8 @@ const Questionnaire = ({ route }) => {
       console.log('Saving configuration with name:', name);
       console.log('Items:', selectedItems);
       
-      // Merge the new configuration with the existing configurations
       const updatedConfigurations = [...savedConfigurations, { name: name, items: selectedItems }];
       
-      // Update AsyncStorage and state with the merged configurations
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedConfigurations));
       setSavedConfigurations(updatedConfigurations);
       
@@ -80,18 +74,14 @@ const Questionnaire = ({ route }) => {
       console.error('Error saving configuration:', error);
     }
   };
-  
-  
 
   const handleCancel = () => {
-    // Cancel the saving action
     setIsModalVisible(false);
     setConfigurationName('');
   };
 
   useEffect(() => {
     if (selectedConfiguration) {
-      // If a configuration is passed, set selectedItems to match the configuration
       setSelectedItems(selectedConfiguration.items);
     }
   }, [selectedConfiguration]);
@@ -136,7 +126,6 @@ const Questionnaire = ({ route }) => {
     const filteredSystems = [];
     systems.forEach(system => {
         let meetsCriteria = true;
-        // Check serviceAreas
         if (selectedItems.serviceAreas && selectedItems.serviceAreas.length > 0) {
             selectedItems.serviceAreas.forEach(category => {
                 const serviceArea = system.serviceAreas.find(area => area.name === category.value);
@@ -145,7 +134,6 @@ const Questionnaire = ({ route }) => {
                 }
             });
         }
-        // Check functionalities
         if (selectedItems.functionalities && selectedItems.functionalities.length > 0) {
             selectedItems.functionalities.forEach(functionality => {
                 const serviceArea = system.serviceAreas.find(area => area.name === functionality.group);
@@ -164,12 +152,6 @@ const Questionnaire = ({ route }) => {
     });
     return filteredSystems;
 }
-
-  // Log the updated list whenever selectedItems changes
-  React.useEffect(() => {
-    //console.log("Updated list:", selectedItems);
-    //console.log(filterSystems());
-  }, [selectedItems]);
 
   return (
     <View>
@@ -218,12 +200,11 @@ const Questionnaire = ({ route }) => {
         )}
         keyExtractor={(item, index) => index.toString()}
       />
-      {/* Sticky button to save configuration */}
       <TouchableOpacity onPress={handleSaveButtonPress} style={styles.saveButton}>
         <Text style={styles.saveButtonText}>Išsaugoti konfigūraciją</Text>
       </TouchableOpacity>
-
-            {/* Save configuration modal */}
+      {/* PDF Download Button */}
+      <PDFDownloadButton config={[{ items: selectedItems }]} />
       <SaveConfigurationModal
         visible={isModalVisible}
         onSave={handleSave}
@@ -234,7 +215,6 @@ const Questionnaire = ({ route }) => {
 };
 
 export default Questionnaire;
-
 
 const styles = StyleSheet.create({
   container: {
@@ -248,18 +228,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   serviceAreaContainer: {
-    marginBottom: 10, // Adjust as needed
+    marginBottom: 10, 
     paddingLeft: 10,
   },
   serviceAreaText: {
     fontSize: 30,
     fontWeight: 'bold',
-    marginLeft: 8, // Adjust as needed
+    marginLeft: 8, 
   },
   separator: {
     borderBottomWidth: 1,
     borderBottomColor: 'black',
-    marginBottom: 5, // Adjust as needed
+    marginBottom: 5, 
     marginTop: 15,
   },
   saveButton: {
@@ -273,5 +253,9 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  systemContainer: {
+    marginTop: 10,
+    alignItems: 'center',
   },
 });
