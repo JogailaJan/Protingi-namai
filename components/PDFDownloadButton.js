@@ -1,43 +1,49 @@
 
 import React from 'react';
-import {  WebView, TouchableOpacity, Text, PermissionsAndroid, Platform, Alert} from 'react-native';
+import { TouchableOpacity, Text, PermissionsAndroid, Platform } from 'react-native';
 import * as Print from 'expo-print';
 import * as FileSystem from 'expo-file-system';
-import * as Linking from 'expo-linking';
-import { StorageAccessFramework } from 'expo-file-system';
-import * as Permissions from 'expo-permissions';
-import * as MediaLibrary from 'expo-media-library';
-import HTMLtoPDF from 'react-native-html-to-pdf';
-import RNFS from 'react-native-fs';
 
 const PDFDownloadButton = ({ config }) => {
-
   const createAndSavePDF = async () => {
-     // Replace with your actual HTML content
-      const htmlContent = `
-      <h1>This is your PDF content</h1>
-      <p>You can add any HTML elements here.</p>
-    `;
-
-    const options = {
-      base64: true, // Optionally set to true to get base64 encoded PDF data
-      fileName: 'my-pdf.pdf', // Optional file name
-      path: RNFS.DocumentDirectoryPath + '/PDFs/', // Optional path (consider platform-specific solutions)
-    };
-
     try {
-      const pdfData = await HTMLtoPDF.convert(htmlContent, options);
-
-      // Handle successful conversion
-      if (options.base64) {
-        // Use base64 data for further actions (e.g., saving to device)
-        console.log('PDF base64 data:', pdfData);
-      } else {
-        // Handle saved PDF file (platform-specific saving logic required)
-        console.log('PDF saved successfully!');
+      console.log(config);
+      // Check and request permission if needed
+      if (Platform.OS === 'android') {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+          {
+            title: 'Storage Permission Required',
+            message: 'This app needs access to your storage to save PDF files.',
+            buttonPositive: 'OK',
+          }
+        );
+        if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+          console.log('Storage permission denied');
+          return;
+        }
       }
+
+      const htmlContent = generateHTML(config); // Generate HTML content for the PDF
+      const { uri } = await Print.printToFileAsync({ html: htmlContent });
+
+      // Determine the destination directory based on the platform
+      const directory = Platform.OS === 'ios' ? FileSystem.documentDirectory : FileSystem.cacheDirectory;
+
+      // Create a unique file name for the PDF
+      const fileName = 'config.pdf';
+
+      // Move the PDF file to the desired directory
+      await FileSystem.moveAsync({
+        from: uri,
+        to: `${directory}${fileName}`,
+      });
+
+      // Inform the user that the PDF has been downloaded
+      alert('PDF downloaded successfully!');
     } catch (error) {
-      console.error('Error converting HTML to PDF:', error);
+      console.error('Error saving PDF:', error);
+      alert('Failed to download PDF.');
     }
   };
 
