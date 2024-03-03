@@ -6,7 +6,8 @@ import serviceAreas from '../ServiceAreasAndFunctionalities';
 import systems from '../Systems';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SaveConfigurationModal from '../components/SaveConfigurationModal';
-import PDFDownloadButton from '../components/PDFDownloadButton'; // Import the PDFDownloadButton component
+//import PDFDownloadButton from '../components/PDFDownloadButton'; // Import the PDFDownloadButton component
+import YourComponent from '../components/YourComponent';
 
 const STORAGE_KEY = 'savedConfigurations';
 
@@ -204,12 +205,13 @@ const Questionnaire = ({ route }) => {
         <Text style={styles.saveButtonText}>Išsaugoti konfigūraciją</Text>
       </TouchableOpacity>
       {/* PDF Download Button */}
-      <PDFDownloadButton config={[{ items: selectedItems }]} />
+      {/* s<PDFDownloadButton config={[{ items: selectedItems }]} /> */}
       <SaveConfigurationModal
         visible={isModalVisible}
         onSave={handleSave}
         onCancel={handleCancel}
       />
+      {/* <YourComponent></YourComponent> */}
     </View>
   );
 };
