@@ -178,180 +178,74 @@
 //     }
 // })
 
-
-
-
-
-
-// import { StatusBar } from 'expo-status-bar';
-// import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
-// import * as SQLite from 'expo-sqlite';
-// import { useState, useEffect } from 'react';
-// // expo add expo-sqlite
-
-// export default function App() {
-//   const db = SQLite.openDatabase('example.db');
-//   const [isLoading, setIsLoading] = useState(true);
-//   const [names, setNames] = useState([]);
-//   const [currentName, setCurrentname] = useState(undefined);
-
-//   useEffect(() => {
-//     db.transaction(tx => {
-//       tx.executeSql('CREATE TABLE IF NOT EXISTS names (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)')
-//     });
-
-//     db.transaction(tx => {
-//       tx.executeSql('SELECT * FROM names', null,
-//         (txObj, resultSet) => setNames(resultSet.rows._array),
-//         (txObj, error) => console.log(error)
-//       );
-//     });
-
-//     setIsLoading(false);
-//   }, []);
-
-//   if (isLoading) {
-//     return (
-//       <View style={styles.container}>
-//         <Text>Loading names...</Text>
-//       </View>
-//     );
-//   }
-
-//   const showNames = () => {
-//     return names.map((name, index) => {
-//       return (
-//         <View key={index} style={styles.row}>
-//           <Text>{name.name}</Text>
-//         </View>
-//       );
-//     })
-//   };
-
-//   const addName = () => {
-//     db.transaction(tx => {
-//       tx.executeSql('INSERT INTO names (name) values (?)', [currentName],
-//         (txObj, resultSet) => {
-//           let existingNames = [...names];
-//           existingNames.push({ id: resultSet.insertId, name: currentName});
-//           setNames(existingNames);
-//           setCurrentname(undefined);
-//         },
-//         (txObj, error) => console.log(error)
-//       );
-//     });
-//   };
-
-//   return (
-//   <View style={styles.container}>
-//     <TextInput value={currentName} placeholder="name" onChangeText={setCurrentname}/>
-//     <Button title="Add name" onPress={addName}/>
-//     {showNames()}
-//     <StatusBar style="auto" />
-//   </View>
-//   );
-// }                      
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   row: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     alignSelf: 'stretch',
-//     justifyContent: 'space-between',
-//     margin: 8
-//   }
-// });                    
-
-// App.js
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { useState, useEffect } from 'react';
-import {
-  CREATE_TABLE_SYSTEMS,
-  INSERT_SYSTEMS_DATA,
-  fetchServiceAreas,
-  fetchFunctionalities,
-  fetchSystems,
-  createTables,
-} from '../backend/queries';
-import systems from '../Systems'; // Import the desired formats for data
-import serviceAreas from '../ServiceAreasAndFunctionalities'; // Import the desired formats for data
+// expo add expo-sqlite
 
 export default function App() {
-  //const db = SQLite.openDatabase('example.db');
+  const db = SQLite.openDatabase('example.db');
   const [isLoading, setIsLoading] = useState(true);
-  const [fetchedServiceAreas, setFetchedServiceAreas] = useState([]);
-  const [fetchedSystems, setFetchedSystems] = useState([]);
+  const [names, setNames] = useState([]);
+  const [currentName, setCurrentname] = useState(undefined);
 
   useEffect(() => {
-    // createTables();
-    // fetchServiceAreas();
-    // fetchFunctionalities();
-    // fetchSystems();
+    db.transaction(tx => {
+      tx.executeSql('CREATE TABLE IF NOT EXISTS names (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)')
+    });
+
+    db.transaction(tx => {
+      tx.executeSql('SELECT * FROM names', null,
+        (txObj, resultSet) => setNames(resultSet.rows._array),
+        (txObj, error) => console.log(error)
+      );
+    });
+
     setIsLoading(false);
   }, []);
 
-    if (isLoading) {
+  if (isLoading) {
     return (
       <View style={styles.container}>
-        <Text>Loading data...</Text>
+        <Text>Loading names...</Text>
       </View>
     );
   }
 
-  // console.log('Fetched Service Areas:', fetchedServiceAreas);
-  // console.log('Fetched Systems:', fetchedSystems);
+  const showNames = () => {
+    return names.map((name, index) => {
+      return (
+        <View key={index} style={styles.row}>
+          <Text>{name.name}</Text>
+        </View>
+      );
+    })
+  };
+
+  const addName = () => {
+    db.transaction(tx => {
+      tx.executeSql('INSERT INTO names (name) values (?)', [currentName],
+        (txObj, resultSet) => {
+          let existingNames = [...names];
+          existingNames.push({ id: resultSet.insertId, name: currentName});
+          setNames(existingNames);
+          setCurrentname(undefined);
+        },
+        (txObj, error) => console.log(error)
+      );
+    });
+  };
 
   return (
-    <View style={styles.container}>
-      <Text>Data loaded successfully!</Text>
-      <Text>Service Areas:</Text>
-      {fetchedServiceAreas.map(area => (
-        <View key={area.name}>
-          <Text>{area.name}</Text>
-          <Text>{area.description}</Text>
-          <Text>Functionalities:</Text>
-          {area.functionalities.map(func => (
-            <View key={func.name}>
-              <Text>{func.name}</Text>
-              <Text>{func.description}</Text>
-            </View>
-          ))}
-        </View>
-      ))}
-      <Text>Systems:</Text>
-      {fetchedSystems.map(system => (
-        <View key={system.name}>
-          <Text>{system.name}</Text>
-          <Text>{system.description}</Text>
-          <Text>Communication Standards and Media:</Text>
-          {system.communicationStandartAndMedia.map(standard => (
-            <Text key={standard}>{standard}</Text>
-          ))}
-          <Text>Service Areas:</Text>
-          {system.serviceAreas.map(area => (
-            <View key={area.name}>
-              <Text>{area.name}</Text>
-              <Text>Functionalities:</Text>
-              {area.functionalities.map(func => (
-                <Text key={func}>{func}</Text>
-              ))}
-            </View>
-          ))}
-        </View>
-      ))}
-      <StatusBar style="auto" />
-    </View>
+  <View style={styles.container}>
+    <TextInput value={currentName} placeholder="name" onChangeText={setCurrentname}/>
+    <Button title="Add name" onPress={addName}/>
+    {showNames()}
+    <StatusBar style="auto" />
+  </View>
   );
-  
-}
+}                      
 
 const styles = StyleSheet.create({
   container: {
@@ -360,4 +254,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-});
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'stretch',
+    justifyContent: 'space-between',
+    margin: 8
+  }
+});                    

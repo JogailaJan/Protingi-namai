@@ -1,9 +1,63 @@
+const systemsData = {
+    system1: {
+        name: 'LB MANAGEMENT',
+        link: 'http://system1',
+        communicationStandartAndMedia: ['bluetooth-LE', 'wireless'],
+        serviceAreas: {
+            lighting: ['switching'],
+            blinds: ['blinds'],
+            security: ['storm-rain-satellite-unit']
+        }
+    },
+    system2: {
+        name: 'eNet SMART HOME',
+        link: 'http://system2',
+        communicationStandartAndMedia: ['eNet', 'wireless', 'REG-bus'],
+        serviceAreas: {
+            lighting: ['switching'],
+            blinds: ['blinds'],
+            security: ['storm-rain-universal-transmitter'],
+            hvac: ['radiator-thermostat'],
+            scenes: ['scenes-via-wall-transmitter'],
+            energy: ['energy-measurement']
+        }
+    },
+    system3: {
+        name: 'KNX SMART VISU SERVER',
+        link: 'http://system3',
+        communicationStandartAndMedia: ['KNX', 'IP', 'wireless', 'TP', 'ethernet'],
+        serviceAreas: {
+            lighting: ['switching', 'colour'],
+            blinds: ['blinds', 'skylights'],
+            security: ['storm-rain', 'leakage'],
+            hvac: ['radiator-thermostat', 'boiler'],
+            scenes: ['scenes-via-wall-transmitter', 'over-100-scenes'],
+            energy: ['energy-measurement'],
+            weather: ['weather-forecast'],
+            windowAndDoorMonitoring: ['window-and-door-monitoring']
+        }
+    },
+    system4: {
+        name: 'KNX VISU PRO SERVER',
+        link: 'http://system4',
+        communicationStandartAndMedia: ['KNX', 'IP', 'wireless', 'TP', 'ethernet'],
+        serviceAreas: {
+            lighting: ['switching', 'colour', 'sequences'],
+            blinds: ['blinds', 'skylights'],
+            security: ['storm-rain', 'leakage'],
+            hvac: ['radiator-thermostat', 'boiler'],
+            scenes: ['scenes-via-wall-transmitter', 'unlimited-scenes'],
+            energy: ['energy-measurement', 'SENEC-Home-battery-storage'],
+            weather: ['weather-forecast', 'creation-of-rules'],
+            windowAndDoorMonitoring: ['window-and-door-monitoring']
+        }
+    }
+};
 
 const systems = [
     {
         name: 'LB MANAGEMENT',
         link: 'http://system1',
-        description: '',
         communicationStandartAndMedia: ['bluetooth-LE', 'wireless'],
         serviceAreas: [
             {
@@ -23,7 +77,6 @@ const systems = [
     {
         name: 'eNet SMART HOME',
         link: 'http://system2',
-        description: '',
         communicationStandartAndMedia: ['eNet', 'wireless', 'REG-bus'],
         serviceAreas: [
             {
@@ -55,7 +108,6 @@ const systems = [
     {
         name: 'KNX SMART VISU SERVER',
         link: 'http://system3',
-        description: '',
         communicationStandartAndMedia: ['KNX', 'IP', 'wireless', 'TP', 'ethernet'],
         serviceAreas: [
             {
@@ -95,7 +147,6 @@ const systems = [
     {
         name: 'KNX VISU PRO SERVER',
         link: 'http://system4',
-        description: '',
         communicationStandartAndMedia: ['KNX', 'IP', 'wireless', 'TP', 'ethernet'],
         serviceAreas: [
             {
@@ -135,59 +186,3 @@ const systems = [
   ];
 
   export default systems;
-
-// const systemsData = {
-//     system1: {
-//         name: 'LB MANAGEMENT',
-//         link: 'http://system1',
-//         communicationStandartAndMedia: ['bluetooth-LE', 'wireless'],
-//         serviceAreas: {
-//             lighting: ['switching'],
-//             blinds: ['blinds'],
-//             security: ['storm-rain-satellite-unit']
-//         }
-//     },
-//     system2: {
-//         name: 'eNet SMART HOME',
-//         link: 'http://system2',
-//         communicationStandartAndMedia: ['eNet', 'wireless', 'REG-bus'],
-//         serviceAreas: {
-//             lighting: ['switching'],
-//             blinds: ['blinds'],
-//             security: ['storm-rain-universal-transmitter'],
-//             hvac: ['radiator-thermostat'],
-//             scenes: ['scenes-via-wall-transmitter'],
-//             energy: ['energy-measurement']
-//         }
-//     },
-//     system3: {
-//         name: 'KNX SMART VISU SERVER',
-//         link: 'http://system3',
-//         communicationStandartAndMedia: ['KNX', 'IP', 'wireless', 'TP', 'ethernet'],
-//         serviceAreas: {
-//             lighting: ['switching', 'colour'],
-//             blinds: ['blinds', 'skylights'],
-//             security: ['storm-rain', 'leakage'],
-//             hvac: ['radiator-thermostat', 'boiler'],
-//             scenes: ['scenes-via-wall-transmitter', 'over-100-scenes'],
-//             energy: ['energy-measurement'],
-//             weather: ['weather-forecast'],
-//             windowAndDoorMonitoring: ['window-and-door-monitoring']
-//         }
-//     },
-//     system4: {
-//         name: 'KNX VISU PRO SERVER',
-//         link: 'http://system4',
-//         communicationStandartAndMedia: ['KNX', 'IP', 'wireless', 'TP', 'ethernet'],
-//         serviceAreas: {
-//             lighting: ['switching', 'colour', 'sequences'],
-//             blinds: ['blinds', 'skylights'],
-//             security: ['storm-rain', 'leakage'],
-//             hvac: ['radiator-thermostat', 'boiler'],
-//             scenes: ['scenes-via-wall-transmitter', 'unlimited-scenes'],
-//             energy: ['energy-measurement', 'SENEC-Home-battery-storage'],
-//             weather: ['weather-forecast', 'creation-of-rules'],
-//             windowAndDoorMonitoring: ['window-and-door-monitoring']
-//         }
-//     }
-// };
