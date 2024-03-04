@@ -177,75 +177,118 @@
 //         marginBottom: 10,
 //     }
 // })
-
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
+import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import * as SQLite from 'expo-sqlite';
 import { useState, useEffect } from 'react';
-// expo add expo-sqlite
+
+const db = SQLite.openDatabase('test1.db');
+
+const CREATE_TABLE_SYSTEMS = `
+  CREATE TABLE IF NOT EXISTS Systems (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    link TEXT NOT NULL,
+    description TEXT
+  );
+`;
+
+const INSERT_SYSTEMS_DATA = `
+  INSERT INTO Systems (name, link, description) VALUES 
+  ('LB MANAGEMENT', 'http://system1', ''),
+  ('eNet SMART HOME', 'http://system2', ''),
+  ('KNX SMART VISU SERVER', 'http://system3', ''),
+  ('KNX VISU PRO SERVER', 'http://system4', '');
+`;
 
 export default function App() {
-  const db = SQLite.openDatabase('example.db');
+  const [systems, setSystems] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [names, setNames] = useState([]);
-  const [currentName, setCurrentname] = useState(undefined);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    db.transaction(tx => {
-      tx.executeSql('CREATE TABLE IF NOT EXISTS names (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT)')
-    });
+    const executeQueries = async () => {
+      try {
+        // Begin transaction
+        await new Promise((resolve, reject) => {
+          db.transaction(tx => {
+            tx.executeSql(
+              CREATE_TABLE_SYSTEMS,
+              [],
+              () => resolve(),
+              (_, error) => reject(error)
+            );
+          });
+        });
 
-    db.transaction(tx => {
-      tx.executeSql('SELECT * FROM names', null,
-        (txObj, resultSet) => setNames(resultSet.rows._array),
-        (txObj, error) => console.log(error)
-      );
-    });
+        // Insert data
+        await new Promise((resolve, reject) => {
+          db.transaction(tx => {
+            tx.executeSql(
+              INSERT_SYSTEMS_DATA,
+              [],
+              () => resolve(),
+              (_, error) => reject(error)
+            );
+          });
+        });
 
-    setIsLoading(false);
+        // Fetch data
+        await new Promise((resolve, reject) => {
+          db.transaction(tx => {
+            tx.executeSql(
+              "SELECT * FROM Systems",
+              [],
+              (_, { rows }) => {
+                const systemsData = rows._array;
+                setSystems(systemsData);
+                resolve();
+              },
+              (_, error) => reject(error)
+            );
+          });
+        });
+
+        setIsLoading(false); // Set loading to false after all operations
+      } catch (error) {
+        setError(error);
+      }
+    };
+
+    executeQueries();
   }, []);
 
-  if (isLoading) {
+  if (error) {
     return (
       <View style={styles.container}>
-        <Text>Loading names...</Text>
+        <Text>Error: {error.message}</Text>
       </View>
     );
   }
 
-  const showNames = () => {
-    return names.map((name, index) => {
-      return (
-        <View key={index} style={styles.row}>
-          <Text>{name.name}</Text>
-        </View>
-      );
-    })
-  };
-
-  const addName = () => {
-    db.transaction(tx => {
-      tx.executeSql('INSERT INTO names (name) values (?)', [currentName],
-        (txObj, resultSet) => {
-          let existingNames = [...names];
-          existingNames.push({ id: resultSet.insertId, name: currentName});
-          setNames(existingNames);
-          setCurrentname(undefined);
-        },
-        (txObj, error) => console.log(error)
-      );
-    });
-  };
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Text>Loading systems...</Text>
+      </View>
+    );
+  }
 
   return (
-  <View style={styles.container}>
-    <TextInput value={currentName} placeholder="name" onChangeText={setCurrentname}/>
-    <Button title="Add name" onPress={addName}/>
-    {showNames()}
-    <StatusBar style="auto" />
-  </View>
+    <View style={styles.container}>
+      <ScrollView>
+        <Text>Systems:</Text>
+        {systems.map(system => (
+          <View key={system.id}>
+            <Text>Name: {system.name}</Text>
+            <Text>Link: {system.link}</Text>
+            <Text>Description: {system.description}</Text>
+          </View>
+        ))}
+      </ScrollView>
+    </View>
   );
-}                      
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -254,11 +297,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    alignSelf: 'stretch',
-    justifyContent: 'space-between',
-    margin: 8
-  }
-});                    
+});
+
+
+
