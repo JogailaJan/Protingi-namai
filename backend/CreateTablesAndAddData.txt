@@ -1,0 +1,201 @@
+CREATE TABLE Systems (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    link TEXT NOT NULL,
+    description TEXT
+    -- Add other relevant columns as needed
+);
+
+CREATE TABLE ServiceAreas (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    value TEXT NOT NULL,
+    description TEXT
+    -- Add other relevant columns as needed
+);
+
+CREATE TABLE Functionalities (
+    id INTEGER PRIMARY KEY,
+    name TEXT NOT NULL,
+    group_name TEXT NOT NULL,
+    value TEXT NOT NULL,
+    description TEXT
+    -- Add other relevant columns as needed
+);
+
+CREATE TABLE SystemServiceAreas (
+    system_id INTEGER,
+    service_area_id INTEGER,
+    PRIMARY KEY (system_id, service_area_id),
+    FOREIGN KEY (system_id) REFERENCES Systems(id),
+    FOREIGN KEY (service_area_id) REFERENCES ServiceAreas(id)
+);
+
+CREATE TABLE ServiceAreaFunctionalities (
+    service_area_id INTEGER,
+    functionality_id INTEGER,
+    PRIMARY KEY (service_area_id, functionality_id),
+    FOREIGN KEY (service_area_id) REFERENCES ServiceAreas(id),
+    FOREIGN KEY (functionality_id) REFERENCES Functionalities(id)
+);
+
+CREATE TABLE CommunicationStandards (
+    id INTEGER PRIMARY KEY,
+    system_id INTEGER,
+    standard TEXT NOT NULL,
+    FOREIGN KEY (system_id) REFERENCES Systems(id)
+);
+
+
+//Data insertion
+
+-- Insert data into Systems table
+INSERT INTO Systems (name, link, description) VALUES 
+    ('LB MANAGEMENT', 'http://system1', ''),
+    ('eNet SMART HOME', 'http://system2', ''),
+    ('KNX SMART VISU SERVER', 'http://system3', ''),
+    ('KNX VISU PRO SERVER', 'http://system4', '');
+
+-- Insert data into ServiceAreas table
+INSERT INTO ServiceAreas (name, value, description) VALUES 
+    ('Lighting', 'lighting', ''),
+    ('Blinds', 'blinds', ''),
+    ('Security', 'security', ''),
+    ('HVAC', 'hvac', ''),
+    ('Scenes', 'scenes', ''),
+    ('Energy', 'energy', ''),
+    ('Weather', 'weather', ''),
+    ('Window and Door Monitoring', 'window-and-door-monitoring', '');
+
+-- Insert data into Functionalities table
+INSERT INTO Functionalities (name, group_name, value, description) VALUES 
+    ('Switching', 'lighting', 'switching', ''),
+    ('Blinds', 'blinds', 'blinds', ''),
+    ('Storm/Rain Satellite Unit', 'security', 'storm-rain-satellite-unit', ''),
+    ('Storm/Rain Universal Transmitter', 'security', 'storm-rain-universal-transmitter', ''),
+    ('Storm/Rain', 'security', 'storm-rain', ''),
+    ('Leakage', 'security', 'leakage', ''),
+    ('Radiator Thermostat', 'hvac', 'radiator-thermostat', ''),
+    ('Boiler', 'hvac', 'boiler', ''),
+    ('Scenes via Wall Transmitter', 'scenes', 'scenes-via-wall-transmitter', ''),
+    ('Over 100 Scenes', 'scenes', 'over-100-scenes', ''),
+    ('Energy Measurement', 'energy', 'energy-measurement', ''),
+    ('SENEC Home Battery Storage', 'energy', 'SENEC-Home-battery-storage', ''),
+    ('Weather Forecast', 'weather', 'weather-forecast', ''),
+    ('Creation of Rules', 'weather', 'creation-of-rules', ''),
+    ('Window and Door Monitoring', 'window-and-door-monitoring', 'window-and-door-monitoring', '');
+
+-- Insert data into SystemServiceAreas table
+-- Insert data into SystemServiceAreas table
+-- LB MANAGEMENT service areas
+INSERT INTO SystemServiceAreas (system_id, service_area_id) 
+VALUES 
+    ((SELECT id FROM Systems WHERE name = 'LB MANAGEMENT'), (SELECT id FROM ServiceAreas WHERE name = 'Lighting')), 
+    ((SELECT id FROM Systems WHERE name = 'LB MANAGEMENT'), (SELECT id FROM ServiceAreas WHERE name = 'Blinds')), 
+    ((SELECT id FROM Systems WHERE name = 'LB MANAGEMENT'), (SELECT id FROM ServiceAreas WHERE name = 'Security'));
+
+-- eNet SMART HOME service areas
+INSERT INTO SystemServiceAreas (system_id, service_area_id) 
+VALUES 
+    ((SELECT id FROM Systems WHERE name = 'eNet SMART HOME'), (SELECT id FROM ServiceAreas WHERE name = 'Lighting')), 
+    ((SELECT id FROM Systems WHERE name = 'eNet SMART HOME'), (SELECT id FROM ServiceAreas WHERE name = 'Blinds')), 
+    ((SELECT id FROM Systems WHERE name = 'eNet SMART HOME'), (SELECT id FROM ServiceAreas WHERE name = 'Security')), 
+    ((SELECT id FROM Systems WHERE name = 'eNet SMART HOME'), (SELECT id FROM ServiceAreas WHERE name = 'HVAC')), 
+    ((SELECT id FROM Systems WHERE name = 'eNet SMART HOME'), (SELECT id FROM ServiceAreas WHERE name = 'Scenes')), 
+    ((SELECT id FROM Systems WHERE name = 'eNet SMART HOME'), (SELECT id FROM ServiceAreas WHERE name = 'Energy'));
+
+-- KNX SMART VISU SERVER service areas
+INSERT INTO SystemServiceAreas (system_id, service_area_id) 
+VALUES 
+    ((SELECT id FROM Systems WHERE name = 'KNX SMART VISU SERVER'), (SELECT id FROM ServiceAreas WHERE name = 'Lighting')), 
+    ((SELECT id FROM Systems WHERE name = 'KNX SMART VISU SERVER'), (SELECT id FROM ServiceAreas WHERE name = 'Blinds')), 
+    ((SELECT id FROM Systems WHERE name = 'KNX SMART VISU SERVER'), (SELECT id FROM ServiceAreas WHERE name = 'Security')), 
+    ((SELECT id FROM Systems WHERE name = 'KNX SMART VISU SERVER'), (SELECT id FROM ServiceAreas WHERE name = 'HVAC')), 
+    ((SELECT id FROM Systems WHERE name = 'KNX SMART VISU SERVER'), (SELECT id FROM ServiceAreas WHERE name = 'Scenes')), 
+    ((SELECT id FROM Systems WHERE name = 'KNX SMART VISU SERVER'), (SELECT id FROM ServiceAreas WHERE name = 'Energy')), 
+    ((SELECT id FROM Systems WHERE name = 'KNX SMART VISU SERVER'), (SELECT id FROM ServiceAreas WHERE name = 'Weather')), 
+    ((SELECT id FROM Systems WHERE name = 'KNX SMART VISU SERVER'), (SELECT id FROM ServiceAreas WHERE name = 'Window and Door Monitoring'));
+
+-- KNX VISU PRO SERVER service areas
+INSERT INTO SystemServiceAreas (system_id, service_area_id) 
+VALUES 
+    ((SELECT id FROM Systems WHERE name = 'KNX VISU PRO SERVER'), (SELECT id FROM ServiceAreas WHERE name = 'Lighting')), 
+    ((SELECT id FROM Systems WHERE name = 'KNX VISU PRO SERVER'), (SELECT id FROM ServiceAreas WHERE name = 'Blinds')), 
+    ((SELECT id FROM Systems WHERE name = 'KNX VISU PRO SERVER'), (SELECT id FROM ServiceAreas WHERE name = 'Security')), 
+    ((SELECT id FROM Systems WHERE name = 'KNX VISU PRO SERVER'), (SELECT id FROM ServiceAreas WHERE name = 'HVAC')), 
+    ((SELECT id FROM Systems WHERE name = 'KNX VISU PRO SERVER'), (SELECT id FROM ServiceAreas WHERE name = 'Scenes')), 
+    ((SELECT id FROM Systems WHERE name = 'KNX VISU PRO SERVER'), (SELECT id FROM ServiceAreas WHERE name = 'Energy')), 
+    ((SELECT id FROM Systems WHERE name = 'KNX VISU PRO SERVER'), (SELECT id FROM ServiceAreas WHERE name = 'Weather')), 
+    ((SELECT id FROM Systems WHERE name = 'KNX VISU PRO SERVER'), (SELECT id FROM ServiceAreas WHERE name = 'Window and Door Monitoring'));
+
+-- Insert data into CommunicationStandards table
+INSERT INTO CommunicationStandards (system_id, standard) 
+VALUES 
+    ((SELECT id FROM Systems WHERE name = 'LB MANAGEMENT'), 'bluetooth-LE'),
+    ((SELECT id FROM Systems WHERE name = 'LB MANAGEMENT'), 'wireless'),
+    ((SELECT id FROM Systems WHERE name = 'eNet SMART HOME'), 'eNet'),
+    ((SELECT id FROM Systems WHERE name = 'eNet SMART HOME'), 'wireless'),
+    ((SELECT id FROM Systems WHERE name = 'eNet SMART HOME'), 'REG-bus'),
+    ((SELECT id FROM Systems WHERE name = 'KNX SMART VISU SERVER'), 'KNX'),
+    ((SELECT id FROM Systems WHERE name = 'KNX SMART VISU SERVER'), 'IP'),
+    ((SELECT id FROM Systems WHERE name = 'KNX SMART VISU SERVER'), 'wireless'),
+    ((SELECT id FROM Systems WHERE name = 'KNX SMART VISU SERVER'), 'TP'),
+    ((SELECT id FROM Systems WHERE name = 'KNX SMART VISU SERVER'), 'ethernet'),
+    ((SELECT id FROM Systems WHERE name = 'KNX VISU PRO SERVER'), 'KNX'),
+    ((SELECT id FROM Systems WHERE name = 'KNX VISU PRO SERVER'), 'IP'),
+    ((SELECT id FROM Systems WHERE name = 'KNX VISU PRO SERVER'), 'wireless'),
+    ((SELECT id FROM Systems WHERE name = 'KNX VISU PRO SERVER'), 'TP'),
+    ((SELECT id FROM Systems WHERE name = 'KNX VISU PRO SERVER'), 'ethernet');
+
+
+-- Insert data into ServiceAreaFunctionalities table
+-- Lighting functionalities
+INSERT INTO ServiceAreaFunctionalities (service_area_id, functionality_id)
+VALUES
+    ((SELECT id FROM ServiceAreas WHERE name = 'Lighting'), (SELECT id FROM Functionalities WHERE name = 'Switching')),
+    ((SELECT id FROM ServiceAreas WHERE name = 'Lighting'), (SELECT id FROM Functionalities WHERE name = 'Colour')),
+    ((SELECT id FROM ServiceAreas WHERE name = 'Lighting'), (SELECT id FROM Functionalities WHERE name = 'Sequences'));
+
+-- Blinds functionalities
+INSERT INTO ServiceAreaFunctionalities (service_area_id, functionality_id)
+VALUES
+    ((SELECT id FROM ServiceAreas WHERE name = 'Blinds'), (SELECT id FROM Functionalities WHERE name = 'Blinds')),
+    ((SELECT id FROM ServiceAreas WHERE name = 'Blinds'), (SELECT id FROM Functionalities WHERE name = 'Skylights'));
+
+-- Security functionalities
+INSERT INTO ServiceAreaFunctionalities (service_area_id, functionality_id)
+VALUES
+    ((SELECT id FROM ServiceAreas WHERE name = 'Security'), (SELECT id FROM Functionalities WHERE name = 'Storm/Rain Satellite Unit')),
+    ((SELECT id FROM ServiceAreas WHERE name = 'Security'), (SELECT id FROM Functionalities WHERE name = 'Storm/Rain Universal Transmitter')),
+    ((SELECT id FROM ServiceAreas WHERE name = 'Security'), (SELECT id FROM Functionalities WHERE name = 'Storm/Rain')),
+    ((SELECT id FROM ServiceAreas WHERE name = 'Security'), (SELECT id FROM Functionalities WHERE name = 'Leakage'));
+
+-- HVAC functionalities
+INSERT INTO ServiceAreaFunctionalities (service_area_id, functionality_id)
+VALUES
+    ((SELECT id FROM ServiceAreas WHERE name = 'HVAC'), (SELECT id FROM Functionalities WHERE name = 'Radiator Thermostat')),
+    ((SELECT id FROM ServiceAreas WHERE name = 'HVAC'), (SELECT id FROM Functionalities WHERE name = 'Boiler'));
+
+-- Scenes functionalities
+INSERT INTO ServiceAreaFunctionalities (service_area_id, functionality_id)
+VALUES
+    ((SELECT id FROM ServiceAreas WHERE name = 'Scenes'), (SELECT id FROM Functionalities WHERE name = 'Scenes via Wall Transmitter')),
+    ((SELECT id FROM ServiceAreas WHERE name = 'Scenes'), (SELECT id FROM Functionalities WHERE name = 'Over 100 Scenes'));
+
+-- Energy functionalities
+INSERT INTO ServiceAreaFunctionalities (service_area_id, functionality_id)
+VALUES
+    ((SELECT id FROM ServiceAreas WHERE name = 'Energy'), (SELECT id FROM Functionalities WHERE name = 'Energy Measurement')),
+    ((SELECT id FROM ServiceAreas WHERE name = 'Energy'), (SELECT id FROM Functionalities WHERE name = 'SENEC Home Battery Storage'));
+
+-- Weather functionalities
+INSERT INTO ServiceAreaFunctionalities (service_area_id, functionality_id)
+VALUES
+    ((SELECT id FROM ServiceAreas WHERE name = 'Weather'), (SELECT id FROM Functionalities WHERE name = 'Weather Forecast')),
+    ((SELECT id FROM ServiceAreas WHERE name = 'Weather'), (SELECT id FROM Functionalities WHERE name = 'Creation of Rules'));
+
+-- Window and Door Monitoring functionalities
+INSERT INTO ServiceAreaFunctionalities (service_area_id, functionality_id)
+VALUES
+    ((SELECT id FROM ServiceAreas WHERE name = 'Window and Door Monitoring'), (SELECT id FROM Functionalities WHERE name = 'Window and Door Monitoring'));
+

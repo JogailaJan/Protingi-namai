@@ -1,0 +1,24 @@
+SELECT 
+    s.name AS system_name,
+    s.link AS system_link,
+    s.description AS system_description,
+    (SELECT group_concat(cs.standard, ',') FROM CommunicationStandards cs WHERE cs.system_id = s.id) AS communication_standards,
+    (SELECT group_concat(sa.name, ',') FROM SystemServiceAreas ssa INNER JOIN ServiceAreas sa ON ssa.service_area_id = sa.id WHERE ssa.system_id = s.id) AS service_areas,
+    json_group_array(json_object(
+        'name', f.name,
+        'group_name', f.group_name,
+        'description', f.description,
+        'value', f.value
+    )) AS service_area_functionalities
+FROM 
+    Systems s
+LEFT JOIN 
+    SystemServiceAreas ssa ON s.id = ssa.system_id
+LEFT JOIN 
+    ServiceAreas sa ON ssa.service_area_id = sa.id
+LEFT JOIN 
+    ServiceAreaFunctionalities saf ON sa.id = saf.service_area_id
+LEFT JOIN 
+    Functionalities f ON saf.functionality_id = f.id
+GROUP BY 
+    s.id;
