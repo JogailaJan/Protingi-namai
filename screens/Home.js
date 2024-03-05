@@ -2,10 +2,6 @@ import React from "react";
 import { StyleSheet, View, Image, TouchableOpacity, Text } from "react-native";
 
 export default function Home({ navigation }) {
-  const goToHome = () => {
-    navigation.navigate("Home");
-  };
-
   return (
     <View style={styles.container}>
       <Image source={require("../photos/logo.png")} style={styles.logo} />
@@ -42,7 +38,7 @@ export default function Home({ navigation }) {
       </TouchableOpacity>
       <View style={styles.line}></View>
       <View style={styles.footer}>
-        <TouchableOpacity onPress={() => navigation.navigate("Favorites")}>
+        <TouchableOpacity onPress={() => navigation.navigate("Home")}>
           <Image
             source={require("../photos/namas.png")}
             style={styles.footerImage}

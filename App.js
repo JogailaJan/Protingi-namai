@@ -6,6 +6,10 @@ import SmartHomeScreen from "./screens/SmartHome";
 import SystemsDescriptionScreen from "./screens/SystemsDescription";
 import AreasDescriptionScreen from "./screens/AreasDescription";
 import FavoritesScreen from "./screens/Favorites";
+import LBManagementScreen from "./screens/LBManagement";
+import EnetSmartHomeScreen from "./screens/EnetSmartHome";
+import KnxScreen from "./screens/Knx";
+import JungHomeScreen from "./screens/JungHome";
 
 const Stack = createNativeStackNavigator();
 const starEmpty = require("./star-empty.png");
@@ -69,6 +73,46 @@ export default function App() {
           component={FavoritesScreen}
           options={{
             title: "Mėgstamiausi",
+            headerStyle: { backgroundColor: "black" },
+            headerTintColor: "white",
+            headerTitleStyle: { fontWeight: "bold" },
+          }}
+        />
+        <Stack.Screen
+          name="LBManagement"
+          component={LBManagementScreen}
+          options={{
+            title: "LB-Management",
+            headerStyle: { backgroundColor: "black" },
+            headerTintColor: "white",
+            headerTitleStyle: { fontWeight: "bold" },
+          }}
+        />
+        <Stack.Screen
+          name="EnetSmartHome"
+          component={EnetSmartHomeScreen}
+          options={{
+            title: "eNet Smart Home",
+            headerStyle: { backgroundColor: "black" },
+            headerTintColor: "white",
+            headerTitleStyle: { fontWeight: "bold" },
+          }}
+        />
+        <Stack.Screen
+          name="Knx"
+          component={KnxScreen}
+          options={{
+            title: "KNX",
+            headerStyle: { backgroundColor: "black" },
+            headerTintColor: "white",
+            headerTitleStyle: { fontWeight: "bold" },
+          }}
+        />
+        <Stack.Screen
+          name="JungHome"
+          component={JungHomeScreen}
+          options={{
+            title: "JUNG HOME",
             headerStyle: { backgroundColor: "black" },
             headerTintColor: "white",
             headerTitleStyle: { fontWeight: "bold" },

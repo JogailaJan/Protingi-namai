@@ -1,81 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Smart Home System Questionnaire</title>
-<style>
-    body {
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Home System Questionnaire</title>
+    <style>
+      body {
         font-family: Arial, sans-serif;
         margin: 0;
         padding: 20px;
         background-color: #f4f4f4;
-    }
+      }
 
-    h1 {
+      h1 {
         text-align: center;
         color: #333;
-    }
+      }
 
-    form {
+      form {
         max-width: 600px;
         margin: 0 auto;
         background-color: #fff;
         padding: 20px;
         border-radius: 8px;
         box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    }
+      }
 
-    h2 {
+      h2 {
         margin-top: 20px;
         margin-bottom: 10px;
         color: #555;
         display: inline-block; /* Added */
-    }
+      }
 
-    label {
+      label {
         display: block;
         margin-bottom: 10px;
-    }
+      }
 
-    input[type="checkbox"] {
+      input[type="checkbox"] {
         margin-right: 5px;
         vertical-align: middle;
-    }
+      }
 
-    input[type="submit"] {
+      input[type="submit"] {
         display: block;
         width: 100%;
         padding: 10px;
         margin-top: 20px;
-        background-color: #4CAF50;
+        background-color: #4caf50;
         color: #fff;
         border: none;
         border-radius: 4px;
         cursor: pointer;
         font-size: 16px;
-    }
+      }
 
-    input[type="submit"]:hover {
+      input[type="submit"]:hover {
         background-color: #45a049;
-    }
+      }
 
-    .checkbox-container {
+      .checkbox-container {
         display: flex;
         align-items: center;
-    }
+      }
 
-    .checkbox-container input[type="checkbox"] {
+      .checkbox-container input[type="checkbox"] {
         margin-right: 10px;
-    }
+      }
 
-    .checkbox-container h2 {
+      .checkbox-container h2 {
         margin: 10px 10px 10px 10px;
-    }
-
-</style>
-</head>
-<body>
+      }
+    </style>
+  </head>
+  <body>
     <!-- Gal kazkada prireiks, tik name reiks pakeist -->
     <!-- <label><input type="checkbox" name="lighting" value="bluetooth-LE" class="functionality"> Bluetooth LE (<span>0/0</span>)</label><br>
     <label><input type="checkbox" name="lighting" value="eNet" class="functionality"> eNet (<span>0/0</span>)</label><br>
@@ -87,209 +86,306 @@
     <label><input type="checkbox" name="lighting" value="ethernet" class="functionality"> Ethernet (<span>0/0</span>)</label><br> -->
     <h1>Smart Home System Questionnaire</h1>
     <form id="questionnaireForm">
+      <div class="checkbox-container">
+        <input
+          type="checkbox"
+          name="lighting"
+          value="lighting"
+          class="service-area"
+        />
+        <h2 onclick="toggleVisibility('lightingOptions')">
+          Lighting (<span>0/0</span>)
+        </h2>
+      </div>
+      <div id="lightingOptions" style="display: none">
+        <label
+          ><input
+            type="checkbox"
+            name="lighting"
+            value="switching"
+            class="functionality"
+          />
+          Switching (<span>0/0</span>)</label
+        ><br />
+        <label
+          ><input
+            type="checkbox"
+            name="lighting"
+            value="colour"
+            class="functionality"
+          />
+          Colour (<span>0/0</span>)</label
+        ><br />
+        <label
+          ><input
+            type="checkbox"
+            name="lighting"
+            value="sequences"
+            class="functionality"
+          />
+          Sequences (<span>0/0</span>)</label
+        ><br />
+        <!-- Add more options as needed -->
+      </div>
 
-        <div class="checkbox-container">
-            <input type="checkbox" name="lighting" value="lighting" class="service-area">
-            <h2 onclick="toggleVisibility('lightingOptions')">Lighting (<span>0/0</span>)</h2>
-        </div>
-        <div id="lightingOptions" style="display: none;">
-            <label><input type="checkbox" name="lighting" value="switching" class="functionality"> Switching (<span>0/0</span>)</label><br>
-            <label><input type="checkbox" name="lighting" value="colour" class="functionality"> Colour (<span>0/0</span>)</label><br>
-            <label><input type="checkbox" name="lighting" value="sequences" class="functionality"> Sequences (<span>0/0</span>)</label><br>
-            <!-- Add more options as needed -->
-        </div>
+      <div class="checkbox-container">
+        <input
+          type="checkbox"
+          name="security"
+          value="security"
+          class="service-area"
+        />
+        <h2 onclick="toggleVisibility('securityOptions')">
+          Security (<span>0/0</span>)
+        </h2>
+      </div>
+      <div id="securityOptions" style="display: none">
+        <label
+          ><input
+            type="checkbox"
+            name="security"
+            value="storm-rain-satellite-unit"
+            class="functionality"
+          />
+          Storm/Rain Satellite Unit(<span>0/0</span>)</label
+        ><br />
+        <label
+          ><input
+            type="checkbox"
+            name="security"
+            value="storm-rain-universal-transmitter"
+            class="functionality"
+          />
+          Storm/Rain Universal Transmitter (<span>0/0</span>)</label
+        ><br />
+        <label
+          ><input
+            type="checkbox"
+            name="security"
+            value="storm-rain"
+            class="functionality"
+          />
+          Storm/Rain (<span>0/0</span>)</label
+        ><br />
+        <label
+          ><input
+            type="checkbox"
+            name="security"
+            value="leakage"
+            class="functionality"
+          />
+          Leakage (<span>0/0</span>)</label
+        ><br />
+        <!-- Add more options as needed -->
+      </div>
 
-        <div class="checkbox-container">
-            <input type="checkbox" name="security" value="security" class="service-area">
-            <h2 onclick="toggleVisibility('securityOptions')">Security (<span>0/0</span>)</h2>
-        </div>
-        <div id="securityOptions" style="display: none;">
-            <label><input type="checkbox" name="security" value="storm-rain-satellite-unit" class="functionality"> Storm/Rain Satellite Unit(<span>0/0</span>)</label><br>
-            <label><input type="checkbox" name="security" value="storm-rain-universal-transmitter" class="functionality"> Storm/Rain Universal Transmitter (<span>0/0</span>)</label><br>
-            <label><input type="checkbox" name="security" value="storm-rain" class="functionality"> Storm/Rain (<span>0/0</span>)</label><br>
-            <label><input type="checkbox" name="security" value="leakage" class="functionality"> Leakage (<span>0/0</span>)</label><br>
-            <!-- Add more options as needed -->
-        </div>
-    
-        <!-- <input type="submit" value="Submit"> -->
-        <ul id="matchingSystemsList"></ul>
+      <!-- <input type="submit" value="Submit"> -->
+      <ul id="matchingSystemsList"></ul>
     </form>
     <script>
-        const systemsData = {
-            system1: {
-                name: 'LB MANAGEMENT',
-                link: 'http://system1',
-                communicationStandartAndMedia: ['bluetooth-LE', 'wireless'],
-                serviceAreas: {
-                    lighting: ['switching'],
-                    blinds: ['blinds'],
-                    security: ['storm-rain-satellite-unit']
-                }
-            },
-            system2: {
-                name: 'eNet SMART HOME',
-                link: 'http://system2',
-                communicationStandartAndMedia: ['eNet', 'wireless', 'REG-bus'],
-                serviceAreas: {
-                    lighting: ['switching'],
-                    blinds: ['blinds'],
-                    security: ['storm-rain-universal-transmitter'],
-                    hvac: ['radiator-thermostat'],
-                    scenes: ['scenes-via-wall-transmitter'],
-                    energy: ['energy-measurement']
-                }
-            },
-            system3: {
-                name: 'KNX SMART VISU SERVER',
-                link: 'http://system3',
-                communicationStandartAndMedia: ['KNX', 'IP', 'wireless', 'TP', 'ethernet'],
-                serviceAreas: {
-                    lighting: ['switching', 'colour'],
-                    blinds: ['blinds', 'skylights'],
-                    security: ['storm-rain', 'leakage'],
-                    hvac: ['radiator-thermostat', 'boiler'],
-                    scenes: ['scenes-via-wall-transmitter', 'over-100-scenes'],
-                    energy: ['energy-measurement'],
-                    weather: ['weather-forecast'],
-                    windowAndDoorMonitoring: ['window-and-door-monitoring']
-                }
-            },
-            system4: {
-                name: 'KNX VISU PRO SERVER',
-                link: 'http://system4',
-                communicationStandartAndMedia: ['KNX', 'IP', 'wireless', 'TP', 'ethernet'],
-                serviceAreas: {
-                    lighting: ['switching', 'colour', 'sequences'],
-                    blinds: ['blinds', 'skylights'],
-                    security: ['storm-rain', 'leakage'],
-                    hvac: ['radiator-thermostat', 'boiler'],
-                    scenes: ['scenes-via-wall-transmitter', 'unlimited-scenes'],
-                    energy: ['energy-measurement', 'SENEC-Home-battery-storage'],
-                    weather: ['weather-forecast', 'creation-of-rules'],
-                    windowAndDoorMonitoring: ['window-and-door-monitoring']
-                }
+      const systemsData = {
+        system1: {
+          name: "LB MANAGEMENT",
+          link: "http://system1",
+          communicationStandartAndMedia: ["bluetooth-LE", "wireless"],
+          serviceAreas: {
+            lighting: ["switching"],
+            blinds: ["blinds"],
+            security: ["storm-rain-satellite-unit"],
+          },
+        },
+        system2: {
+          name: "eNet SMART HOME",
+          link: "http://system2",
+          communicationStandartAndMedia: ["eNet", "wireless", "REG-bus"],
+          serviceAreas: {
+            lighting: ["switching"],
+            blinds: ["blinds"],
+            security: ["storm-rain-universal-transmitter"],
+            hvac: ["radiator-thermostat"],
+            scenes: ["scenes-via-wall-transmitter"],
+            energy: ["energy-measurement"],
+          },
+        },
+        system3: {
+          name: "KNX SMART VISU SERVER",
+          link: "http://system3",
+          communicationStandartAndMedia: [
+            "KNX",
+            "IP",
+            "wireless",
+            "TP",
+            "ethernet",
+          ],
+          serviceAreas: {
+            lighting: ["switching", "colour"],
+            blinds: ["blinds", "skylights"],
+            security: ["storm-rain", "leakage"],
+            hvac: ["radiator-thermostat", "boiler"],
+            scenes: ["scenes-via-wall-transmitter", "over-100-scenes"],
+            energy: ["energy-measurement"],
+            weather: ["weather-forecast"],
+            windowAndDoorMonitoring: ["window-and-door-monitoring"],
+          },
+        },
+        system4: {
+          name: "KNX VISU PRO SERVER",
+          link: "http://system4",
+          communicationStandartAndMedia: [
+            "KNX",
+            "IP",
+            "wireless",
+            "TP",
+            "ethernet",
+          ],
+          serviceAreas: {
+            lighting: ["switching", "colour", "sequences"],
+            blinds: ["blinds", "skylights"],
+            security: ["storm-rain", "leakage"],
+            hvac: ["radiator-thermostat", "boiler"],
+            scenes: ["scenes-via-wall-transmitter", "unlimited-scenes"],
+            energy: ["energy-measurement", "SENEC-Home-battery-storage"],
+            weather: ["weather-forecast", "creation-of-rules"],
+            windowAndDoorMonitoring: ["window-and-door-monitoring"],
+          },
+        },
+      };
+
+      let selectedCriteria = {};
+      let criteriaCount = 0;
+
+      function toggleVisibility(id) {
+        var optionsDiv = document.getElementById(id);
+        optionsDiv.style.display =
+          optionsDiv.style.display === "none" ? "block" : "none";
+      }
+
+      function countFunctionalityWithoutCriteria() {
+        const checkboxes = document.querySelectorAll(".functionality");
+        checkboxes.forEach(function (checkbox) {
+          const func = checkbox.value;
+          let count = 0;
+          for (const system in systemsData) {
+            const serviceAreas = systemsData[system].serviceAreas;
+            for (const area in serviceAreas) {
+              if (serviceAreas[area].includes(func)) {
+                count++;
+                break;
+              }
             }
-        };
+          }
+          checkbox.nextElementSibling.innerText = "0" + "/" + count;
+        });
+      }
 
-        let selectedCriteria = {};
-        let criteriaCount = 0;
+      document.addEventListener("DOMContentLoaded", function () {
+        countFunctionalityWithoutCriteria();
+      });
 
-        function toggleVisibility(id) {
-            var optionsDiv = document.getElementById(id);
-            optionsDiv.style.display = optionsDiv.style.display === "none" ? "block" : "none";
-        }
+      function addCriteria(input) {
+        criteriaCount++;
+        document
+          .querySelectorAll(
+            'input[type="checkbox"][class="functionality"]:checked'
+          )
+          .forEach(function (input) {
+            var category = input.name;
+            var option = input.value;
 
-        function countFunctionalityWithoutCriteria() {
-            const checkboxes = document.querySelectorAll(".functionality");
-            checkboxes.forEach(function(checkbox) {
-                const func = checkbox.value;
-                let count = 0;
-                for (const system in systemsData) {
-                    const serviceAreas = systemsData[system].serviceAreas;
-                    for (const area in serviceAreas) {
-                        if (serviceAreas[area].includes(func)) {
-                            count++;
-                            break;
-                        }
-                    }
+            // If it's a main category checkbox, store the category name
+            if (input.className === "service-area") {
+              if (!selectedCriteria.hasOwnProperty(category)) {
+                selectedCriteria[category] = [];
+              }
+            } else {
+              // If it's an option checkbox
+              if (!selectedCriteria.hasOwnProperty(category)) {
+                selectedCriteria[category] = [option];
+              } else {
+                if (!selectedCriteria[category].includes(option)) {
+                  selectedCriteria[category].push(option);
                 }
-                checkbox.nextElementSibling.innerText =  "0" + "/" + count;
-            });
+              }
+            }
+
+            // Print out the added criteria
+            console.log("Added criteria:", category, "-", option);
+          });
+      }
+
+      // Function to remove criteria when checkbox is unchecked
+      function removeCriteria(input) {
+        const category = input.name;
+        const option = input.value;
+
+        // If it's a main category checkbox, do nothing
+        if (input.className === "service-area") {
+          return;
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
-            countFunctionalityWithoutCriteria();
+        // If it's an option checkbox and it's unchecked
+        if (!input.checked) {
+          // If the category exists in selectedCriteria
+          if (selectedCriteria.hasOwnProperty(category)) {
+            // Remove the option from selectedCriteria[category]
+            selectedCriteria[category] = selectedCriteria[category].filter(
+              (item) => item !== option
+            );
+            // Print out the removed criteria
+            console.log("Removed criteria:", category, "-", option);
+          }
+        }
+      }
+
+      document
+        .querySelectorAll('input[type="checkbox"][class="functionality"]')
+        .forEach(function (input) {
+          input.addEventListener("change", function () {
+            // Call the function to count and log matching companies
+            if (this.checked) {
+              addCriteria(input);
+            } else {
+              removeCriteria(input);
+            }
+            printMatchingSystems();
+            //updateCheckboxCounts();
+          });
         });
 
-        function addCriteria(input){
-            criteriaCount++;
-            document.querySelectorAll('input[type="checkbox"][class="functionality"]:checked').forEach(function(input) {
-                var category = input.name;
-                var option = input.value;
-
-                // If it's a main category checkbox, store the category name
-                if (input.className === 'service-area') {
-                    if (!selectedCriteria.hasOwnProperty(category)) {
-                        selectedCriteria[category] = [];
-                    }
-                } else { // If it's an option checkbox
-                    if (!selectedCriteria.hasOwnProperty(category)) {
-                        selectedCriteria[category] = [option];
-                    } else {
-                        if (!selectedCriteria[category].includes(option)) {
-                            selectedCriteria[category].push(option);
-                        }
-                    }
-                }
-
-                // Print out the added criteria
-                console.log("Added criteria:", category, "-", option);
-            });
-        }
-
-            // Function to remove criteria when checkbox is unchecked
-        function removeCriteria(input) {
-            const category = input.name;
-            const option = input.value;
-
-            // If it's a main category checkbox, do nothing
-            if (input.className === 'service-area') {
-                return;
+      function printMatchingSystems() {
+        const matchingSystems = [];
+        // Iterate through each system
+        for (const system in systemsData) {
+          let meetsCriteria = true;
+          // Iterate through each selected criteria
+          for (const category in selectedCriteria) {
+            const selectedOptions = selectedCriteria[category];
+            // Check if the system has all selected options for this category
+            if (
+              !selectedOptions.every((option) =>
+                systemsData[system].serviceAreas[category].includes(option)
+              )
+            ) {
+              meetsCriteria = false;
+              break;
             }
-
-            // If it's an option checkbox and it's unchecked
-            if (!input.checked) {
-                // If the category exists in selectedCriteria
-                if (selectedCriteria.hasOwnProperty(category)) {
-                    // Remove the option from selectedCriteria[category]
-                    selectedCriteria[category] = selectedCriteria[category].filter(item => item !== option);
-                    // Print out the removed criteria
-                    console.log("Removed criteria:", category, "-", option);
-                }
-            }
+          }
+          // If the system meets all criteria, add its name to the matching systems array
+          if (meetsCriteria) {
+            matchingSystems.push(systemsData[system].name);
+          }
         }
-
-        document.querySelectorAll('input[type="checkbox"][class="functionality"]').forEach(function(input) {
-            input.addEventListener('change', function() {
-                // Call the function to count and log matching companies
-                if (this.checked) {
-                    addCriteria(input);
-                } else {
-                    removeCriteria(input);
-                }
-                printMatchingSystems();
-                //updateCheckboxCounts();
-            });
+        // Display the names of matching systems in the list
+        const matchingSystemsList = document.getElementById(
+          "matchingSystemsList"
+        );
+        matchingSystemsList.innerHTML = ""; // Clear previous content
+        matchingSystems.forEach((system) => {
+          const listItem = document.createElement("li");
+          listItem.textContent = system;
+          matchingSystemsList.appendChild(listItem);
         });
-
-        function printMatchingSystems() {
-            const matchingSystems = [];
-            // Iterate through each system
-            for (const system in systemsData) {
-                let meetsCriteria = true;
-                // Iterate through each selected criteria
-                for (const category in selectedCriteria) {
-                    const selectedOptions = selectedCriteria[category];
-                    // Check if the system has all selected options for this category
-                    if (!selectedOptions.every(option => systemsData[system].serviceAreas[category].includes(option))) {
-                        meetsCriteria = false;
-                        break;
-                    }
-                }
-                // If the system meets all criteria, add its name to the matching systems array
-                if (meetsCriteria) {
-                    matchingSystems.push(systemsData[system].name);
-                }
-            }
-            // Display the names of matching systems in the list
-            const matchingSystemsList = document.getElementById('matchingSystemsList');
-            matchingSystemsList.innerHTML = ''; // Clear previous content
-            matchingSystems.forEach(system => {
-                const listItem = document.createElement('li');
-                listItem.textContent = system;
-                matchingSystemsList.appendChild(listItem);
-            });
-        }
+      }
     </script>
-</body>
+  </body>
 </html>
