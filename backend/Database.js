@@ -1,64 +1,74 @@
-// import * as SQLite from 'expo-sqlite';
-// import { useState, useEffect } from 'react';
+import * as SQLite from 'expo-sqlite';
+import { useState, useEffect } from 'react';
 
-// const CREATE_TABLE_SYSTEMS = `
-//   CREATE TABLE Systems (
-//     id INTEGER PRIMARY KEY AUTOINCREMENT,
-//     name TEXT NOT NULL,
-//     link TEXT NOT NULL,
-//     description TEXT
-//   );
-// `;
+const CREATE_TABLE_SYSTEMS = `
+  CREATE TABLE IF NOT EXISTS Systems (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    link TEXT NOT NULL,
+    description TEXT
+  );
+`;
 
-// const INSERT_SYSTEMS_DATA = `
-//   -- Insert data into Systems table
-//   INSERT INTO Systems (name, link, description) VALUES 
-//   ('LB MANAGEMENT', 'http://system1', ''),
-//   ('eNet SMART HOME', 'http://system2', ''),
-//   ('KNX SMART VISU SERVER', 'http://system3', ''),
-//   ('KNX VISU PRO SERVER', 'http://system4', '');
-// `;
-
+const INSERT_SYSTEMS_DATA = `
+  INSERT INTO Systems (name, link, description) VALUES 
+  ('LB MANAGEMENT', 'http://system1', ''),
+  ('eNet SMART HOME', 'http://system2', ''),
+  ('KNX SMART VISU SERVER', 'http://system3', ''),
+  ('KNX VISU PRO SERVER', 'http://system4', '');
+`;
 
 
-// const DROP_TABLE_SYSTEMS = `DROP TABLE Systems;`;
+const DELETE_SYSTEMS_DATA = `
+    DELETE FROM Systems;
+`;
 
-// const db = SQLite.openDatabase('test.db');
+const db = SQLite.openDatabase('test1.db');
 
-// const executeQuery = (query, actionMessage) => {
-//     console.log(actionMessage);
-//     db.transaction(tx => {
-//         tx.executeSql(query);
-//     });
-// };
+export function executeSql(sqlStatement) {
+  return new Promise((resolve, reject) => {
+    db.transaction(tx => {
+      tx.executeSql(
+        sqlStatement,
+        [],
+        (_, result) => resolve(result),
+        (_, error) => reject(error)
+      );
+    });
+  });
+}
 
-// // Execute queries
-// //executeQuery(DROP_TABLE_SYSTEMS, 'Dropping Systems table');
-// executeQuery(CREATE_TABLE_SYSTEMS, 'Creating Systems table');
-// // executeQuery(CREATE_TABLE_SERVICE_AREAS, 'ServiceAreas table created successfully', 'Error creating ServiceAreas table');
-// // executeQuery(CREATE_TABLE_FUNCTIONALITIES, 'Functionalities table created successfully', 'Error creating Functionalities table');
-// // executeQuery(CREATE_TABLE_SYSTEM_SERVICE_AREAS, 'SystemServiceAreas table created successfully', 'Error creating SystemServiceAreas table');
-// // executeQuery(CREATE_TABLE_SERVICE_AREA_FUNCTIONALITIES, 'ServiceAreaFunctionalities table created successfully', 'Error creating ServiceAreaFunctionalities table');
-// // executeQuery(CREATE_TABLE_COMMUNICATION_STANDARDS, 'CommunicationStandards table created successfully', 'Error creating CommunicationStandards table');
-// executeQuery(INSERT_SYSTEMS_DATA, 'Inserting data into Systems table');
-// // executeQuery(INSERT_SERVICE_AREA_FUNCTIONALITIES, 'Data inserted into ServiceAreaFunctionalities table successfully', 'Error inserting data into ServiceAreaFunctionalities table');
+export function createSystemsTable() {
+  return executeSql(CREATE_TABLE_SYSTEMS);
+}
 
+export function insertSystemsData() {
+  return executeSql(INSERT_SYSTEMS_DATA);
+}
 
-// const fetchSystemsData = () => {
-//     const [systems, setSystems] = useState([]);
-    
-//     useEffect(() => {
-//         db.transaction((tx) => {
-//             tx.executeSql("SELECT * FROM Systems", [], (_, { rows }) => {
-//                 const systemsData = rows._array; // Accessing the array of results
-//                 console.log("systemsData is ", JSON.stringify(systemsData)); // Use JSON.stringify to log array contents
-//                 setSystems(systemsData); // Updating state with fetched data
-//             });
-//         });
-//     }, []); // Empty dependency array to run effect only once
-    
-//     return systems;
-// };
+export function fetchSystemsData() {
+  const [systems, setSystems] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const { rows } = await executeSql("SELECT * FROM Systems");
+        const systemsData = rows._array;
+        setSystems(systemsData);
+        setIsLoading(false);
+      } catch (error) {
+        setError(error);
+      }
+    };
 
-// export default fetchSystemsData;
+    fetchData();
+  }, []);
+
+  return { systems, isLoading, error };
+}
+
+export function deleteAllSystemsData() {
+    return executeSql(DELETE_SYSTEMS_DATA);
+}

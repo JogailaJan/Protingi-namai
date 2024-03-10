@@ -1,3 +1,4 @@
+import { Text, View } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "./screens/Home";
@@ -10,11 +11,30 @@ import LBManagementScreen from "./screens/LBManagement";
 import EnetSmartHomeScreen from "./screens/EnetSmartHome";
 import KnxScreen from "./screens/Knx";
 import JungHomeScreen from "./screens/JungHome";
+import { fetchSystemsData, deleteAllSystemsData } from "./backend/Database";
 
 const Stack = createNativeStackNavigator();
 const starEmpty = require("./star-empty.png");
 
 export default function App() {
+  const { systems, isLoading, error } = fetchSystemsData();
+  deleteAllSystemsData()
+  if (error) {
+    return (
+      <View>
+        <Text>Error: {error.message}</Text>
+      </View>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <View>
+        <Text>Loading systems...</Text>
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
