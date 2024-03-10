@@ -11,14 +11,17 @@ import LBManagementScreen from "./screens/LBManagement";
 import EnetSmartHomeScreen from "./screens/EnetSmartHome";
 import KnxScreen from "./screens/Knx";
 import JungHomeScreen from "./screens/JungHome";
-import { fetchSystemsData, deleteAllSystemsData } from "./backend/Database";
+import { fetchSystemsData, createFunctionalitiesTable, createServiceAreasTable, insertFunctionalitiesData, insertServiceAreasData, deleteAllServiceAreasData } from "./backend/Database";
 
 const Stack = createNativeStackNavigator();
 const starEmpty = require("./star-empty.png");
 
 export default function App() {
   const { systems, isLoading, error } = fetchSystemsData();
-  deleteAllSystemsData()
+  //deleteAllServiceAreasData();
+  // createFunctionalitiesTable();
+  // createServiceAreasTable();
+  // insertServiceAreasData();
   if (error) {
     return (
       <View>
