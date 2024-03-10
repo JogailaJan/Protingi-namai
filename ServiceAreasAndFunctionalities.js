@@ -2,68 +2,94 @@ const serviceAreas = [
     {
       name: 'Lighting',
       value: 'lighting',
+      longDescription: '',
+      shortDescription: '',
       functionalities: [
         {
           name: 'Switching',
           group: 'lighting',
-          value: 'switching'
+          value: 'switching',    
+          longDescription: '',
+          shortDescription: '',
         },
         {
           name: 'Colour',
           group: 'lighting',
-          value: 'colour'
+          value: 'colour',    
+          longDescription: '',
+          shortDescription: '',
         },
         {
           name: 'Sequences',
           group: 'lighting',
-          value: 'sequences'
+          value: 'sequences',    
+          longDescription: '',
+          shortDescription: '',
         }
       ]
     },
     {
       name: 'Security',
-      value: 'security',
+      value: 'security',    
+      longDescription: '',
+      shortDescription: '',
       functionalities: [
         {
           name: 'Storm/Rain Satellite Unit',
           group: 'security',
-          value: 'storm-rain-satellite-unit'
+          value: 'storm-rain-satellite-unit',    
+          longDescription: '',
+          shortDescription: '',
         },
         {
           name: 'Storm/Rain Universal Transmitter',
           group: 'security',
-          value: 'storm-rain-universal-transmitter'
+          value: 'storm-rain-universal-transmitter',    
+          longDescription: '',
+          shortDescription: '',
         },
         {
           name: 'Storm/Rain',
           group: 'security',
-          value: 'storm-rain'
+          value: 'storm-rain',    
+          longDescription: '',
+          shortDescription: '',
         },
         {
           name: 'Leakage',
           group: 'security',
-          value: 'leakage'
+          value: 'leakage',    
+          longDescription: '',
+          shortDescription: '',
         }
       ]
     },
     {
       name: 'Weather',
-      value: 'weather',
+      value: 'weather',    
+      longDescription: '',
+      shortDescription: '',
       functionalities: [
         {
           name: 'Weather forecast',
           group: 'weather',
-          value: 'weather-forecast'
+          value: 'weather-forecast',    
+          longDescription: '',
+          shortDescription: '',
         },
         {
           name: 'Weather station',
           group: 'weather',
-          value: 'weather-station'
+          value: 'weather-station',    
+          longDescription: '',
+          shortDescription: '',
         },
         {
           name: 'Creation of rules',
           group: 'weather',
-          value: 'creation-of-rules'
+          value: 'creation-of-rules',    
+          longDescription: '',
+          shortDescription: '',
         }
       ]
     },
