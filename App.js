@@ -17,26 +17,26 @@ const Stack = createNativeStackNavigator();
 const starEmpty = require("./star-empty.png");
 
 export default function App() {
-  const { systems, isLoading, error } = fetchSystemsData();
-  //deleteAllServiceAreasData();
-  // createFunctionalitiesTable();
-  // createServiceAreasTable();
-  // insertServiceAreasData();
-  if (error) {
-    return (
-      <View>
-        <Text>Error: {error.message}</Text>
-      </View>
-    );
-  }
+  // const { systems, isLoading, error } = fetchSystemsData();
+  // //deleteAllServiceAreasData();
+  // // createFunctionalitiesTable();
+  // // createServiceAreasTable();
+  // // insertServiceAreasData();
+  // if (error) {
+  //   return (
+  //     <View>
+  //       <Text>Error: {error.message}</Text>
+  //     </View>
+  //   );
+  // }
 
-  if (isLoading) {
-    return (
-      <View>
-        <Text>Loading systems...</Text>
-      </View>
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <View>
+  //       <Text>Loading systems...</Text>
+  //     </View>
+  //   );
+  // }
 
   return (
     <NavigationContainer>

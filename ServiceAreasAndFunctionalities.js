@@ -110,4 +110,9 @@ export async function getServiceAreas() {
     // console.log(hardCodedServiceAreas === serviceAreas);
     // console.log(JSON.stringify(hardCodedServiceAreas) === JSON.stringify(serviceAreas));
     return serviceAreas;
-}
+
+// createFunctionalitiesTable();
+// createServiceAreasTable();
+// insertFunctionalitiesData();
+// insertServiceAreasData();
+
