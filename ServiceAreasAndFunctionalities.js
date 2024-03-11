@@ -113,4 +113,7 @@ export async function getServiceAreas() {
     return serviceAreas;
 }
 
-  
+// createFunctionalitiesTable();
+// createServiceAreasTable();
+// insertFunctionalitiesData();
+// insertServiceAreasData();
