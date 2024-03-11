@@ -1,25 +1,37 @@
-import { StatusBar } from 'expo-status-bar';
-import Checkbox from 'expo-checkbox';
-import { StyleSheet, Text, View, Button, FlatList, TouchableOpacity } from 'react-native';
-import React, { useState, useEffect } from 'react';
-import { getServiceAreas } from '../ServiceAreasAndFunctionalities';
-import systems from '../Systems';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import SaveConfigurationModal from '../components/SaveConfigurationModal';
-import PDFDownloadButton from '../components/PDFDownloadButton'; // Import the PDFDownloadButton component
- 
-const STORAGE_KEY = 'savedConfigurations';
- 
+import { StatusBar } from "expo-status-bar";
+import Checkbox from "expo-checkbox";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Button,
+  FlatList,
+  TouchableOpacity,
+} from "react-native";
+import React, { useState, useEffect } from "react";
+import { getServiceAreas } from "../ServiceAreasAndFunctionalities";
+import systems from "../Systems";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import SaveConfigurationModal from "../components/SaveConfigurationModal";
+import PDFDownloadButton from "../components/PDFDownloadButton"; // Import the PDFDownloadButton component
+
+const STORAGE_KEY = "savedConfigurations";
+
 const Questionnaire = ({ route }) => {
   const [serviceAreas, setServiceAreas] = useState([]);
   const { selectedConfiguration } = route.params || {};
- 
-  const [selectedItems, setSelectedItems] = useState({ functionalities: [], serviceAreas: [] });
-  const [functionalityVisibility, setFunctionalityVisibility] = useState(Array(serviceAreas.length).fill(false));
+
+  const [selectedItems, setSelectedItems] = useState({
+    functionalities: [],
+    serviceAreas: [],
+  });
+  const [functionalityVisibility, setFunctionalityVisibility] = useState(
+    Array(serviceAreas.length).fill(false)
+  );
   const [savedConfigurations, setSavedConfigurations] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [configurationName, setConfigurationName] = useState('');
- 
+  const [configurationName, setConfigurationName] = useState("");
+
   useEffect(() => {
     const loadSavedConfigurations = async () => {
       try {
@@ -28,7 +40,7 @@ const Questionnaire = ({ route }) => {
           setSavedConfigurations(JSON.parse(saved));
         }
       } catch (error) {
-        console.error('Error loading saved configurations:', error);
+        console.error("Error loading saved configurations:", error);
       }
     };
     const fetchData = async () => {
@@ -38,7 +50,7 @@ const Questionnaire = ({ route }) => {
     fetchData();
     loadSavedConfigurations();
   }, []);
- 
+
   const handleSaveButtonPress = () => {
     if (selectedConfiguration) {
       handleSave(selectedConfiguration.name);
@@ -46,47 +58,59 @@ const Questionnaire = ({ route }) => {
       setIsModalVisible(true);
     }
   };
- 
+
   const handleSave = async (name) => {
     if (selectedConfiguration) {
-      const updatedConfigurations = savedConfigurations.map(config => {
+      const updatedConfigurations = savedConfigurations.map((config) => {
         if (config.name === selectedConfiguration.name) {
           return { name: selectedConfiguration.name, items: selectedItems };
         }
         return config;
       });
       setSavedConfigurations(updatedConfigurations);
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedConfigurations));
+      await AsyncStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(updatedConfigurations)
+      );
     } else {
       saveConfiguration(name);
     }
     setIsModalVisible(false);
-    setConfigurationName('');
+    setConfigurationName("");
   };
   const saveConfiguration = async (name) => {
     try {
-      console.log('Saving configuration with name:', name);
-      console.log('Items:', selectedItems);
-      const updatedConfigurations = [...savedConfigurations, { name: name, items: selectedItems }];
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedConfigurations));
+      console.log("Saving configuration with name:", name);
+      console.log("Items:", selectedItems);
+      const updatedConfigurations = [
+        ...savedConfigurations,
+        { name: name, items: selectedItems },
+      ];
+      await AsyncStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(updatedConfigurations)
+      );
       setSavedConfigurations(updatedConfigurations);
-      console.log('Number of configurations saved:', updatedConfigurations.length);
+      console.log(
+        "Number of configurations saved:",
+        updatedConfigurations.length
+      );
     } catch (error) {
-      console.error('Error saving configuration:', error);
+      console.error("Error saving configuration:", error);
     }
   };
- 
+
   const handleCancel = () => {
     setIsModalVisible(false);
-    setConfigurationName('');
+    setConfigurationName("");
   };
- 
+
   useEffect(() => {
     if (selectedConfiguration) {
       setSelectedItems(selectedConfiguration.items);
     }
   }, [selectedConfiguration]);
- 
+
   const handleServiceAreaCheckboxPress = (value) => {
     setSelectedItems((prevState) => {
       const serviceAreaIndex = prevState.serviceAreas.findIndex(
@@ -100,7 +124,7 @@ const Questionnaire = ({ route }) => {
       return { ...prevState };
     });
   };
- 
+
   const toggleFunctionalityVisibility = (index) => {
     setFunctionalityVisibility((prevState) => {
       const newState = [...prevState];
@@ -108,11 +132,11 @@ const Questionnaire = ({ route }) => {
       return newState;
     });
   };
- 
+
   const handleServiceAreaTextPress = (index) => {
     toggleFunctionalityVisibility(index);
   };
- 
+
   const handleFunctionalityPress = (group, value) => {
     setSelectedItems((prevState) => {
       const functionalityIndex = prevState.functionalities.findIndex(
@@ -126,38 +150,48 @@ const Questionnaire = ({ route }) => {
       return { ...prevState };
     });
   };
- 
+
   function filterSystems() {
     const filteredSystems = [];
-    systems.forEach(system => {
-        let meetsCriteria = true;
-        if (selectedItems.serviceAreas && selectedItems.serviceAreas.length > 0) {
-            selectedItems.serviceAreas.forEach(category => {
-                const serviceArea = system.serviceAreas.find(area => area.name === category.value);
-                if (!serviceArea) {
-                    meetsCriteria = false;
-                }
-            });
-        }
-        if (selectedItems.functionalities && selectedItems.functionalities.length > 0) {
-            selectedItems.functionalities.forEach(functionality => {
-                const serviceArea = system.serviceAreas.find(area => area.name === functionality.group);
-                if (!serviceArea) {
-                    meetsCriteria = false;
-                } else {
-                    if (!serviceArea.functionalities || !serviceArea.functionalities.includes(functionality.value)) {
-                        meetsCriteria = false;
-                    }
-                }
-            });
-        }
-        if (meetsCriteria) {
-            filteredSystems.push(system.name);
-        }
+    systems.forEach((system) => {
+      let meetsCriteria = true;
+      if (selectedItems.serviceAreas && selectedItems.serviceAreas.length > 0) {
+        selectedItems.serviceAreas.forEach((category) => {
+          const serviceArea = system.serviceAreas.find(
+            (area) => area.name === category.value
+          );
+          if (!serviceArea) {
+            meetsCriteria = false;
+          }
+        });
+      }
+      if (
+        selectedItems.functionalities &&
+        selectedItems.functionalities.length > 0
+      ) {
+        selectedItems.functionalities.forEach((functionality) => {
+          const serviceArea = system.serviceAreas.find(
+            (area) => area.name === functionality.group
+          );
+          if (!serviceArea) {
+            meetsCriteria = false;
+          } else {
+            if (
+              !serviceArea.functionalities ||
+              !serviceArea.functionalities.includes(functionality.value)
+            ) {
+              meetsCriteria = false;
+            }
+          }
+        });
+      }
+      if (meetsCriteria) {
+        filteredSystems.push(system.name);
+      }
     });
     return filteredSystems;
   }
- 
+
   return (
     <View>
       <FlatList
@@ -166,10 +200,14 @@ const Questionnaire = ({ route }) => {
           <View style={styles.serviceAreaContainer}>
             <View style={styles.row}>
               <Checkbox
-                value={selectedItems.serviceAreas.some(category => category.value === item.value)}
+                value={selectedItems.serviceAreas.some(
+                  (category) => category.value === item.value
+                )}
                 onValueChange={() => handleServiceAreaCheckboxPress(item.value)}
               />
-              <TouchableOpacity onPress={() => handleServiceAreaTextPress(index)}>
+              <TouchableOpacity
+                onPress={() => handleServiceAreaTextPress(index)}
+              >
                 <Text style={styles.serviceAreaText}>{item.name}</Text>
               </TouchableOpacity>
             </View>
@@ -178,11 +216,27 @@ const Questionnaire = ({ route }) => {
               <FlatList
                 data={item.functionalities}
                 renderItem={({ item: functionality }) => (
-                  <TouchableOpacity onPress={() => handleFunctionalityPress(functionality.group, functionality.value)}>
+                  <TouchableOpacity
+                    onPress={() =>
+                      handleFunctionalityPress(
+                        functionality.group,
+                        functionality.value
+                      )
+                    }
+                  >
                     <View style={styles.row}>
                       <Checkbox
-                        value={selectedItems.functionalities.some(category => category.value === functionality.value && category.group === functionality.group)}
-                        onValueChange={() => handleFunctionalityPress(functionality.group, functionality.value)}
+                        value={selectedItems.functionalities.some(
+                          (category) =>
+                            category.value === functionality.value &&
+                            category.group === functionality.group
+                        )}
+                        onValueChange={() =>
+                          handleFunctionalityPress(
+                            functionality.group,
+                            functionality.value
+                          )
+                        }
                       />
                       <Text>{functionality.name}</Text>
                     </View>
@@ -205,7 +259,10 @@ const Questionnaire = ({ route }) => {
         )}
         keyExtractor={(item, index) => index.toString()}
       />
-      <TouchableOpacity onPress={handleSaveButtonPress} style={styles.saveButton}>
+      <TouchableOpacity
+        onPress={handleSaveButtonPress}
+        style={styles.saveButton}
+      >
         <Text style={styles.saveButtonText}>Išsaugoti konfigūraciją</Text>
       </TouchableOpacity>
       {/* PDF Download Button */}
@@ -218,9 +275,9 @@ const Questionnaire = ({ route }) => {
     </View>
   );
 };
- 
+
 export default Questionnaire;
- 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -235,7 +292,6 @@ const styles = StyleSheet.create({
   serviceAreaContainer: {
     marginBottom: 10,
     paddingLeft: 10,
-    backgroundColor: "black",
   },
   functionalitiesContainer: {
     marginBottom: 10, // Adjust as needed
@@ -244,29 +300,29 @@ const styles = StyleSheet.create({
   },
   serviceAreaText: {
     fontSize: 30,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginLeft: 8,
   },
   separator: {
     borderBottomWidth: 1,
-    borderBottomColor: 'black',
+    borderBottomColor: "black",
     marginBottom: 5,
     marginTop: 15,
   },
   saveButton: {
-    backgroundColor: 'blue',
+    backgroundColor: "blue",
     padding: 15,
     borderRadius: 10,
     marginTop: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   saveButtonText: {
-    color: 'white',
+    color: "white",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   systemContainer: {
     marginTop: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
 });
