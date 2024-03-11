@@ -288,7 +288,6 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "black",
   },
   serviceAreaContainer: {
     marginBottom: 10,
