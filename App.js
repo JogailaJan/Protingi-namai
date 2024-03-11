@@ -1,4 +1,4 @@
-import { Text, View } from 'react-native';
+import { Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "./screens/Home";
@@ -11,7 +11,14 @@ import LBManagementScreen from "./screens/LBManagement";
 import EnetSmartHomeScreen from "./screens/EnetSmartHome";
 import KnxScreen from "./screens/Knx";
 import JungHomeScreen from "./screens/JungHome";
-import { fetchSystemsData, createFunctionalitiesTable, createServiceAreasTable, insertFunctionalitiesData, insertServiceAreasData, deleteAllServiceAreasData } from "./backend/Database";
+import {
+  fetchSystemsData,
+  createFunctionalitiesTable,
+  createServiceAreasTable,
+  insertFunctionalitiesData,
+  insertServiceAreasData,
+  deleteAllServiceAreasData,
+} from "./backend/Database";
 
 const Stack = createNativeStackNavigator();
 const starEmpty = require("./star-empty.png");
