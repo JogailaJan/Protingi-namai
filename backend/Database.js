@@ -139,15 +139,16 @@ export async function getServiceAreasData() {
     try {
         const serviceAreasQuery = await executeSql("SELECT name, value, longDescription, shortDescription FROM ServiceAreas");
         const serviceAreasData = await Promise.all(serviceAreasQuery.rows._array.map(async area => {
-            console.log("Fetching service area:", area.name);
+            //console.log("Fetching service area:", area.name);
             const functionalitiesQuery = await executeSql("SELECT name, `group`, value, longDescription, shortDescription FROM Functionalities WHERE `group` = ?", [area.value]);
             const functionalitiesData = functionalitiesQuery.rows._array.map(functionality => ({
                 name: functionality.name,
+                group: functionality.group,
                 value: functionality.value,
                 longDescription: functionality.longDescription,
                 shortDescription: functionality.shortDescription
             }));
-            console.log("Functionalities - " + JSON.stringify(functionalitiesData));
+            //console.log("Functionalities - " + JSON.stringify(functionalitiesData));
             return {
                 name: area.name,
                 value: area.value,
@@ -156,7 +157,7 @@ export async function getServiceAreasData() {
                 functionalities: functionalitiesData
             };
         }));
-        console.log(serviceAreasData);
+        //console.log(serviceAreasData);
         return serviceAreasData;
     } catch (error) {
         throw error;
@@ -193,3 +194,191 @@ export function deleteAllSystemsData() {
 export function deleteAllServiceAreasData() {
     return executeSql(DELETE_SERVICE_AREAS_DATA);
 }
+
+const addServiceAreasToDatabase = async (serviceAreas) => {
+  try {
+    for (const serviceArea of serviceAreas) {
+      // Check if the service area already exists in the database
+      const existingServiceAreaQuery = await executeSql("SELECT COUNT(*) AS count FROM ServiceAreas WHERE name = ?", [serviceArea.name]);
+      const existingServiceAreaCount = existingServiceAreaQuery.rows._array[0].count;
+      if (existingServiceAreaCount === 0) {
+        // If the service area doesn't exist, insert it into the database
+        const insertQuery = "INSERT INTO ServiceAreas (name, value, longDescription, shortDescription) VALUES (?, ?, ?, ?)";
+        await executeSql(insertQuery, [serviceArea.name, serviceArea.value, serviceArea.longDescription, serviceArea.shortDescription]);
+        console.log('Service area added to the database:', serviceArea.name);
+      } else {
+        console.log('Service area already exists in the database:', serviceArea.name);
+      }
+    }
+  } catch (error) {
+    console.error('Error adding service areas to the database:', error);
+  }
+};
+
+// Example usage:
+const serviceAreasToAdd = [
+  {
+    name: 'Service Area 2',
+    value: 'value 2',
+    longDescription: 'Description of the new service area 2',
+    shortDescription: 'Short description 2',
+  },
+];
+
+//addServiceAreasToDatabase(serviceAreasToAdd);
+
+// Function to delete selected service areas from the database
+const deleteServiceAreasFromDatabase = async (serviceAreaNames) => {
+  try {
+    for (const name of serviceAreaNames) {
+      // Check if the service area exists in the database
+      const existsQuery = "SELECT COUNT(*) AS count FROM ServiceAreas WHERE name = ?";
+      const result = await executeSql(existsQuery, [name]);
+      const count = result.rows.item(0).count;
+      
+      if (count === 0) {
+        console.log(`Service area '${name}' does not exist in the database. Skipping deletion.`);
+        continue; // Skip to the next iteration
+      }
+
+      // Delete the service area from the database
+      const deleteQuery = "DELETE FROM ServiceAreas WHERE name = ?";
+      await executeSql(deleteQuery, [name]);
+      console.log('Service area deleted from the database:', name);
+    }
+  } catch (error) {
+    console.error('Error deleting service areas from the database:', error);
+  }
+};
+
+// Example usage:
+// const serviceAreasToDelete = ['Service Area 1', 'New Service Area 2', 'Nonexistent Service Area'];
+//const serviceAreasToDelete = ['New Service Area 5'];
+
+//deleteServiceAreasFromDatabase(serviceAreasToDelete);
+
+// Function to update selected service areas in the database
+const updateServiceAreasInDatabase = async (serviceAreasToUpdate) => {
+  try {
+    for (const area of serviceAreasToUpdate) {
+      // Check if the service area exists in the database
+      const existsQuery = "SELECT COUNT(*) AS count FROM ServiceAreas WHERE name = ?";
+      const result = await executeSql(existsQuery, [area.name]);
+      const count = result.rows.item(0).count;
+      
+      if (count === 0) {
+        console.log(`Service area '${area.name}' does not exist in the database. Skipping update.`);
+        continue; // Skip to the next iteration
+      }
+
+      // Update the service area in the database
+      const updateQuery = "UPDATE ServiceAreas SET value = ?, longDescription = ?, shortDescription = ? WHERE name = ?";
+      await executeSql(updateQuery, [area.value, area.longDescription, area.shortDescription, area.name]);
+      console.log('Service area updated in the database:', area.name);
+    }
+  } catch (error) {
+    console.error('Error updating service areas in the database:', error);
+  }
+};
+
+// Example usage:
+const serviceAreasToUpdate = [
+  //{ name: 'Service Area 1', value: 'value 1', longDescription: 'updated long description', shortDescription: 'updated short description' },
+  // { name: 'Service Area 2', value: 'updated value', longDescription: 'updated long description', shortDescription: 'updated short description' },
+  // { name: 'Nonexistent Service Area', value: 'updated value', longDescription: 'updated long description', shortDescription: 'updated short description' }
+];
+
+//updateServiceAreasInDatabase(serviceAreasToUpdate);
+
+
+// Function to add functionalities to the database
+const addFunctionalitiesToDatabase = async (functionalities) => {
+  try {
+    for (const functionality of functionalities) {
+      // Check if the functionality already exists in the database
+      const existingFunctionalityQuery = await executeSql("SELECT COUNT(*) AS count FROM Functionalities WHERE name = ?", [functionality.name]);
+      const existingFunctionalityCount = existingFunctionalityQuery.rows._array[0].count;
+      if (existingFunctionalityCount === 0) {
+        // If the functionality doesn't exist, insert it into the database
+        const insertQuery = "INSERT INTO Functionalities (name, `group`, value, longDescription, shortDescription) VALUES (?, ?, ?, ?, ?)";
+        await executeSql(insertQuery, [functionality.name, functionality.group, functionality.value, functionality.longDescription, functionality.shortDescription]);
+        console.log('Functionality added to the database:', functionality.name);
+      } else {
+        console.log('Functionality already exists in the database:', functionality.name);
+      }
+    }
+  } catch (error) {
+    console.error('Error adding functionalities to the database:', error);
+  }
+};
+
+// Function to delete selected functionalities from the database
+const deleteFunctionalitiesFromDatabase = async (functionalityNames) => {
+  try {
+    for (const name of functionalityNames) {
+      // Check if the functionality exists in the database
+      const existsQuery = "SELECT COUNT(*) AS count FROM Functionalities WHERE name = ?";
+      const result = await executeSql(existsQuery, [name]);
+      const count = result.rows.item(0).count;
+      
+      if (count === 0) {
+        console.log(`Functionality '${name}' does not exist in the database. Skipping deletion.`);
+        continue; // Skip to the next iteration
+      }
+
+      // Delete the functionality from the database
+      const deleteQuery = "DELETE FROM Functionalities WHERE name = ?";
+      await executeSql(deleteQuery, [name]);
+      console.log('Functionality deleted from the database:', name);
+    }
+  } catch (error) {
+    console.error('Error deleting functionalities from the database:', error);
+  }
+};
+
+// Function to update selected functionalities in the database
+const updateFunctionalitiesInDatabase = async (functionalitiesToUpdate) => {
+  try {
+    for (const functionality of functionalitiesToUpdate) {
+      // Check if the functionality exists in the database
+      const existsQuery = "SELECT COUNT(*) AS count FROM Functionalities WHERE name = ?";
+      const result = await executeSql(existsQuery, [functionality.name]);
+      const count = result.rows.item(0).count;
+      
+      if (count === 0) {
+        console.log(`Functionality '${functionality.name}' does not exist in the database. Skipping update.`);
+        continue; // Skip to the next iteration
+      }
+
+      // Update the functionality in the database
+      const updateQuery = "UPDATE Functionalities SET `group` = ?, value = ?, longDescription = ?, shortDescription = ? WHERE name = ?";
+      await executeSql(updateQuery, [functionality.group, functionality.value, functionality.longDescription, functionality.shortDescription, functionality.name]);
+      console.log('Functionality updated in the database:', functionality.name);
+    }
+  } catch (error) {
+    console.error('Error updating functionalities in the database:', error);
+  }
+};
+
+// Example usage:
+const functionalitiesToAdd = [
+  {
+    name: 'Functionality 1',
+    group: 'value 1',
+    value: 'new-value-1',
+    longDescription: 'Description of the new functionality 1',
+    shortDescription: 'Short description 1',
+  },
+];
+
+const functionalitiesToDelete = ['Functionality 1', 'New Functionality 2', 'Nonexistent Functionality'];
+
+const functionalitiesToUpdate = [
+  { name: 'Functionality 1', group: 'updated group', value: 'updated value', longDescription: 'updated long description', shortDescription: 'updated short description' },
+  { name: 'Functionality 2', group: 'updated group', value: 'updated value', longDescription: 'updated long description', shortDescription: 'updated short description' },
+  { name: 'Nonexistent Functionality', group: 'updated group', value: 'updated value', longDescription: 'updated long description', shortDescription: 'updated short description' }
+];
+
+//addFunctionalitiesToDatabase(functionalitiesToAdd);
+// deleteFunctionalitiesFromDatabase(functionalitiesToDelete);
+// updateFunctionalitiesInDatabase(functionalitiesToUpdate);

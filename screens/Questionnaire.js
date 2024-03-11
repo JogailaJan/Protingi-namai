@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import Checkbox from 'expo-checkbox';
 import { StyleSheet, Text, View, Button, FlatList, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import serviceAreas from '../ServiceAreasAndFunctionalities';
+import { getServiceAreas } from '../ServiceAreasAndFunctionalities';
 import systems from '../Systems';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SaveConfigurationModal from '../components/SaveConfigurationModal';
@@ -11,6 +11,7 @@ import PDFDownloadButton from '../components/PDFDownloadButton'; // Import the P
 const STORAGE_KEY = 'savedConfigurations';
 
 const Questionnaire = ({ route }) => {
+  const [serviceAreas, setServiceAreas] = useState([]);
   const { selectedConfiguration } = route.params || {};
 
   const [selectedItems, setSelectedItems] = useState({ functionalities: [], serviceAreas: [] });
@@ -18,6 +19,26 @@ const Questionnaire = ({ route }) => {
   const [savedConfigurations, setSavedConfigurations] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [configurationName, setConfigurationName] = useState('');
+
+  useEffect(() => {
+    const loadSavedConfigurations = async () => {
+      try {
+        const saved = await AsyncStorage.getItem(STORAGE_KEY);
+        if (saved !== null) {
+          setSavedConfigurations(JSON.parse(saved));
+        }
+      } catch (error) {
+        console.error('Error loading saved configurations:', error);
+      }
+    };
+    const fetchData = async () => {
+      const areas = await getServiceAreas();
+      setServiceAreas(areas);
+    };
+    
+    fetchData();
+    loadSavedConfigurations();
+  }, []);
 
   const handleSaveButtonPress = () => {
     if (selectedConfiguration) {
@@ -43,21 +64,6 @@ const Questionnaire = ({ route }) => {
     setIsModalVisible(false);
     setConfigurationName('');
   };
-
-  useEffect(() => {
-    const loadSavedConfigurations = async () => {
-      try {
-        const saved = await AsyncStorage.getItem(STORAGE_KEY);
-        if (saved !== null) {
-          setSavedConfigurations(JSON.parse(saved));
-        }
-      } catch (error) {
-        console.error('Error loading saved configurations:', error);
-      }
-    };
-    
-    loadSavedConfigurations();
-  }, []);
   
   const saveConfiguration = async (name) => {
     try {
