@@ -115,5 +115,4 @@ export async function getServiceAreas() {
 // createServiceAreasTable();
 // insertFunctionalitiesData();
 // insertServiceAreasData();
-
 }
