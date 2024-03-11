@@ -94,15 +94,14 @@ const hardCodedServiceAreas = [
       ]
     },
   ];
-  
 export default hardCodedServiceAreas;
-
+ 
 import { fetchSystemsData, createFunctionalitiesTable, createServiceAreasTable, insertFunctionalitiesData, insertServiceAreasData, deleteAllServiceAreasData, getServiceAreasData, getFunctionalitiesData } from "./backend/Database";
 // deleteAllServiceAreasData();
 // insertServiceAreasData();
 //insertFunctionalitiesData();
 // const a = getFunctionalitiesData();
-
+ 
 //console.log("Hard coded services - " + JSON.stringify(serviceAreas));
 export async function getServiceAreas() {
     const serviceAreas = await getServiceAreasData();
@@ -111,9 +110,9 @@ export async function getServiceAreas() {
     // console.log(hardCodedServiceAreas === serviceAreas);
     // console.log(JSON.stringify(hardCodedServiceAreas) === JSON.stringify(serviceAreas));
     return serviceAreas;
-}
 
 // createFunctionalitiesTable();
 // createServiceAreasTable();
 // insertFunctionalitiesData();
 // insertServiceAreasData();
+

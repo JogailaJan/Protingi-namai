@@ -7,19 +7,19 @@ import systems from '../Systems';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SaveConfigurationModal from '../components/SaveConfigurationModal';
 import PDFDownloadButton from '../components/PDFDownloadButton'; // Import the PDFDownloadButton component
-
+ 
 const STORAGE_KEY = 'savedConfigurations';
-
+ 
 const Questionnaire = ({ route }) => {
   const [serviceAreas, setServiceAreas] = useState([]);
   const { selectedConfiguration } = route.params || {};
-
+ 
   const [selectedItems, setSelectedItems] = useState({ functionalities: [], serviceAreas: [] });
   const [functionalityVisibility, setFunctionalityVisibility] = useState(Array(serviceAreas.length).fill(false));
   const [savedConfigurations, setSavedConfigurations] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [configurationName, setConfigurationName] = useState('');
-
+ 
   useEffect(() => {
     const loadSavedConfigurations = async () => {
       try {
@@ -35,11 +35,10 @@ const Questionnaire = ({ route }) => {
       const areas = await getServiceAreas();
       setServiceAreas(areas);
     };
-    
     fetchData();
     loadSavedConfigurations();
   }, []);
-
+ 
   const handleSaveButtonPress = () => {
     if (selectedConfiguration) {
       handleSave(selectedConfiguration.name);
@@ -47,7 +46,7 @@ const Questionnaire = ({ route }) => {
       setIsModalVisible(true);
     }
   };
-
+ 
   const handleSave = async (name) => {
     if (selectedConfiguration) {
       const updatedConfigurations = savedConfigurations.map(config => {
@@ -64,37 +63,35 @@ const Questionnaire = ({ route }) => {
     setIsModalVisible(false);
     setConfigurationName('');
   };
-  
   const saveConfiguration = async (name) => {
     try {
       console.log('Saving configuration with name:', name);
       console.log('Items:', selectedItems);
-      
       const updatedConfigurations = [...savedConfigurations, { name: name, items: selectedItems }];
-      
       await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedConfigurations));
       setSavedConfigurations(updatedConfigurations);
-      
       console.log('Number of configurations saved:', updatedConfigurations.length);
     } catch (error) {
       console.error('Error saving configuration:', error);
     }
   };
-
+ 
   const handleCancel = () => {
     setIsModalVisible(false);
     setConfigurationName('');
   };
-
+ 
   useEffect(() => {
     if (selectedConfiguration) {
       setSelectedItems(selectedConfiguration.items);
     }
   }, [selectedConfiguration]);
-
+ 
   const handleServiceAreaCheckboxPress = (value) => {
-    setSelectedItems(prevState => {
-      const serviceAreaIndex = prevState.serviceAreas.findIndex(item => item.value === value);
+    setSelectedItems((prevState) => {
+      const serviceAreaIndex = prevState.serviceAreas.findIndex(
+        (item) => item.value === value
+      );
       if (serviceAreaIndex !== -1) {
         prevState.serviceAreas.splice(serviceAreaIndex, 1);
       } else {
@@ -103,22 +100,24 @@ const Questionnaire = ({ route }) => {
       return { ...prevState };
     });
   };
-
+ 
   const toggleFunctionalityVisibility = (index) => {
-    setFunctionalityVisibility(prevState => {
+    setFunctionalityVisibility((prevState) => {
       const newState = [...prevState];
       newState[index] = !newState[index];
       return newState;
     });
   };
-
+ 
   const handleServiceAreaTextPress = (index) => {
     toggleFunctionalityVisibility(index);
   };
-
+ 
   const handleFunctionalityPress = (group, value) => {
-    setSelectedItems(prevState => {
-      const functionalityIndex = prevState.functionalities.findIndex(item => item.group === group && item.value === value);
+    setSelectedItems((prevState) => {
+      const functionalityIndex = prevState.functionalities.findIndex(
+        (item) => item.group === group && item.value === value
+      );
       if (functionalityIndex !== -1) {
         prevState.functionalities.splice(functionalityIndex, 1);
       } else {
@@ -127,7 +126,7 @@ const Questionnaire = ({ route }) => {
       return { ...prevState };
     });
   };
-
+ 
   function filterSystems() {
     const filteredSystems = [];
     systems.forEach(system => {
@@ -157,8 +156,8 @@ const Questionnaire = ({ route }) => {
         }
     });
     return filteredSystems;
-}
-
+  }
+ 
   return (
     <View>
       <FlatList
@@ -219,33 +218,39 @@ const Questionnaire = ({ route }) => {
     </View>
   );
 };
-
+ 
 export default Questionnaire;
-
+ 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
   },
   row: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   serviceAreaContainer: {
-    marginBottom: 10, 
+    marginBottom: 10,
     paddingLeft: 10,
+    backgroundColor: "black",
+  },
+  functionalitiesContainer: {
+    marginBottom: 10, // Adjust as needed
+    paddingLeft: 10,
+    backgroundColor: "pink",
   },
   serviceAreaText: {
     fontSize: 30,
     fontWeight: 'bold',
-    marginLeft: 8, 
+    marginLeft: 8,
   },
   separator: {
     borderBottomWidth: 1,
     borderBottomColor: 'black',
-    marginBottom: 5, 
+    marginBottom: 5,
     marginTop: 15,
   },
   saveButton: {
