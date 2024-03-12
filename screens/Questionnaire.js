@@ -288,7 +288,6 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "pink",
   },
   serviceAreaContainer: {
     marginBottom: 10,
@@ -297,7 +296,6 @@ const styles = StyleSheet.create({
   functionalitiesContainer: {
     marginBottom: 10, // Adjust as needed
     paddingLeft: 10,
-    backgroundColor: "pink",
   },
   serviceAreaText: {
     fontSize: 30,
