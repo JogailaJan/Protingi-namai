@@ -163,28 +163,23 @@ export async function getServiceAreasData() {
         throw error;
     }
 }
-
   
-  
-  
-  
-  export async function getFunctionalitiesData() {
-    try {
-        const functionalitiesQuery = await executeSql("SELECT name, `group`, value, longDescription, shortDescription FROM Functionalities WHERE `group` = ?", ["lighting"]);
-        const functionalitiesData = await Promise.all(functionalitiesQuery.rows._array.map(async functionality => {
-            console.log("Functionality name:", functionality.name);
-            return {
-                name: functionality.name,
-                value: functionality.value,
-                longDescription: functionality.longDescription,
-                shortDescription: functionality.shortDescription,
-            };
-        }));
-    } catch (error) {
-      throw error;
-    }
-  }
-  
+// export async function getFunctionalitiesData() {
+//   try {
+//       const functionalitiesQuery = await executeSql("SELECT name, `group`, value, longDescription, shortDescription FROM Functionalities WHERE `group` = ?", ["lighting"]);
+//       const functionalitiesData = await Promise.all(functionalitiesQuery.rows._array.map(async functionality => {
+//           console.log("Functionality name:", functionality.name);
+//           return {
+//               name: functionality.name,
+//               value: functionality.value,
+//               longDescription: functionality.longDescription,
+//               shortDescription: functionality.shortDescription,
+//           };
+//       }));
+//   } catch (error) {
+//     throw error;
+//   }
+// }
   
 
 export function deleteAllSystemsData() {
@@ -252,8 +247,7 @@ const deleteServiceAreasFromDatabase = async (serviceAreaNames) => {
 };
 
 // Example usage:
-// const serviceAreasToDelete = ['Service Area 1', 'New Service Area 2', 'Nonexistent Service Area'];
-//const serviceAreasToDelete = ['New Service Area 5'];
+const serviceAreasToDelete = ['Service Area 1', 'New Service Area 2', 'Nonexistent Service Area'];
 
 //deleteServiceAreasFromDatabase(serviceAreasToDelete);
 
@@ -283,9 +277,9 @@ const updateServiceAreasInDatabase = async (serviceAreasToUpdate) => {
 
 // Example usage:
 const serviceAreasToUpdate = [
-  //{ name: 'Service Area 1', value: 'value 1', longDescription: 'updated long description', shortDescription: 'updated short description' },
-  // { name: 'Service Area 2', value: 'updated value', longDescription: 'updated long description', shortDescription: 'updated short description' },
-  // { name: 'Nonexistent Service Area', value: 'updated value', longDescription: 'updated long description', shortDescription: 'updated short description' }
+  { name: 'Service Area 1', value: 'value 1', longDescription: 'updated long description', shortDescription: 'updated short description' },
+  { name: 'Service Area 2', value: 'updated value', longDescription: 'updated long description', shortDescription: 'updated short description' },
+  { name: 'Nonexistent Service Area', value: 'updated value', longDescription: 'updated long description', shortDescription: 'updated short description' }
 ];
 
 //updateServiceAreasInDatabase(serviceAreasToUpdate);
@@ -312,6 +306,19 @@ const addFunctionalitiesToDatabase = async (functionalities) => {
   }
 };
 
+// Example usage:
+const functionalitiesToAdd = [
+  {
+    name: 'Functionality 1',
+    group: 'value 1',
+    value: 'new-value-1',
+    longDescription: 'Description of the new functionality 1',
+    shortDescription: 'Short description 1',
+  },
+];
+
+//addFunctionalitiesToDatabase(functionalitiesToAdd);
+
 // Function to delete selected functionalities from the database
 const deleteFunctionalitiesFromDatabase = async (functionalityNames) => {
   try {
@@ -335,6 +342,10 @@ const deleteFunctionalitiesFromDatabase = async (functionalityNames) => {
     console.error('Error deleting functionalities from the database:', error);
   }
 };
+
+const functionalitiesToDelete = ['Functionality 1', 'New Functionality 2', 'Nonexistent Functionality'];
+
+// deleteFunctionalitiesFromDatabase(functionalitiesToDelete);
 
 // Function to update selected functionalities in the database
 const updateFunctionalitiesInDatabase = async (functionalitiesToUpdate) => {
@@ -360,18 +371,7 @@ const updateFunctionalitiesInDatabase = async (functionalitiesToUpdate) => {
   }
 };
 
-// Example usage:
-const functionalitiesToAdd = [
-  {
-    name: 'Functionality 1',
-    group: 'value 1',
-    value: 'new-value-1',
-    longDescription: 'Description of the new functionality 1',
-    shortDescription: 'Short description 1',
-  },
-];
 
-const functionalitiesToDelete = ['Functionality 1', 'New Functionality 2', 'Nonexistent Functionality'];
 
 const functionalitiesToUpdate = [
   { name: 'Functionality 1', group: 'updated group', value: 'updated value', longDescription: 'updated long description', shortDescription: 'updated short description' },
@@ -379,6 +379,38 @@ const functionalitiesToUpdate = [
   { name: 'Nonexistent Functionality', group: 'updated group', value: 'updated value', longDescription: 'updated long description', shortDescription: 'updated short description' }
 ];
 
-//addFunctionalitiesToDatabase(functionalitiesToAdd);
-// deleteFunctionalitiesFromDatabase(functionalitiesToDelete);
 // updateFunctionalitiesInDatabase(functionalitiesToUpdate);
+
+export const getTableNames = async () => {
+  try {
+    const query = "SELECT name FROM sqlite_master WHERE type='table'";
+    const result = await executeSql(query, []);
+    const tableNames = result.rows._array.map(row => row.name);
+    console.log("Table names:", tableNames);
+    console.log("Number of tables:", tableNames.length);
+    return tableNames;
+  } catch (error) {
+    console.error("Error retrieving table names:", error);
+    return [];
+  }
+};
+
+export async function checkIfTablesExist() {
+  try {
+      // Query to check if there are any tables in the database, excluding sqlite_sequence
+      const query = "SELECT count(*) AS tableCount FROM sqlite_master WHERE type='table' AND name <> 'sqlite_sequence';";
+
+      // Execute the query
+      const result = await executeSql(query);
+
+      // Get the number of tables
+      const tableCount = result.rows.item(0).tableCount;
+
+      // Return true if there are tables (excluding sqlite_sequence), false otherwise
+      return tableCount > 0;
+  } catch (error) {
+      console.error('Error checking if tables exist:', error);
+      throw error;
+  }
+}
+
