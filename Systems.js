@@ -54,7 +54,7 @@ const systemsData = {
     }
 };
 
-const systems = [
+const hardCodedSystems = [
     {
         name: 'LB MANAGEMENT',
         link: 'http://system1',
@@ -185,4 +185,17 @@ const systems = [
     },
   ];
 
-  export default systems;
+  export default hardCodedSystems;
+ // console.log(systems);
+
+ import { createSystemsFunctionalitiesTable, createSystemsTable, insertSystemsData , insertSystemsFunctionalitiesData, getSystemsData } from "./backend/Database";
+
+ export async function getSystems() {
+    const systems = await getSystemsData();
+    // console.log("Table services - " + JSON.stringify(serviceAreas));
+    // console.log("Hard coded services - " + JSON.stringify(hardCodedServiceAreas));
+    // console.log(hardCodedServiceAreas === serviceAreas);
+    // console.log(JSON.stringify(hardCodedServiceAreas) === JSON.stringify(serviceAreas));
+    return systems;
+}
+ 

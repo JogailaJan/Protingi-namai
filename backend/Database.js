@@ -10,23 +10,6 @@ const CREATE_TABLE_SYSTEMS = `
   );
 `;
 
-const INSERT_SYSTEMS_DATA = `
-  INSERT INTO Systems (name, link, description) VALUES 
-  ('LB MANAGEMENT', 'http://system1', ''),
-  ('eNet SMART HOME', 'http://system2', ''),
-  ('KNX SMART VISU SERVER', 'http://system3', ''),
-  ('KNX VISU PRO SERVER', 'http://system4', '');
-`;
-
-
-const DELETE_SYSTEMS_DATA = `
-    DELETE FROM Systems;
-`;
-
-const DELETE_SERVICE_AREAS_DATA = `
-    DELETE FROM ServiceAreas;
-`;
-
 const CREATE_TABLE_SERVICE_AREAS = `
     CREATE TABLE IF NOT EXISTS ServiceAreas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,30 +29,64 @@ const CREATE_TABLE_FUNCTIONALITIES = `
         longDescription TEXT,
         shortDescription TEXT,
         serviceAreaId INTEGER,
-        FOREIGN KEY (serviceAreaId) REFERENCES ServiceAreas(id)
+    );
+`;
+//        FOREIGN KEY (serviceAreaId) REFERENCES ServiceAreas(id)
+
+const CREATE_TABLE_SYSTEMS_FUNCTIONALITIES = `
+    CREATE TABLE IF NOT EXISTS SystemsFunctionalities (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        systemName TEXT NOT NULL,
+        functionalityValue TEXT NOT NULL,
     );
 `;
 
-const INSERT_SERVICE_AREAS_DATA = `
-  INSERT INTO ServiceAreas (name, value, longDescription, shortDescription) VALUES 
-  ('Lighting', 'lighting', '', ''),
-  ('Security', 'security', '', ''),
-  ('Weather', 'weather', '', '');
+const DELETE_SYSTEMS_DATA = `
+    DELETE FROM Systems;
 `;
 
-const INSERT_FUNCTIONALITIES_DATA = `
-  INSERT INTO Functionalities (name, "group", value, longDescription, shortDescription, serviceAreaId) VALUES 
-  ('Switching', 'lighting', 'switching', '', '', 1),
-  ('Colour', 'lighting', 'colour', '', '', 1),
-  ('Sequences', 'lighting', 'sequences', '', '', 1),
-  ('Storm/Rain Satellite Unit', 'security', 'storm-rain-satellite-unit', '', '', 2),
-  ('Storm/Rain Universal Transmitter', 'security', 'storm-rain-universal-transmitter', '', '', 2),
-  ('Storm/Rain', 'security', 'storm-rain', '', '', 2),
-  ('Leakage', 'security', 'leakage', '', '', 2),
-  ('Weather forecast', 'weather', 'weather-forecast', '', '', 3),
-  ('Weather station', 'weather', 'weather-station', '', '', 3),
-  ('Creation of rules', 'weather', 'creation-of-rules', '', '', 3);
+const DELETE_SERVICE_AREAS_DATA = `
+    DELETE FROM ServiceAreas;
 `;
+
+const DELETE_FUNCTIONALITIES_DATA = `
+    DELETE FROM Functionalities;
+`;
+
+const DELETE_SYSTEMS_FUNCTIONALITIES_DATA = `
+    DELETE FROM SystemsFunctionalities;
+`;
+
+
+// const INSERT_SYSTEMS_DATA = `
+//   INSERT INTO Systems (name, link, description) VALUES 
+//   ('LB MANAGEMENT', 'http://system1', ''),
+//   ('eNet SMART HOME', 'http://system2', ''),
+//   ('KNX SMART VISU SERVER', 'http://system3', ''),
+//   ('KNX VISU PRO SERVER', 'http://system4', '');
+// `;
+
+// const INSERT_SERVICE_AREAS_DATA = `
+//   INSERT INTO ServiceAreas (name, value, longDescription, shortDescription) VALUES 
+//   ('Lighting', 'lighting', '', ''),
+//   ('Security', 'security', '', ''),
+//   ('Weather', 'weather', '', '');
+// `;
+
+// const INSERT_FUNCTIONALITIES_DATA = `
+//   INSERT INTO Functionalities (name, "group", value, longDescription, shortDescription, serviceAreaId) VALUES 
+//   ('Switching', 'lighting', 'switching', '', '', 1),
+//   ('Colour', 'lighting', 'colour', '', '', 1),
+//   ('Sequences', 'lighting', 'sequences', '', '', 1),
+//   ('Storm/Rain Satellite Unit', 'security', 'storm-rain-satellite-unit', '', '', 2),
+//   ('Storm/Rain Universal Transmitter', 'security', 'storm-rain-universal-transmitter', '', '', 2),
+//   ('Storm/Rain', 'security', 'storm-rain', '', '', 2),
+//   ('Leakage', 'security', 'leakage', '', '', 2),
+//   ('Weather forecast', 'weather', 'weather-forecast', '', '', 3),
+//   ('Weather station', 'weather', 'weather-station', '', '', 3),
+//   ('Creation of rules', 'weather', 'creation-of-rules', '', '', 3);
+// `;
+
 
 
 const db = SQLite.openDatabase('test1.db', '1.0', '', 1, null, null, null, () => { db.exec([{ sql: 'PRAGMA foreign_keys = ON;', args: [] }], false, () => console.log('Foreign keys enabled')); });
@@ -87,29 +104,12 @@ export function executeSql(sqlStatement, argument) {
   });
 }
 
-export function createSystemsTable() {
-  return executeSql(CREATE_TABLE_SYSTEMS);
-}
-
 export function createServiceAreasTable() {
     return executeSql(CREATE_TABLE_SERVICE_AREAS);
 }
 
 export function createFunctionalitiesTable() {
     return executeSql(CREATE_TABLE_FUNCTIONALITIES);
-}
-
-export function insertSystemsData() {
-  return executeSql(INSERT_SYSTEMS_DATA);
-}
-
-
-export function insertServiceAreasData() {
-    return executeSql(INSERT_SERVICE_AREAS_DATA);
-}
-
-export function insertFunctionalitiesData() {
-    return executeSql(INSERT_FUNCTIONALITIES_DATA);
 }
 
 export function fetchSystemsData() {
@@ -414,3 +414,182 @@ export async function checkIfTablesExist() {
   }
 }
 
+/////////////////////////////////////////////////////
+
+export function createSystemsTable() {
+  return executeSql(CREATE_TABLE_SYSTEMS);
+}
+
+const addSystemsToDatabase = async (systems) => {
+  try {
+    for (const system of systems) {
+      const existingSystemQuery = await executeSql("SELECT COUNT(*) AS count FROM Systems WHERE name = ?", [system.name]);
+      const existingSystemCount = existingSystemQuery.rows._array[0].count;
+      if (existingSystemCount === 0) {
+        const insertQuery = "INSERT INTO Systems (name, link, description) VALUES (?, ?, ?)";
+        await executeSql(insertQuery, [system.name, system.link, system.description]);
+        console.log('System added to the database:', system.name);
+      } else {
+        console.log('System already exists in the database:', system.name);
+      }
+    }
+  } catch (error) {
+    console.error('Error adding systems to the database:', error);
+  }
+};
+
+
+// Example usage:
+const systemsToAdd = [
+  {
+    name: 'KNX VISU PRO SERVER',
+    link: 'http://system4',
+    description: 'description of KNX',
+  },
+];
+
+//addSystemsToDatabase(systemsToAdd);
+
+
+const deleteSystemsFromDatabase = async (systemNames) => {
+  try {
+    for (const name of systemNames) {
+      const existsQuery = "SELECT COUNT(*) AS count FROM Systems WHERE name = ?";
+      const result = await executeSql(existsQuery, [name]);
+      const count = result.rows.item(0).count;
+      
+      if (count === 0) {
+        console.log(`System '${name}' does not exist in the database. Skipping deletion.`);
+        continue; // Skip to the next iteration
+      }
+
+      const deleteQuery = "DELETE FROM Systems WHERE name = ?";
+      await executeSql(deleteQuery, [name]);
+      console.log('System deleted from the database:', name);
+    }
+  } catch (error) {
+    console.error('Error deleting systems from the database:', error);
+  }
+};
+
+const systemsToDelete = ['Service Area 1', 'New Service Area 2', 'Nonexistent Service Area'];
+
+//deleteSystemsFromDatabase(systemsToDelete);
+
+const updateSystemsInDatabase = async (systemsToUpdate) => {
+  try {
+    for (const system of systemsToUpdate) {
+      const existsQuery = "SELECT COUNT(*) AS count FROM Systems WHERE name = ?";
+      const result = await executeSql(existsQuery, [system.name]);
+      const count = result.rows.item(0).count;
+      
+      if (count === 0) {
+        console.log(`System '${system.name}' does not exist in the database. Skipping update.`);
+        continue; // Skip to the next iteration
+      }
+
+      const updateQuery = "UPDATE Systems SET link = ?, description = ? WHERE name = ?";
+      await executeSql(updateQuery, [system.link, system.description, system.name]);
+      console.log('System updated in the database:', system.name);
+    }
+  } catch (error) {
+    console.error('Error updating systems in the database:', error);
+  }
+};
+
+const systemsToUpdate = [
+  { name: 'Service Area 1', link: 'value 1', description: 'updated long description' },
+  { name: 'Service Area 2', link: 'updated value', description: 'updated long description'},
+  { name: 'Nonexistent Service Area', link: 'updated value', description: 'updated long description'}
+];
+
+//updateSystemsInDatabase(systemsToUpdate);
+
+const addSystemsFunctionalitiesToDatabase = async (systemsFunctionalities) => {
+  try {
+    for (const systemFunctionality of systemsFunctionalities) {
+      // Check if the system functionality already exists in the database
+      const existingFunctionalityQuery = await executeSql("SELECT COUNT(*) AS count FROM SystemsFunctionalities WHERE systemName = ? AND functionalityValue = ?", [systemFunctionality.systemName, systemFunctionality.functionalityValue]);
+      const existingFunctionalityCount = existingFunctionalityQuery.rows._array[0].count;
+      
+      if (existingFunctionalityCount === 0) {
+        const insertQuery = "INSERT INTO SystemsFunctionalities (systemName, functionalityValue) VALUES (?, ?)";
+        await executeSql(insertQuery, [systemFunctionality.systemName, systemFunctionality.functionalityValue]);
+        console.log('System functionality added to the database:', systemFunctionality);
+      } else {
+        console.log('System functionality already exists in the database:', systemFunctionality);
+      }
+    }
+  } catch (error) {
+    console.error('Error adding systems functionalities to the database:', error);
+  }
+};
+
+const systemsFunctionalitiesToAdd = [
+  {
+    systemName: 'KNX VISU PRO SERVER',
+    functionalityValue: 'http://system4',
+  },
+];
+
+//addSystemsFunctionalitiesToDatabase(systemsFunctionalitiesToAdd);
+
+const deleteSystemsFunctionalitiesFromDatabase = async (systemNames) => {
+  try {
+    for (const name of systemNames) {
+      // Check if there are any entries for the system in the database
+      const countQuery = "SELECT COUNT(*) AS count FROM SystemsFunctionalities WHERE systemName = ?";
+      const result = await executeSql(countQuery, [name]);
+      const count = result.rows.item(0).count;
+
+      if (count === 0) {
+        console.log(`No system functionality found in the database for '${name}'. Skipping deletion.`);
+        continue; // Skip to the next iteration
+      }
+
+      // If entries exist, delete them
+      const deleteQuery = "DELETE FROM SystemsFunctionalities WHERE systemName = ?";
+      await executeSql(deleteQuery, [name]);
+      console.log('System functionality deleted from the database for:', name);
+    }
+  } catch (error) {
+    console.error('Error deleting systems functionalities from the database:', error);
+  }
+};
+
+
+const systemsFunctionalitiesToDelete = ['Service Area 1', 'New Service Area 2', 'Nonexistent Service Area'];
+
+//deleteSystemsFunctionalitiesFromDatabase(systemsFunctionalitiesToDelete);
+
+const updateSystemsFunctionalitiesInDatabase = async (systemsFunctionalitiesToUpdate) => {
+  try {
+    for (const systemFunctionality of systemsFunctionalitiesToUpdate) {
+      // Check if there are any entries for the system in the database
+      const countQuery = "SELECT COUNT(*) AS count FROM SystemsFunctionalities WHERE systemName = ?";
+      const result = await executeSql(countQuery, [systemFunctionality.systemName]);
+      const count = result.rows.item(0).count;
+
+      if (count === 0) {
+        console.log(`No system functionality found in the database for '${systemFunctionality.systemName}'. Skipping update.`);
+        continue; // Skip to the next iteration
+      }
+
+      // If entries exist, update them
+      const updateQuery = "UPDATE SystemsFunctionalities SET functionalityValue = ? WHERE systemName = ?";
+      await executeSql(updateQuery, [systemFunctionality.functionalityValue, systemFunctionality.systemName]);
+      console.log('System functionality updated in the database for:', systemFunctionality.systemName);
+    }
+  } catch (error) {
+    console.error('Error updating systems functionalities in the database:', error);
+  }
+};
+
+const systemsFunctionalitiesToUpdate = [
+  {
+    systemName: 'KNX VISU PRO SERVER',
+    functionalityValue: 'heating',
+  },
+];
+
+//updateSystemsFunctionalitiesInDatabase(systemsFunctionalitiesToUpdate);

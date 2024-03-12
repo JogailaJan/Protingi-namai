@@ -26,7 +26,7 @@ const Stack = createNativeStackNavigator();
 const starEmpty = require("./star-empty.png");
 
 export default function App() {
-  console.log("There are tables - " + checkIfTablesExist());
+  // console.log("There are tables - " + checkIfTablesExist());
   if(!checkIfTablesExist){
       createFunctionalitiesTable();
       createServiceAreasTable();

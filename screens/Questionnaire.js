@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { getServiceAreas } from "../ServiceAreasAndFunctionalities";
-import systems from "../Systems";
+import { getSystems } from "../Systems";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SaveConfigurationModal from "../components/SaveConfigurationModal";
 import PDFDownloadButton from "../components/PDFDownloadButton"; // Import the PDFDownloadButton component
@@ -19,6 +19,7 @@ const STORAGE_KEY = "savedConfigurations";
 
 const Questionnaire = ({ route }) => {
   const [serviceAreas, setServiceAreas] = useState([]);
+  const [systems, setSystems] = useState([]);
   const { selectedConfiguration } = route.params || {};
 
   const [selectedItems, setSelectedItems] = useState({
@@ -46,6 +47,8 @@ const Questionnaire = ({ route }) => {
     const fetchData = async () => {
       const areas = await getServiceAreas();
       setServiceAreas(areas);
+      setSystems(await getSystems());
+
     };
     fetchData();
     loadSavedConfigurations();
