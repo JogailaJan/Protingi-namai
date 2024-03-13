@@ -37,7 +37,7 @@ const CREATE_TABLE_SYSTEMS_FUNCTIONALITIES = `
     CREATE TABLE IF NOT EXISTS SystemsFunctionalities (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         systemName TEXT NOT NULL,
-        functionalityValue TEXT NOT NULL,
+        functionalityValue TEXT NOT NULL
     );
 `;
 
@@ -420,6 +420,20 @@ export function createSystemsTable() {
   return executeSql(CREATE_TABLE_SYSTEMS);
 }
 
+export function createSystemsFunctionsTable() {
+  console.log("Executing CREATE_TABLE_SYSTEMS_FUNCTIONALITIES...");
+  return executeSql(CREATE_TABLE_SYSTEMS_FUNCTIONALITIES)
+      .then(() => {
+          console.log("CREATE_TABLE_SYSTEMS_FUNCTIONALITIES executed successfully.");
+      })
+      .catch(error => {
+          console.error("Error executing CREATE_TABLE_SYSTEMS_FUNCTIONALITIES:", error);
+      });
+}
+
+
+//createSystemsFunctionsTable();
+
 const addSystemsToDatabase = async (systems) => {
   try {
     for (const system of systems) {
@@ -442,9 +456,24 @@ const addSystemsToDatabase = async (systems) => {
 // Example usage:
 const systemsToAdd = [
   {
+    name: 'LB MANAGEMENT',
+    link: 'http://system1',
+    description: 'description of LB MANAGEMENT',
+  },
+  {
+    name: 'eNet SMART HOME',
+    link: 'http://system2',
+    description: 'description of eNet SMART HOME',
+  },
+  {
     name: 'KNX VISU PRO SERVER',
-    link: 'http://system4',
+    link: 'http://system3',
     description: 'description of KNX',
+  },
+  {
+    name: 'JUNG HOME',
+    link: 'http://system4',
+    description: 'description of JUNG HOME',
   },
 ];
 
@@ -527,8 +556,12 @@ const addSystemsFunctionalitiesToDatabase = async (systemsFunctionalities) => {
 
 const systemsFunctionalitiesToAdd = [
   {
-    systemName: 'KNX VISU PRO SERVER',
-    functionalityValue: 'http://system4',
+    systemName: 'JUNG HOME',
+    functionalityValue: 'switching',
+  },
+  {
+    systemName: 'eNet SMART HOME',
+    functionalityValue: 'switching',
   },
 ];
 
@@ -593,3 +626,57 @@ const systemsFunctionalitiesToUpdate = [
 ];
 
 //updateSystemsFunctionalitiesInDatabase(systemsFunctionalitiesToUpdate);
+
+export async function getSystemsData() {
+  try {
+    // Fetch systems data from the Systems table
+    const systemsQuery = await executeSql("SELECT name, link, description FROM Systems");
+    const systemsData = systemsQuery.rows._array;
+
+    // Initialize an array to store the final systems data
+    const finalSystemsData = [];
+
+    // Iterate over each system to fetch associated functionalities
+    for (const system of systemsData) {
+      // Initialize an array to store service areas
+      const serviceAreas = [];
+
+      // Fetch functionalities associated with the current system
+      const functionalitiesQuery = await executeSql("SELECT functionalityValue FROM SystemsFunctionalities WHERE systemName = ?", [system.name]);
+      const functionalitiesData = functionalitiesQuery.rows._array;
+
+      // Iterate over each functionality to fetch its group information
+      for (const functionality of functionalitiesData) {
+        // Fetch group information from the Functionalities table
+        const groupQuery = await executeSql("SELECT `group` FROM Functionalities WHERE value = ?", [functionality.functionalityValue]);
+        const group = groupQuery.rows._array[0].group;
+
+        // Check if a service area with the same group already exists in the serviceAreas array
+        const existingServiceArea = serviceAreas.find(area => area.name === group);
+
+        // If the service area doesn't exist, create a new one
+        if (!existingServiceArea) {
+          serviceAreas.push({
+            name: group,
+            functionalities: [functionality.functionalityValue]
+          });
+        } else {
+          // If the service area already exists, add the functionality to its functionalities array
+          existingServiceArea.functionalities.push(functionality.functionalityValue);
+        }
+      }
+
+      // Add the system data with service areas to the final array
+      finalSystemsData.push({
+        name: system.name,
+        link: system.link,
+        description: system.description,
+        serviceAreas: serviceAreas
+      });
+    }
+
+    return finalSystemsData;
+  } catch (error) {
+    throw error;
+  }
+}
