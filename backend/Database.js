@@ -345,15 +345,15 @@ const addFunctionalitiesToDatabase = async (functionalities) => {
 // Example usage:
 const functionalitiesToAdd = [
   {
-    name: 'Functionality 1',
-    group: 'value 1',
+    name: 'Functionality 2',
+    group: 'heating',
     value: 'new-value-1',
-    longDescription: 'Description of the new functionality 1',
+    longDescription: 'Description of the new functionality 2',
     shortDescription: 'Short description 1',
   },
 ];
 
-//addFunctionalitiesToDatabase(functionalitiesToAdd);
+addFunctionalitiesToDatabase(functionalitiesToAdd);
 
 // Function to delete selected functionalities from the database
 const deleteFunctionalitiesFromDatabase = async (functionalityNames) => {
