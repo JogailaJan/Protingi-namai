@@ -213,14 +213,50 @@ const addServiceAreasToDatabase = async (serviceAreas) => {
 // Example usage:
 const serviceAreasToAdd = [
   {
-    name: 'Service Area 2',
+    name: 'Service Area 3',
+    value: 'value 2',
+    longDescription: 'Description of the new service area 2',
+    shortDescription: 'Short description 2',
+  },
+  {
+    name: 'Service Area 4',
+    value: 'value 2',
+    longDescription: 'Description of the new service area 2',
+    shortDescription: 'Short description 2',
+  },
+  {
+    name: 'Service Area 5',
+    value: 'value 2',
+    longDescription: 'Description of the new service area 2',
+    shortDescription: 'Short description 2',
+  },
+  {
+    name: 'Service Area 6',
+    value: 'value 2',
+    longDescription: 'Description of the new service area 2',
+    shortDescription: 'Short description 2',
+  },
+  {
+    name: 'Service Area 7',
+    value: 'value 2',
+    longDescription: 'Description of the new service area 2',
+    shortDescription: 'Short description 2',
+  },
+  {
+    name: 'Service Area 8',
+    value: 'value 2',
+    longDescription: 'Description of the new service area 2',
+    shortDescription: 'Short description 2',
+  },
+  {
+    name: 'Service Area 9',
     value: 'value 2',
     longDescription: 'Description of the new service area 2',
     shortDescription: 'Short description 2',
   },
 ];
 
-//addServiceAreasToDatabase(serviceAreasToAdd);
+addServiceAreasToDatabase(serviceAreasToAdd);
 
 // Function to delete selected service areas from the database
 const deleteServiceAreasFromDatabase = async (serviceAreaNames) => {

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { TouchableOpacity, Text, PermissionsAndroid, Platform } from 'react-native';
+import { StyleSheet, TouchableOpacity, Text, PermissionsAndroid, Platform } from 'react-native';
 import * as Print from 'expo-print';
 import * as FileSystem from 'expo-file-system';
 
@@ -92,11 +92,27 @@ const PDFDownloadButton = ({ config }) => {
   };
 
   return (
-    <TouchableOpacity onPress={createAndSavePDF}>
-      <Text>Download PDF</Text>
+    <TouchableOpacity onPress={createAndSavePDF} style={[styles.pdfButton]}>
+      <Text style={[styles.pdfButtonText]}>Atsiųsti PDF</Text>
     </TouchableOpacity>
   );
 };
 
 export default PDFDownloadButton;
 
+const styles = StyleSheet.create({
+  pdfButton: {
+    backgroundColor: "white",
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "black",
+    marginTop: 20,
+    alignItems: "center",
+  },
+  pdfButtonText: {
+    color: "black",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+});
