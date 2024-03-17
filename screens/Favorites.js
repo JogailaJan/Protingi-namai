@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
+import { Image, StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const STORAGE_KEY = 'savedConfigurations';
@@ -38,12 +38,22 @@ export default function Favorites({ navigation }) {
         data={savedConfigurations}
         renderItem={({ item, index }) => (
           <View style={styles.configurationItem}>
-            <TouchableOpacity onPress={() => navigation.navigate('Questionnaire', { selectedConfiguration: item })}>
-              <Text>{item.name || `${index + 1} konfigūracija`}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => deleteConfiguration(index)} style={styles.deleteButton}>
-              <Text style={styles.deleteButtonText}>Ištrinti</Text>
-            </TouchableOpacity>
+            <View style={styles.nameContainer}>
+              <TouchableOpacity onPress={() => navigation.navigate('Questionnaire', { selectedConfiguration: item })}>
+                <Text style={styles.nameText}>{item.name || `${index + 1} konfigūracija`}</Text>
+              </TouchableOpacity>
+            </View>
+            <View style={styles.iconsContainer}>
+              <TouchableOpacity onPress={() => navigation.navigate('Questionnaire', { selectedConfiguration: item })}>
+                <Image source={require("../icons/magnifying-glass.png")}  style={styles.icon}/>
+              </TouchableOpacity>
+              <TouchableOpacity>
+                <Image source={require("../icons/download.png")}  style={styles.icon}/>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => deleteConfiguration(index)}>
+                <Image source={require("../icons/trash-bin.png")}  style={styles.icon}/>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
         keyExtractor={(item, index) => index.toString()}
@@ -58,26 +68,30 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 20,
   },
-  heading: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
   configurationItem: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    justifyContent: 'space-between',
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
   },
-  deleteButton: {
-    backgroundColor: 'red',
+  nameText: {
+    fontSize: 18,
+  },
+  nameContainer: {
+    flexDirection: 'row', // Align name horizontally
+    alignItems: 'center',
+  },
+  iconsContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  icon: {
     padding: 5,
     borderRadius: 5,
-  },
-  deleteButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    width: 30,
+    height: 30,
+    marginLeft: 10, // Add spacing between icons
   },
 });
