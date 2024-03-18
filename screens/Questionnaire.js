@@ -16,7 +16,6 @@ import { getSystems } from "../Systems";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SaveConfigurationModal from "../components/SaveConfigurationModal";
 import PDFDownloadButton from "../components/PDFDownloadButton"; // Import the PDFDownloadButton component
-import SvgUri from 'react-native-svg-uri';
 
 const STORAGE_KEY = "savedConfigurations";
 
