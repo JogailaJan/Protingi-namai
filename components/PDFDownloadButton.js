@@ -1,10 +1,34 @@
 
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, PermissionsAndroid, Platform } from 'react-native';
-import * as Print from 'expo-print';
 import * as FileSystem from 'expo-file-system';
 
+import * as Print from 'expo-print';
+import { shareAsync } from 'expo-sharing';
+
 const PDFDownloadButton = ({ config }) => {
+  const printToFile = async () => {
+    const html = `
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no" />
+  </head>
+  <body style="text-align: center;">
+    <h1 style="font-size: 50px; font-family: Helvetica Neue; font-weight: normal;">
+      Hello Expo!
+    </h1>
+    <img
+      src="https://d30j33t1r58ioz.cloudfront.net/static/guides/sdk.png"
+      style="width: 90vw;" />
+  </body>
+</html>
+`;
+    // On iOS/android prints the given html. On web prints the HTML from the current page.
+    const { uri } = await Print.printToFileAsync({ html });
+    console.log('File has been saved to:', uri);
+    await shareAsync(uri, { UTI: '.pdf', mimeType: 'application/pdf' });
+  };
+
   const createAndSavePDF = async () => {
     try {
       console.log(config);
@@ -92,7 +116,7 @@ const PDFDownloadButton = ({ config }) => {
   };
 
   return (
-    <TouchableOpacity onPress={createAndSavePDF} style={[styles.pdfButton]}>
+    <TouchableOpacity onPress={printToFile} style={[styles.pdfButton]}>
       <Text style={[styles.pdfButtonText]}>Atsiųsti PDF</Text>
     </TouchableOpacity>
   );

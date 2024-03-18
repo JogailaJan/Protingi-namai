@@ -1,5 +1,4 @@
 import { StatusBar } from "expo-status-bar";
-import Checkbox from "expo-checkbox";
 import {
   StyleSheet,
   Text,
@@ -102,9 +101,10 @@ const AreasDescription = ({ route }) => {
                         <Text style={styles.functionalityText}>{functionality.name}</Text>
                       </View>
                     </TouchableOpacity>
-                    {functionalityDescriptionVisibility[index][funcIndex] && (
+                    {functionalityDescriptionVisibility.length > 0 && functionalityDescriptionVisibility[index][funcIndex] && (
                       <Text>{functionality.longDescription}</Text>
                     )}
+
                   </View>
                 )}
                 keyExtractor={(functionality, index) => index.toString()}
