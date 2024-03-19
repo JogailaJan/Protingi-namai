@@ -125,15 +125,15 @@ const Questionnaire = ({ route }) => {
     }
   }, [selectedConfiguration]);
 
-  const handleServiceAreaCheckboxPress = (value) => {
+  const handleServiceAreaCheckboxPress = (group) => {
     setSelectedItems((prevState) => {
       const serviceAreaIndex = prevState.serviceAreas.findIndex(
-        (item) => item.value === value
+        (item) => item.group === group
       );
       if (serviceAreaIndex !== -1) {
         prevState.serviceAreas.splice(serviceAreaIndex, 1);
       } else {
-        prevState.serviceAreas.push({ value });
+        prevState.serviceAreas.push({ group });
       }
       return { ...prevState };
     });
@@ -172,7 +172,7 @@ const Questionnaire = ({ route }) => {
       if (selectedItems.serviceAreas && selectedItems.serviceAreas.length > 0) {
         selectedItems.serviceAreas.forEach((category) => {
           const serviceArea = system.serviceAreas.find(
-            (area) => area.name === category.value
+            (area) => area.name === category.group
           );
           if (!serviceArea) {
             meetsCriteria = false;
@@ -216,9 +216,9 @@ const Questionnaire = ({ route }) => {
         <View style={styles.row}>
           <Checkbox
             value={selectedItems.serviceAreas.some(
-              (category) => category.value === item.value
+              (category) => category.group === item.group
             )}
-            onValueChange={() => handleServiceAreaCheckboxPress(item.value)}
+            onValueChange={() => handleServiceAreaCheckboxPress(item.group)}
           />
             <TouchableOpacity
               onPress={() => {
@@ -288,7 +288,7 @@ const Questionnaire = ({ route }) => {
     keyExtractor={(item, index) => index.toString()}
     ListFooterComponent={() => (
       <>
-        <Text>Jums tinkančio sistemos</Text>
+        <Text>Jums tinkančios sistemos</Text>
         {/* Sistemu sarasas */}
         <FlatList
           data={filterSystems()}
