@@ -54,7 +54,7 @@ const systemsData = {
     }
 };
 
-const systems = [
+const hardCodedSystems = [
     {
         name: 'LB MANAGEMENT',
         link: 'http://system1',
@@ -185,4 +185,147 @@ const systems = [
     },
   ];
 
-  export default systems;
+//   const hardCodedSystems = [
+//     {
+//         name: 'LB MANAGEMENT',
+//         link: 'http://system1',
+//         description: 'http://system4',
+//         serviceAreas: [
+//             {
+//                 name: 'lighting',
+//                 functionalities: ['switching'],
+//             },
+//             {
+//                 name: 'blinds',
+//                 functionalities: ['blinds'],
+//             },
+//             {
+//                 name: 'security',
+//                 functionalities: ['storm-rain-satellite-unit'],
+//             },
+//         ]
+//     },
+//     {
+//         name: 'eNet SMART HOME',
+//         link: 'http://system2',
+//         description: 'http://system4',
+//         serviceAreas: [
+//             {
+//                 name: 'lighting',
+//                 functionalities: ['switching'],
+//             },
+//             {
+//                 name: 'blinds',
+//                 functionalities: ['blinds'],
+//             },
+//             {
+//                 name: 'security',
+//                 functionalities: ['storm-rain-universal-transmitter'],
+//             },
+//             {
+//                 name: 'hvac',
+//                 functionalities: ['radiator-thermostat'],
+//             },
+//             {
+//                 name: 'scenes',
+//                 functionalities: ['scenes-via-wall-transmitter'],
+//             },
+//             {
+//                 name: 'energy',
+//                 functionalities: ['energy-measurement'],
+//             },
+//         ]
+//     },
+//     {
+//         name: 'KNX SMART VISU SERVER',
+//         link: 'http://system3',
+//         description: 'http://system4',
+//         serviceAreas: [
+//             {
+//                 name: 'lighting',
+//                 functionalities: ['switching', 'colour'],
+//             },
+//             {
+//                 name: 'blinds',
+//                 functionalities: ['blinds', 'skylights'],
+//             },
+//             {
+//                 name: 'security',
+//                 functionalities: ['storm-rain', 'leakage'],
+//             },
+//             {
+//                 name: 'hvac',
+//                 functionalities: ['radiator-thermostat', 'boiler'],
+//             },
+//             {
+//                 name: 'scenes',
+//                 functionalities: ['scenes-via-wall-transmitter', 'over-100-scenes'],
+//             },
+//             {
+//                 name: 'energy',
+//                 functionalities: ['energy-measurement'],
+//             },
+//             {
+//                 name: 'weather',
+//                 functionalities: ['weather-forecast'],
+//             },
+//             {
+//                 name: 'window-and-door-monitoring',
+//                 functionalities: ['window-and-door-monitoring'],
+//             },
+//         ]
+//     },
+//     {
+//         name: 'KNX VISU PRO SERVER',
+//         link: 'http://system4',
+//         description: 'http://system4',
+//         serviceAreas: [
+//             {
+//                 name: 'lighting',
+//                 functionalities: ['switching', 'colour', 'sequences'],
+//             },
+//             {
+//                 name: 'blinds',
+//                 functionalities: ['blinds', 'skylights'],
+//             },
+//             {
+//                 name: 'security',
+//                 functionalities: ['storm-rain', 'leakage'],
+//             },
+//             {
+//                 name: 'hvac',
+//                 functionalities: ['radiator-thermostat', 'boiler'],
+//             },
+//             {
+//                 name: 'scenes',
+//                 functionalities: ['scenes-via-wall-transmitter', 'unlimited-scenes'],
+//             },
+//             {
+//                 name: 'energy',
+//                 functionalities: ['energy-measurement', 'SENEC-Home-battery-storage'],
+//             },
+//             {
+//                 name: 'weather',
+//                 functionalities: ['weather-forecast', 'creation-of-rules'],
+//             },
+//             {
+//                 name: 'window-and-door-monitoring',
+//                 functionalities: ['window-and-door-monitoring'],
+//             },
+//         ]
+//     },
+//   ];
+  export default hardCodedSystems;
+ // console.log(systems);
+
+ import { createSystemsFunctionalitiesTable, createSystemsTable, insertSystemsData , insertSystemsFunctionalitiesData, getSystemsData } from "./backend/Database";
+
+ export async function getSystems() {
+    const systems = await getSystemsData();
+    // console.log("Table services - " + JSON.stringify(serviceAreas));
+    // console.log("Hard coded services - " + JSON.stringify(hardCodedServiceAreas));
+    // console.log(hardCodedServiceAreas === serviceAreas);
+    // console.log(JSON.stringify(hardCodedServiceAreas) === JSON.stringify(serviceAreas));
+    return systems;
+}
+ 

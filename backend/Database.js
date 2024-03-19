@@ -10,30 +10,18 @@ const CREATE_TABLE_SYSTEMS = `
   );
 `;
 
-const INSERT_SYSTEMS_DATA = `
-  INSERT INTO Systems (name, link, description) VALUES 
-  ('LB MANAGEMENT', 'http://system1', ''),
-  ('eNet SMART HOME', 'http://system2', ''),
-  ('KNX SMART VISU SERVER', 'http://system3', ''),
-  ('KNX VISU PRO SERVER', 'http://system4', '');
-`;
-
-const DELETE_SYSTEMS_DATA = `
-    DELETE FROM Systems;
-`;
-
-const DELETE_SERVICE_AREAS_DATA = `
-    DELETE FROM ServiceAreas;
-`;
-
 const CREATE_TABLE_SERVICE_AREAS = `
     CREATE TABLE IF NOT EXISTS ServiceAreas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        value TEXT NOT NULL,
+        "group" TEXT NOT NULL,
         longDescription TEXT,
         shortDescription TEXT
     );
+`;
+
+const DROP_TABLE_SERVICE_AREAS = `
+  DROP TABLE IF EXISTS ServiceAreas;
 `;
 
 const CREATE_TABLE_FUNCTIONALITIES = `
@@ -45,30 +33,62 @@ const CREATE_TABLE_FUNCTIONALITIES = `
         longDescription TEXT,
         shortDescription TEXT,
         serviceAreaId INTEGER,
-        FOREIGN KEY (serviceAreaId) REFERENCES ServiceAreas(id)
+    );
+`;
+//        FOREIGN KEY (serviceAreaId) REFERENCES ServiceAreas(id)
+
+const CREATE_TABLE_SYSTEMS_FUNCTIONALITIES = `
+    CREATE TABLE IF NOT EXISTS SystemsFunctionalities (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        systemName TEXT NOT NULL,
+        functionalityValue TEXT NOT NULL
     );
 `;
 
-const INSERT_SERVICE_AREAS_DATA = `
-  INSERT INTO ServiceAreas (name, value, longDescription, shortDescription) VALUES 
-  ('Lighting', 'lighting', '', ''),
-  ('Security', 'security', '', ''),
-  ('Weather', 'weather', '', '');
+const DELETE_SYSTEMS_DATA = `
+    DELETE FROM Systems;
 `;
 
-const INSERT_FUNCTIONALITIES_DATA = `
-  INSERT INTO Functionalities (name, "group", value, longDescription, shortDescription, serviceAreaId) VALUES 
-  ('Switching', 'lighting', 'switching', '', '', 1),
-  ('Colour', 'lighting', 'colour', '', '', 1),
-  ('Sequences', 'lighting', 'sequences', '', '', 1),
-  ('Storm/Rain Satellite Unit', 'security', 'storm-rain-satellite-unit', '', '', 2),
-  ('Storm/Rain Universal Transmitter', 'security', 'storm-rain-universal-transmitter', '', '', 2),
-  ('Storm/Rain', 'security', 'storm-rain', '', '', 2),
-  ('Leakage', 'security', 'leakage', '', '', 2),
-  ('Weather forecast', 'weather', 'weather-forecast', '', '', 3),
-  ('Weather station', 'weather', 'weather-station', '', '', 3),
-  ('Creation of rules', 'weather', 'creation-of-rules', '', '', 3);
+const DELETE_SERVICE_AREAS_DATA = `
+    DELETE FROM ServiceAreas;
 `;
+
+const DELETE_FUNCTIONALITIES_DATA = `
+    DELETE FROM Functionalities;
+`;
+
+const DELETE_SYSTEMS_FUNCTIONALITIES_DATA = `
+    DELETE FROM SystemsFunctionalities;
+`;
+
+// const INSERT_SYSTEMS_DATA = `
+//   INSERT INTO Systems (name, link, description) VALUES
+//   ('LB MANAGEMENT', 'http://system1', ''),
+//   ('eNet SMART HOME', 'http://system2', ''),
+//   ('KNX SMART VISU SERVER', 'http://system3', ''),
+//   ('KNX VISU PRO SERVER', 'http://system4', '');
+// `;
+
+// const INSERT_SERVICE_AREAS_DATA = `
+//   INSERT INTO ServiceAreas (name, value, longDescription, shortDescription) VALUES
+//   ('Lighting', 'lighting', '', ''),
+//   ('Security', 'security', '', ''),
+//   ('Weather', 'weather', '', '');
+// `;
+
+// const INSERT_FUNCTIONALITIES_DATA = `
+//   INSERT INTO Functionalities (name, "group", value, longDescription, shortDescription, serviceAreaId) VALUES
+//   ('Switching', 'lighting', 'switching', '', '', 1),
+//   ('Colour', 'lighting', 'colour', '', '', 1),
+//   ('Sequences', 'lighting', 'sequences', '', '', 1),
+//   ('Storm/Rain Satellite Unit', 'security', 'storm-rain-satellite-unit', '', '', 2),
+//   ('Storm/Rain Universal Transmitter', 'security', 'storm-rain-universal-transmitter', '', '', 2),
+//   ('Storm/Rain', 'security', 'storm-rain', '', '', 2),
+//   ('Leakage', 'security', 'leakage', '', '', 2),
+//   ('Weather forecast', 'weather', 'weather-forecast', '', '', 3),
+//   ('Weather station', 'weather', 'weather-station', '', '', 3),
+//   ('Creation of rules', 'weather', 'creation-of-rules', '', '', 3);
+// `;
 
 const db = SQLite.openDatabase(
   "test1.db",
@@ -98,28 +118,15 @@ export function executeSql(sqlStatement, argument) {
   });
 }
 
-export function createSystemsTable() {
-  return executeSql(CREATE_TABLE_SYSTEMS);
-}
-
-export function createServiceAreasTable() {
+export async function createServiceAreasTable() {
   return executeSql(CREATE_TABLE_SERVICE_AREAS);
 }
 
+export async function dropServiceAreasTable() {
+  return executeSql(DROP_TABLE_SERVICE_AREAS);
+}
 export function createFunctionalitiesTable() {
   return executeSql(CREATE_TABLE_FUNCTIONALITIES);
-}
-
-export function insertSystemsData() {
-  return executeSql(INSERT_SYSTEMS_DATA);
-}
-
-export function insertServiceAreasData() {
-  return executeSql(INSERT_SERVICE_AREAS_DATA);
-}
-
-export function insertFunctionalitiesData() {
-  return executeSql(INSERT_FUNCTIONALITIES_DATA);
 }
 
 export function fetchSystemsData() {
@@ -148,14 +155,14 @@ export function fetchSystemsData() {
 export async function getServiceAreasData() {
   try {
     const serviceAreasQuery = await executeSql(
-      "SELECT name, value, longDescription, shortDescription FROM ServiceAreas"
+      "SELECT name, `group`, longDescription, shortDescription FROM ServiceAreas"
     );
     const serviceAreasData = await Promise.all(
       serviceAreasQuery.rows._array.map(async (area) => {
         //console.log("Fetching service area:", area.name);
         const functionalitiesQuery = await executeSql(
           "SELECT name, `group`, value, longDescription, shortDescription FROM Functionalities WHERE `group` = ?",
-          [area.value]
+          [area.group]
         );
         const functionalitiesData = functionalitiesQuery.rows._array.map(
           (functionality) => ({
@@ -169,7 +176,7 @@ export async function getServiceAreasData() {
         //console.log("Functionalities - " + JSON.stringify(functionalitiesData));
         return {
           name: area.name,
-          value: area.value,
+          group: area.group,
           longDescription: area.longDescription,
           shortDescription: area.shortDescription,
           functionalities: functionalitiesData,
@@ -221,10 +228,10 @@ const addServiceAreasToDatabase = async (serviceAreas) => {
       if (existingServiceAreaCount === 0) {
         // If the service area doesn't exist, insert it into the database
         const insertQuery =
-          "INSERT INTO ServiceAreas (name, value, longDescription, shortDescription) VALUES (?, ?, ?, ?)";
+          "INSERT INTO ServiceAreas (name, `group`, longDescription, shortDescription) VALUES (?, ?, ?, ?)";
         await executeSql(insertQuery, [
           serviceArea.name,
-          serviceArea.value,
+          serviceArea.group,
           serviceArea.longDescription,
           serviceArea.shortDescription,
         ]);
@@ -244,15 +251,80 @@ const addServiceAreasToDatabase = async (serviceAreas) => {
 // Example usage:
 const serviceAreasToAdd = [
   {
-    name: "Heating",
-    value: "heating",
-    longDescription: "Description of the new service area 2",
+    name: "Lighting",
+    group: "value 1",
+    longDescription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
     shortDescription: "Short description 2",
   },
   {
-    name: "Service Area 3",
-    value: "value 2",
-    longDescription: "Description of the new service area 2",
+    name: "Blinds",
+    group: "value 2",
+    longDescription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    shortDescription: "Short description 2",
+  },
+  {
+    name: "Security",
+    group: "value 3",
+    longDescription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    shortDescription: "Short description 2",
+  },
+  {
+    name: "Service Area 4",
+    group: "value 4",
+    longDescription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    shortDescription: "Short description 2",
+  },
+  {
+    name: "Service Area 5",
+    group: "value 5",
+    longDescription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    shortDescription: "Short description 2",
+  },
+  {
+    name: "Service Area 6",
+    group: "value 6",
+    longDescription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    shortDescription: "Short description 2",
+  },
+  {
+    name: "Service Area 7",
+    group: "value 7",
+    longDescription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    shortDescription: "Short description 2",
+  },
+  {
+    name: "Service Area 8",
+    group: "value 8",
+    longDescription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    shortDescription: "Short description 2",
+  },
+  {
+    name: "Service Area 9",
+    group: "value 9",
+    longDescription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    shortDescription: "Short description 2",
+  },
+  {
+    name: "Service Area 10",
+    group: "value 10",
+    longDescription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    shortDescription: "Short description 2",
+  },
+  {
+    name: "Service Area 11",
+    group: "value 11",
+    longDescription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
     shortDescription: "Short description 2",
   },
 ];
@@ -288,7 +360,7 @@ const deleteServiceAreasFromDatabase = async (serviceAreaNames) => {
 
 // Example usage:
 const serviceAreasToDelete = [
-  "Service Area 1",
+  "Service Area",
   "New Service Area 2",
   "Nonexistent Service Area",
 ];
@@ -314,9 +386,9 @@ const updateServiceAreasInDatabase = async (serviceAreasToUpdate) => {
 
       // Update the service area in the database
       const updateQuery =
-        "UPDATE ServiceAreas SET value = ?, longDescription = ?, shortDescription = ? WHERE name = ?";
+        "UPDATE ServiceAreas SET `group` = ?, longDescription = ?, shortDescription = ? WHERE name = ?";
       await executeSql(updateQuery, [
-        area.value,
+        area.group,
         area.longDescription,
         area.shortDescription,
         area.name,
@@ -332,19 +404,19 @@ const updateServiceAreasInDatabase = async (serviceAreasToUpdate) => {
 const serviceAreasToUpdate = [
   {
     name: "Service Area 1",
-    value: "value 1",
+    group: "value 1",
     longDescription: "updated long description",
     shortDescription: "updated short description",
   },
   {
     name: "Service Area 2",
-    value: "updated value",
+    group: "updated value",
     longDescription: "updated long description",
     shortDescription: "updated short description",
   },
   {
     name: "Nonexistent Service Area",
-    value: "updated value",
+    group: "updated value",
     longDescription: "updated long description",
     shortDescription: "updated short description",
   },
@@ -390,10 +462,27 @@ const addFunctionalitiesToDatabase = async (functionalities) => {
 // Example usage:
 const functionalitiesToAdd = [
   {
-    name: "Programmable thermostat",
-    group: "heating",
-    value: "new-value-1",
-    longDescription: "Description of the new functionality 1",
+    name: "Switching",
+    group: "value 1",
+    value: "switching",
+    longDescription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    shortDescription: "Short description 1",
+  },
+  {
+    name: "Dimming",
+    group: "value 1",
+    value: "dimming",
+    longDescription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    shortDescription: "Short description 1",
+  },
+  {
+    name: "Colour temperature",
+    group: "value 1",
+    value: "colour-temperature",
+    longDescription:
+      "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
     shortDescription: "Short description 1",
   },
 ];
@@ -429,11 +518,10 @@ const deleteFunctionalitiesFromDatabase = async (functionalityNames) => {
 
 const functionalitiesToDelete = [
   "Functionality 1",
-  "New Functionality 2",
   "Nonexistent Functionality",
 ];
 
-// deleteFunctionalitiesFromDatabase(functionalitiesToDelete);
+//deleteFunctionalitiesFromDatabase(functionalitiesToDelete);
 
 // Function to update selected functionalities in the database
 const updateFunctionalitiesInDatabase = async (functionalitiesToUpdate) => {
@@ -525,6 +613,398 @@ export async function checkIfTablesExist() {
     return tableCount > 0;
   } catch (error) {
     console.error("Error checking if tables exist:", error);
+    throw error;
+  }
+}
+
+/////////////////////////////////////////////////////
+
+export function createSystemsTable() {
+  return executeSql(CREATE_TABLE_SYSTEMS);
+}
+
+export function createSystemsFunctionsTable() {
+  console.log("Executing CREATE_TABLE_SYSTEMS_FUNCTIONALITIES...");
+  return executeSql(CREATE_TABLE_SYSTEMS_FUNCTIONALITIES)
+    .then(() => {
+      console.log(
+        "CREATE_TABLE_SYSTEMS_FUNCTIONALITIES executed successfully."
+      );
+    })
+    .catch((error) => {
+      console.error(
+        "Error executing CREATE_TABLE_SYSTEMS_FUNCTIONALITIES:",
+        error
+      );
+    });
+}
+
+//createSystemsFunctionsTable();
+
+const addSystemsToDatabase = async (systems) => {
+  try {
+    for (const system of systems) {
+      const existingSystemQuery = await executeSql(
+        "SELECT COUNT(*) AS count FROM Systems WHERE name = ?",
+        [system.name]
+      );
+      const existingSystemCount = existingSystemQuery.rows._array[0].count;
+      if (existingSystemCount === 0) {
+        const insertQuery =
+          "INSERT INTO Systems (name, link, description) VALUES (?, ?, ?)";
+        await executeSql(insertQuery, [
+          system.name,
+          system.link,
+          system.description,
+        ]);
+        console.log("System added to the database:", system.name);
+      } else {
+        console.log("System already exists in the database:", system.name);
+      }
+    }
+  } catch (error) {
+    console.error("Error adding systems to the database:", error);
+  }
+};
+
+// Example usage:
+const systemsToAdd = [
+  {
+    name: "LB MANAGEMENT",
+    link: "http://system1",
+    description: "description of LB MANAGEMENT",
+  },
+  {
+    name: "eNet SMART HOME",
+    link: "http://system2",
+    description: "description of eNet SMART HOME",
+  },
+  {
+    name: "KNX VISU PRO SERVER",
+    link: "http://system3",
+    description: "description of KNX",
+  },
+  {
+    name: "JUNG HOME",
+    link: "http://system4",
+    description: "description of JUNG HOME",
+  },
+];
+
+//addSystemsToDatabase(systemsToAdd);
+
+const deleteSystemsFromDatabase = async (systemNames) => {
+  try {
+    for (const name of systemNames) {
+      const existsQuery =
+        "SELECT COUNT(*) AS count FROM Systems WHERE name = ?";
+      const result = await executeSql(existsQuery, [name]);
+      const count = result.rows.item(0).count;
+
+      if (count === 0) {
+        console.log(
+          `System '${name}' does not exist in the database. Skipping deletion.`
+        );
+        continue; // Skip to the next iteration
+      }
+
+      const deleteQuery = "DELETE FROM Systems WHERE name = ?";
+      await executeSql(deleteQuery, [name]);
+      console.log("System deleted from the database:", name);
+    }
+  } catch (error) {
+    console.error("Error deleting systems from the database:", error);
+  }
+};
+
+const systemsToDelete = [
+  "Service Area 1",
+  "New Service Area 2",
+  "Nonexistent Service Area",
+];
+
+//deleteSystemsFromDatabase(systemsToDelete);
+
+const updateSystemsInDatabase = async (systemsToUpdate) => {
+  try {
+    for (const system of systemsToUpdate) {
+      const existsQuery =
+        "SELECT COUNT(*) AS count FROM Systems WHERE name = ?";
+      const result = await executeSql(existsQuery, [system.name]);
+      const count = result.rows.item(0).count;
+
+      if (count === 0) {
+        console.log(
+          `System '${system.name}' does not exist in the database. Skipping update.`
+        );
+        continue; // Skip to the next iteration
+      }
+
+      const updateQuery =
+        "UPDATE Systems SET link = ?, description = ? WHERE name = ?";
+      await executeSql(updateQuery, [
+        system.link,
+        system.description,
+        system.name,
+      ]);
+      console.log("System updated in the database:", system.name);
+    }
+  } catch (error) {
+    console.error("Error updating systems in the database:", error);
+  }
+};
+
+const systemsToUpdate = [
+  {
+    name: "Service Area 1",
+    link: "value 1",
+    description: "updated long description",
+  },
+  {
+    name: "Service Area 2",
+    link: "updated value",
+    description: "updated long description",
+  },
+  {
+    name: "Nonexistent Service Area",
+    link: "updated value",
+    description: "updated long description",
+  },
+];
+
+//updateSystemsInDatabase(systemsToUpdate);
+
+const addSystemsFunctionalitiesToDatabase = async (systemsFunctionalities) => {
+  try {
+    for (const systemFunctionality of systemsFunctionalities) {
+      // Check if the system functionality already exists in the database
+      const existingFunctionalityQuery = await executeSql(
+        "SELECT COUNT(*) AS count FROM SystemsFunctionalities WHERE systemName = ? AND functionalityValue = ?",
+        [systemFunctionality.systemName, systemFunctionality.functionalityValue]
+      );
+      const existingFunctionalityCount =
+        existingFunctionalityQuery.rows._array[0].count;
+
+      if (existingFunctionalityCount === 0) {
+        const insertQuery =
+          "INSERT INTO SystemsFunctionalities (systemName, functionalityValue) VALUES (?, ?)";
+        await executeSql(insertQuery, [
+          systemFunctionality.systemName,
+          systemFunctionality.functionalityValue,
+        ]);
+        console.log(
+          "System functionality added to the database:",
+          systemFunctionality
+        );
+      } else {
+        console.log(
+          "System functionality already exists in the database:",
+          systemFunctionality
+        );
+      }
+    }
+  } catch (error) {
+    console.error(
+      "Error adding systems functionalities to the database:",
+      error
+    );
+  }
+};
+
+const systemsFunctionalitiesToAdd = [
+  {
+    systemName: "LB MANAGEMENT",
+    functionalityValue: "switching",
+  },
+  {
+    systemName: "KNX VISU PRO SERVER",
+    functionalityValue: "switching",
+  },
+
+  {
+    systemName: "eNet SMART HOME",
+    functionalityValue: "switching",
+  },
+  {
+    systemName: "JUNG HOME",
+    functionalityValue: "switching",
+  },
+  //dimming
+  {
+    systemName: "LB MANAGEMENT",
+    functionalityValue: "dimming",
+  },
+  {
+    systemName: "KNX VISU PRO SERVER",
+    functionalityValue: "dimming",
+  },
+
+  {
+    systemName: "eNet SMART HOME",
+    functionalityValue: "dimming",
+  },
+  {
+    systemName: "JUNG HOME",
+    functionalityValue: "dimming",
+  },
+  // colour-temperature
+  {
+    systemName: "KNX VISU PRO SERVER",
+    functionalityValue: "colour-temperature",
+  },
+];
+
+addSystemsFunctionalitiesToDatabase(systemsFunctionalitiesToAdd);
+
+const deleteSystemsFunctionalitiesFromDatabase = async (systemNames) => {
+  try {
+    for (const name of systemNames) {
+      // Check if there are any entries for the system in the database
+      const countQuery =
+        "SELECT COUNT(*) AS count FROM SystemsFunctionalities WHERE systemName = ?";
+      const result = await executeSql(countQuery, [name]);
+      const count = result.rows.item(0).count;
+
+      if (count === 0) {
+        console.log(
+          `No system functionality found in the database for '${name}'. Skipping deletion.`
+        );
+        continue; // Skip to the next iteration
+      }
+
+      // If entries exist, delete them
+      const deleteQuery =
+        "DELETE FROM SystemsFunctionalities WHERE systemName = ?";
+      await executeSql(deleteQuery, [name]);
+      console.log("System functionality deleted from the database for:", name);
+    }
+  } catch (error) {
+    console.error(
+      "Error deleting systems functionalities from the database:",
+      error
+    );
+  }
+};
+
+const systemsFunctionalitiesToDelete = [
+  "Service Area 1",
+  "New Service Area 2",
+  "Nonexistent Service Area",
+];
+
+//deleteSystemsFunctionalitiesFromDatabase(systemsFunctionalitiesToDelete);
+
+const updateSystemsFunctionalitiesInDatabase = async (
+  systemsFunctionalitiesToUpdate
+) => {
+  try {
+    for (const systemFunctionality of systemsFunctionalitiesToUpdate) {
+      // Check if there are any entries for the system in the database
+      const countQuery =
+        "SELECT COUNT(*) AS count FROM SystemsFunctionalities WHERE systemName = ?";
+      const result = await executeSql(countQuery, [
+        systemFunctionality.systemName,
+      ]);
+      const count = result.rows.item(0).count;
+
+      if (count === 0) {
+        console.log(
+          `No system functionality found in the database for '${systemFunctionality.systemName}'. Skipping update.`
+        );
+        continue; // Skip to the next iteration
+      }
+
+      // If entries exist, update them
+      const updateQuery =
+        "UPDATE SystemsFunctionalities SET functionalityValue = ? WHERE systemName = ?";
+      await executeSql(updateQuery, [
+        systemFunctionality.functionalityValue,
+        systemFunctionality.systemName,
+      ]);
+      console.log(
+        "System functionality updated in the database for:",
+        systemFunctionality.systemName
+      );
+    }
+  } catch (error) {
+    console.error(
+      "Error updating systems functionalities in the database:",
+      error
+    );
+  }
+};
+
+const systemsFunctionalitiesToUpdate = [
+  {
+    systemName: "KNX VISU PRO SERVER",
+    functionalityValue: "heating",
+  },
+];
+
+//updateSystemsFunctionalitiesInDatabase(systemsFunctionalitiesToUpdate);
+
+export async function getSystemsData() {
+  try {
+    // Fetch systems data from the Systems table
+    const systemsQuery = await executeSql(
+      "SELECT name, link, description FROM Systems"
+    );
+    const systemsData = systemsQuery.rows._array;
+
+    // Initialize an array to store the final systems data
+    const finalSystemsData = [];
+
+    // Iterate over each system to fetch associated functionalities
+    for (const system of systemsData) {
+      // Initialize an array to store service areas
+      const serviceAreas = [];
+
+      // Fetch functionalities associated with the current system
+      const functionalitiesQuery = await executeSql(
+        "SELECT functionalityValue FROM SystemsFunctionalities WHERE systemName = ?",
+        [system.name]
+      );
+      const functionalitiesData = functionalitiesQuery.rows._array;
+
+      // Iterate over each functionality to fetch its group information
+      for (const functionality of functionalitiesData) {
+        // Fetch group information from the Functionalities table
+        const groupQuery = await executeSql(
+          "SELECT `group` FROM Functionalities WHERE value = ?",
+          [functionality.functionalityValue]
+        );
+        const group = groupQuery.rows._array[0].group;
+
+        // Check if a service area with the same group already exists in the serviceAreas array
+        const existingServiceArea = serviceAreas.find(
+          (area) => area.name === group
+        );
+
+        // If the service area doesn't exist, create a new one
+        if (!existingServiceArea) {
+          serviceAreas.push({
+            name: group,
+            functionalities: [functionality.functionalityValue],
+          });
+        } else {
+          // If the service area already exists, add the functionality to its functionalities array
+          existingServiceArea.functionalities.push(
+            functionality.functionalityValue
+          );
+        }
+      }
+
+      // Add the system data with service areas to the final array
+      finalSystemsData.push({
+        name: system.name,
+        link: system.link,
+        description: system.description,
+        serviceAreas: serviceAreas,
+      });
+    }
+
+    return finalSystemsData;
+  } catch (error) {
     throw error;
   }
 }
