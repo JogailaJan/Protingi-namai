@@ -14,14 +14,10 @@ const CREATE_TABLE_SERVICE_AREAS = `
     CREATE TABLE IF NOT EXISTS ServiceAreas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
-        "group" TEXT NOT NULL,
+        value TEXT NOT NULL,
         longDescription TEXT,
         shortDescription TEXT
     );
-`;
-
-const DROP_TABLE_SERVICE_AREAS =`
-  DROP TABLE IF EXISTS ServiceAreas;
 `;
 
 const CREATE_TABLE_FUNCTIONALITIES = `
@@ -108,13 +104,10 @@ export function executeSql(sqlStatement, argument) {
   });
 }
 
-export async function createServiceAreasTable() {
+export function createServiceAreasTable() {
     return executeSql(CREATE_TABLE_SERVICE_AREAS);
 }
 
-export async function dropServiceAreasTable(){
-  return executeSql(DROP_TABLE_SERVICE_AREAS);
-}
 export function createFunctionalitiesTable() {
     return executeSql(CREATE_TABLE_FUNCTIONALITIES);
 }
@@ -144,10 +137,10 @@ export function fetchSystemsData() {
 
 export async function getServiceAreasData() {
     try {
-        const serviceAreasQuery = await executeSql("SELECT name, `group`, longDescription, shortDescription FROM ServiceAreas");
+        const serviceAreasQuery = await executeSql("SELECT name, value, longDescription, shortDescription FROM ServiceAreas");
         const serviceAreasData = await Promise.all(serviceAreasQuery.rows._array.map(async area => {
             //console.log("Fetching service area:", area.name);
-            const functionalitiesQuery = await executeSql("SELECT name, `group`, value, longDescription, shortDescription FROM Functionalities WHERE `group` = ?", [area.group]);
+            const functionalitiesQuery = await executeSql("SELECT name, `group`, value, longDescription, shortDescription FROM Functionalities WHERE `group` = ?", [area.value]);
             const functionalitiesData = functionalitiesQuery.rows._array.map(functionality => ({
                 name: functionality.name,
                 group: functionality.group,
@@ -158,7 +151,7 @@ export async function getServiceAreasData() {
             //console.log("Functionalities - " + JSON.stringify(functionalitiesData));
             return {
                 name: area.name,
-                group: area.group,
+                value: area.value,
                 longDescription: area.longDescription,
                 shortDescription: area.shortDescription,
                 functionalities: functionalitiesData
@@ -205,8 +198,8 @@ const addServiceAreasToDatabase = async (serviceAreas) => {
       const existingServiceAreaCount = existingServiceAreaQuery.rows._array[0].count;
       if (existingServiceAreaCount === 0) {
         // If the service area doesn't exist, insert it into the database
-        const insertQuery = "INSERT INTO ServiceAreas (name, `group`, longDescription, shortDescription) VALUES (?, ?, ?, ?)";
-        await executeSql(insertQuery, [serviceArea.name, serviceArea.group, serviceArea.longDescription, serviceArea.shortDescription]);
+        const insertQuery = "INSERT INTO ServiceAreas (name, value, longDescription, shortDescription) VALUES (?, ?, ?, ?)";
+        await executeSql(insertQuery, [serviceArea.name, serviceArea.value, serviceArea.longDescription, serviceArea.shortDescription]);
         console.log('Service area added to the database:', serviceArea.name);
       } else {
         console.log('Service area already exists in the database:', serviceArea.name);
@@ -220,74 +213,50 @@ const addServiceAreasToDatabase = async (serviceAreas) => {
 // Example usage:
 const serviceAreasToAdd = [
   {
-    name: 'Lighting',
-    group: 'value 1',
-    longDescription: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-    shortDescription: 'Short description 2',
-  },
-  {
-    name: 'Blinds',
-    group: 'value 2',
-    longDescription: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-    shortDescription: 'Short description 2',
-  },
-  {
-    name: 'Security',
-    group: 'value 3',
-    longDescription: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    name: 'Service Area 3',
+    value: 'value 2',
+    longDescription: 'Description of the new service area 2',
     shortDescription: 'Short description 2',
   },
   {
     name: 'Service Area 4',
-    group: 'value 4',
-    longDescription: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    value: 'value 2',
+    longDescription: 'Description of the new service area 2',
     shortDescription: 'Short description 2',
   },
   {
     name: 'Service Area 5',
-    group: 'value 5',
-    longDescription: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    value: 'value 2',
+    longDescription: 'Description of the new service area 2',
     shortDescription: 'Short description 2',
   },
   {
     name: 'Service Area 6',
-    group: 'value 6',
-    longDescription: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    value: 'value 2',
+    longDescription: 'Description of the new service area 2',
     shortDescription: 'Short description 2',
   },
   {
     name: 'Service Area 7',
-    group: 'value 7',
-    longDescription: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    value: 'value 2',
+    longDescription: 'Description of the new service area 2',
     shortDescription: 'Short description 2',
   },
   {
     name: 'Service Area 8',
-    group: 'value 8',
-    longDescription: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    value: 'value 2',
+    longDescription: 'Description of the new service area 2',
     shortDescription: 'Short description 2',
   },
   {
     name: 'Service Area 9',
-    group: 'value 9',
-    longDescription: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-    shortDescription: 'Short description 2',
-  },
-  {
-    name: 'Service Area 10',
-    group: 'value 10',
-    longDescription: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-    shortDescription: 'Short description 2',
-  },
-  {
-    name: 'Service Area 11',
-    group: 'value 11',
-    longDescription: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    value: 'value 2',
+    longDescription: 'Description of the new service area 2',
     shortDescription: 'Short description 2',
   },
 ];
 
-//addServiceAreasToDatabase(serviceAreasToAdd);
+addServiceAreasToDatabase(serviceAreasToAdd);
 
 // Function to delete selected service areas from the database
 const deleteServiceAreasFromDatabase = async (serviceAreaNames) => {
@@ -314,7 +283,7 @@ const deleteServiceAreasFromDatabase = async (serviceAreaNames) => {
 };
 
 // Example usage:
-const serviceAreasToDelete = ['Service Area', 'New Service Area 2', 'Nonexistent Service Area'];
+const serviceAreasToDelete = ['Service Area 1', 'New Service Area 2', 'Nonexistent Service Area'];
 
 //deleteServiceAreasFromDatabase(serviceAreasToDelete);
 
@@ -333,8 +302,8 @@ const updateServiceAreasInDatabase = async (serviceAreasToUpdate) => {
       }
 
       // Update the service area in the database
-      const updateQuery = "UPDATE ServiceAreas SET `group` = ?, longDescription = ?, shortDescription = ? WHERE name = ?";
-      await executeSql(updateQuery, [area.group, area.longDescription, area.shortDescription, area.name]);
+      const updateQuery = "UPDATE ServiceAreas SET value = ?, longDescription = ?, shortDescription = ? WHERE name = ?";
+      await executeSql(updateQuery, [area.value, area.longDescription, area.shortDescription, area.name]);
       console.log('Service area updated in the database:', area.name);
     }
   } catch (error) {
@@ -344,9 +313,9 @@ const updateServiceAreasInDatabase = async (serviceAreasToUpdate) => {
 
 // Example usage:
 const serviceAreasToUpdate = [
-  { name: 'Service Area 1', group: 'value 1', longDescription: 'updated long description', shortDescription: 'updated short description' },
-  { name: 'Service Area 2', group: 'updated value', longDescription: 'updated long description', shortDescription: 'updated short description' },
-  { name: 'Nonexistent Service Area', group: 'updated value', longDescription: 'updated long description', shortDescription: 'updated short description' }
+  { name: 'Service Area 1', value: 'value 1', longDescription: 'updated long description', shortDescription: 'updated short description' },
+  { name: 'Service Area 2', value: 'updated value', longDescription: 'updated long description', shortDescription: 'updated short description' },
+  { name: 'Nonexistent Service Area', value: 'updated value', longDescription: 'updated long description', shortDescription: 'updated short description' }
 ];
 
 //updateServiceAreasInDatabase(serviceAreasToUpdate);
@@ -376,24 +345,10 @@ const addFunctionalitiesToDatabase = async (functionalities) => {
 // Example usage:
 const functionalitiesToAdd = [
   {
-    name: 'Switching',
-    group: 'value 1',
-    value: 'switching',
-    longDescription: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-    shortDescription: 'Short description 1',
-  },
-  {
-    name: 'Dimming',
-    group: 'value 1',
-    value: 'dimming',
-    longDescription: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-    shortDescription: 'Short description 1',
-  },
-  {
-    name: 'Colour temperature',
-    group: 'value 1',
-    value: 'colour-temperature',
-    longDescription: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
+    name: 'Functionality 2',
+    group: 'heating',
+    value: 'new-value-1',
+    longDescription: 'Description of the new functionality 2',
     shortDescription: 'Short description 1',
   },
 ];
@@ -424,9 +379,9 @@ const deleteFunctionalitiesFromDatabase = async (functionalityNames) => {
   }
 };
 
-const functionalitiesToDelete = ['Functionality 1', 'Nonexistent Functionality'];
+const functionalitiesToDelete = ['Functionality 1', 'New Functionality 2', 'Nonexistent Functionality'];
 
-//deleteFunctionalitiesFromDatabase(functionalitiesToDelete);
+// deleteFunctionalitiesFromDatabase(functionalitiesToDelete);
 
 // Function to update selected functionalities in the database
 const updateFunctionalitiesInDatabase = async (functionalitiesToUpdate) => {
@@ -637,48 +592,16 @@ const addSystemsFunctionalitiesToDatabase = async (systemsFunctionalities) => {
 
 const systemsFunctionalitiesToAdd = [
   {
-    systemName: 'LB MANAGEMENT',
-    functionalityValue: 'switching',
-  },
-  {
-    systemName: 'KNX VISU PRO SERVER',
-    functionalityValue: 'switching',
-  },
-
-  {
-    systemName: 'eNet SMART HOME',
-    functionalityValue: 'switching',
-  },
-  {
     systemName: 'JUNG HOME',
     functionalityValue: 'switching',
   },
-  //dimming
-  {
-    systemName: 'LB MANAGEMENT',
-    functionalityValue: 'dimming',
-  },
-  {
-    systemName: 'KNX VISU PRO SERVER',
-    functionalityValue: 'dimming',
-  },
-
   {
     systemName: 'eNet SMART HOME',
-    functionalityValue: 'dimming',
-  },
-  {
-    systemName: 'JUNG HOME',
-    functionalityValue: 'dimming',
-  },
-  // colour-temperature
-  {
-    systemName: 'KNX VISU PRO SERVER',
-    functionalityValue: 'colour-temperature',
+    functionalityValue: 'switching',
   },
 ];
 
-addSystemsFunctionalitiesToDatabase(systemsFunctionalitiesToAdd);
+//addSystemsFunctionalitiesToDatabase(systemsFunctionalitiesToAdd);
 
 const deleteSystemsFunctionalitiesFromDatabase = async (systemNames) => {
   try {

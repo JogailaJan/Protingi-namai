@@ -19,19 +19,20 @@ import {
   insertServiceAreasData,
   deleteAllServiceAreasData,
   getTableNames,
-  checkIfTablesExist
+  checkIfTablesExist,
+  dropServiceAreasTable
 } from "./backend/Database";
 
 const Stack = createNativeStackNavigator();
 const starEmpty = require("./star-empty.png");
 
 export default function App() {
-  // console.log("There are tables - " + checkIfTablesExist());
+  //console.log("There are tables - " + checkIfTablesExist());
   if(!checkIfTablesExist){
       createFunctionalitiesTable();
       createServiceAreasTable();
-      insertServiceAreasData();
-      insertFunctionalitiesData();
+      // insertServiceAreasData();
+      // insertFunctionalitiesData();
   }
   // const { systems, isLoading, error } = fetchSystemsData();
   // // createFunctionalitiesTable();
