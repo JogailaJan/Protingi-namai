@@ -318,7 +318,7 @@ const hardCodedSystems = [
   export default hardCodedSystems;
  // console.log(systems);
 
- import { createSystemsFunctionalitiesTable, createSystemsTable, insertSystemsData , insertSystemsFunctionalitiesData, getSystemsData } from "./backend/Database";
+ import { getSystemsData } from "./backend/Database";
 
  export async function getSystems() {
     const systems = await getSystemsData();
