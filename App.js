@@ -20,6 +20,7 @@ import {
   createAllTables,
   insertDataToAllTables
 } from "./backend/Database";
+// import { updateSystems } from "./backend/Systems/Functions";
 
 const Stack = createNativeStackNavigator();
 
@@ -36,6 +37,7 @@ export default function App() {
       }
       const tableNames = await getTableNames();
       console.log("Table Names:", tableNames);
+      // updateSystems();
     };
 
     initializeDatabase();

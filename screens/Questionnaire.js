@@ -15,7 +15,7 @@ import { getServiceAreas } from "../ServiceAreasAndFunctionalities";
 import { getSystems } from "../Systems";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SaveConfigurationModal from "../components/SaveConfigurationModal";
-import PDFDownloadButton from "../components/PDFDownloadButton"; // Import the PDFDownloadButton component
+import { printToFile } from "../backend/PDFDownload"; // Import the PDFDownloadButton component
 
 const STORAGE_KEY = "savedConfigurations";
 
@@ -57,6 +57,12 @@ const Questionnaire = ({ route }) => {
     loadSavedConfigurations();
   }, []);
 
+  useEffect(() => {
+    if (selectedConfiguration) {
+      setSelectedItems(selectedConfiguration.items);
+    }
+  }, [selectedConfiguration]);
+
   const toggleDirection = (index) => {
     setDirections((prevDirections) => {
       const newDirections = [...prevDirections];
@@ -92,6 +98,7 @@ const Questionnaire = ({ route }) => {
     setIsModalVisible(false);
     setConfigurationName("");
   };
+
   const saveConfiguration = async (name) => {
     try {
       console.log("Saving configuration with name:", name);
@@ -119,13 +126,7 @@ const Questionnaire = ({ route }) => {
     setConfigurationName("");
   };
 
-  useEffect(() => {
-    if (selectedConfiguration) {
-      setSelectedItems(selectedConfiguration.items);
-    }
-  }, [selectedConfiguration]);
-
-  const handleServiceAreaCheckboxPress = (group) => {
+  const handleServiceAreaCheckboxPress = (group, name) => {
     setSelectedItems((prevState) => {
       const serviceAreaIndex = prevState.serviceAreas.findIndex(
         (item) => item.group === group
@@ -133,7 +134,7 @@ const Questionnaire = ({ route }) => {
       if (serviceAreaIndex !== -1) {
         prevState.serviceAreas.splice(serviceAreaIndex, 1);
       } else {
-        prevState.serviceAreas.push({ group });
+        prevState.serviceAreas.push({ group , name});
       }
       return { ...prevState };
     });
@@ -151,7 +152,7 @@ const Questionnaire = ({ route }) => {
     toggleFunctionalityVisibility(index);
   };
 
-  const handleFunctionalityPress = (group, value) => {
+  const handleFunctionalityPress = (group, value, name) => {
     setSelectedItems((prevState) => {
       const functionalityIndex = prevState.functionalities.findIndex(
         (item) => item.group === group && item.value === value
@@ -159,7 +160,7 @@ const Questionnaire = ({ route }) => {
       if (functionalityIndex !== -1) {
         prevState.functionalities.splice(functionalityIndex, 1);
       } else {
-        prevState.functionalities.push({ group, value });
+        prevState.functionalities.push({ group, value, name});
       }
       return { ...prevState };
     });
@@ -200,7 +201,7 @@ const Questionnaire = ({ route }) => {
         });
       }
       if (meetsCriteria) {
-        filteredSystems.push(system.name);
+        filteredSystems.push({ name: system.name, link: system.link });
       }
     });
     return filteredSystems;
@@ -218,7 +219,7 @@ const Questionnaire = ({ route }) => {
             value={selectedItems.serviceAreas.some(
               (category) => category.group === item.group
             )}
-            onValueChange={() => handleServiceAreaCheckboxPress(item.group)}
+            onValueChange={() => handleServiceAreaCheckboxPress(item.group, item.name)}
           />
             <TouchableOpacity
               onPress={() => {
@@ -257,7 +258,8 @@ const Questionnaire = ({ route }) => {
                 onPress={() =>
                   handleFunctionalityPress(
                     functionality.group,
-                    functionality.value
+                    functionality.value,
+                    functionality.name
                   )
                 }
                 style={styles.functionalitiesContainer}
@@ -272,7 +274,8 @@ const Questionnaire = ({ route }) => {
                     onValueChange={() =>
                       handleFunctionalityPress(
                         functionality.group,
-                        functionality.value
+                        functionality.value,
+                        functionality.name
                       )
                     }
                   />
@@ -294,7 +297,8 @@ const Questionnaire = ({ route }) => {
           data={filterSystems()}
           renderItem={({ item }) => (
             <View style={styles.systemContainer}>
-              <Text>{item}</Text>
+              <Text>{item.name}</Text>
+              <Text>{item.link}</Text>
             </View>
           )}
           keyExtractor={(item, index) => index.toString()}
@@ -308,7 +312,10 @@ const Questionnaire = ({ route }) => {
             <Text style={styles.saveButtonText}>Išsaugoti konfigūraciją</Text>
           </TouchableOpacity>
           {/* Atsisiusti pdf mygtukas */}
-          <PDFDownloadButton config={[{ items: selectedItems }]} />
+          {/* <PDFDownloadButton config={[{ items: selectedItems }]}  /> */}
+          <TouchableOpacity onPress={() => printToFile([{ items: selectedItems }])} style={styles.pdfButton}>
+            <Text style={styles.pdfButtonText}>Išsaugoti PDF</Text>
+          </TouchableOpacity>
         </View>
 
         <SaveConfigurationModal
@@ -388,5 +395,19 @@ const styles = StyleSheet.create({
   systemContainer: {
     marginTop: 10,
     alignItems: "center",
+  },
+  pdfButton: {
+    backgroundColor: "white",
+    padding: 15,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: "black",
+    marginTop: 20,
+    alignItems: "center",
+  },
+  pdfButtonText: {
+    color: "black",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
