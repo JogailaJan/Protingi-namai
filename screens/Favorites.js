@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Image, StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { printToFile } from "../backend/PDFDownload"; // Import the PDFDownloadButton component
 
 const STORAGE_KEY = 'savedConfigurations';
 
@@ -47,7 +48,7 @@ export default function Favorites({ navigation }) {
               <TouchableOpacity onPress={() => navigation.navigate('Questionnaire', { selectedConfiguration: item })}>
                 <Image source={require("../icons/magnifying-glass.png")}  style={styles.icon}/>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => printToFile([{ items: item.items }])}>
                 <Image source={require("../icons/download.png")}  style={styles.icon}/>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => deleteConfiguration(index)}>
