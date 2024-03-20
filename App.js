@@ -1,4 +1,5 @@
 import { Text, View } from "react-native";
+import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "./screens/Home";
@@ -13,47 +14,33 @@ import KnxScreen from "./screens/Knx";
 import JungHomeScreen from "./screens/JungHome";
 import {
   fetchSystemsData,
-  createFunctionalitiesTable,
-  createServiceAreasTable,
-  insertFunctionalitiesData,
-  insertServiceAreasData,
-  deleteAllServiceAreasData,
   getTableNames,
   checkIfTablesExist,
-  dropServiceAreasTable
+  dropAllTables,
+  createAllTables,
+  insertDataToAllTables
 } from "./backend/Database";
 
 const Stack = createNativeStackNavigator();
-const starEmpty = require("./star-empty.png");
 
 export default function App() {
-  //console.log("There are tables - " + checkIfTablesExist());
-  if(!checkIfTablesExist){
-      createFunctionalitiesTable();
-      createServiceAreasTable();
-      // insertServiceAreasData();
-      // insertFunctionalitiesData();
-  }
-  // const { systems, isLoading, error } = fetchSystemsData();
-  // // createFunctionalitiesTable();
-  // // createServiceAreasTable();
-  // // insertServiceAreasData();
- // // insertFunctionalitiesData();
-  // if (error) {
-  //   return (
-  //     <View>
-  //       <Text>Error: {error.message}</Text>
-  //     </View>
-  //   );
-  // }
+  dropAllTables();
+  useEffect(() => {
+    const initializeDatabase = async () => {
+      const tablesExist = await checkIfTablesExist();
+      if (!tablesExist) {
+        await createAllTables();
+        await insertDataToAllTables();
+      } else {
+        console.log("Tables already exist.");
+      }
+      const tableNames = await getTableNames();
+      console.log("Table Names:", tableNames);
+    };
 
-  // if (isLoading) {
-  //   return (
-  //     <View>
-  //       <Text>Loading systems...</Text>
-  //     </View>
-  //   );
-  // }
+    initializeDatabase();
+  }, []);
+
 
   return (
     <NavigationContainer>

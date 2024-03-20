@@ -96,7 +96,7 @@ const hardCodedServiceAreas = [
   ];
 export default hardCodedServiceAreas;
  
-import { createFunctionalitiesTable, createServiceAreasTable, insertFunctionalitiesData, insertServiceAreasData, deleteAllServiceAreasData, getServiceAreasData } from "./backend/Database";
+import { getServiceAreasData } from "./backend/Database";
 
  
 //console.log("Hard coded services - " + JSON.stringify(serviceAreas));

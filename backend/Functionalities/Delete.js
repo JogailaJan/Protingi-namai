@@ -1,0 +1,1 @@
+export const functionalitiesToDelete = ['Functionality 1', 'Nonexistent Functionality'];
