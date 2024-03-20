@@ -5,32 +5,39 @@ export default function SystemsDescription({ navigation }) {
   return (
     <View style={styles.container}>
       <Image source={require("../photos/logo.png")} style={styles.logo} />
+      <View style={styles.linefirst}></View>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate("LBManagement")}
+      >
+        <Text style={styles.buttonText}>LB Management</Text>
+      </TouchableOpacity>
       <View style={styles.line}></View>
-      <TouchableOpacity onPress={() => navigation.navigate("LBManagement")}>
-        <Image
-          source={require("../photos/LBManagement.png")}
-          style={styles.systemLB}
-        />
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate("EnetSmartHome")}
+      >
+        <Text style={styles.buttonText}>eNet Smart Home</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("EnetSmartHome")}>
-        <Image
-          source={require("../photos/eNetSmartHome.png")}
-          style={styles.systemEnet}
-        />
+      <View style={styles.line}></View>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate("JungHome")}
+      >
+        <Text style={styles.buttonText}>Jung Home</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("JungHome")}>
-        <Image
-          source={require("../photos/JungHome.png")}
-          style={styles.systemJung}
-        />
+      <View style={styles.line}></View>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate("Knx")}
+      >
+        <Text style={styles.buttonText}>KNX System</Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("Knx")}>
-        <Image
-          source={require("../photos/KNXSystem.png")}
-          style={styles.systemKnx}
-        />
-      </TouchableOpacity>
-      <View style={styles.line2}></View>
+      <View style={styles.line}></View>
+
       <View style={styles.footer}>
         <TouchableOpacity onPress={() => navigation.navigate("Home")}>
           <Image
@@ -53,40 +60,28 @@ const styles = StyleSheet.create({
   logo: {
     width: 150,
     height: 150,
-    marginBottom: 50,
+    marginBottom: 10,
   },
-  systemLB: {
-    width: 360,
-    height: 50,
-    marginRight: 25,
-    marginBottom: 25,
+  button: {
+    backgroundColor: "white",
+    paddingVertical: 20,
   },
-  systemEnet: {
-    width: 350,
-    height: 50,
-    marginBottom: 25,
+  buttonText: {
+    color: "black",
+    fontSize: 30,
+    fontWeight: "bold",
   },
-  systemJung: {
-    width: 350,
-    height: 50,
-    marginBottom: 25,
-  },
-  systemKnx: {
-    width: 180,
-    height: 47,
-    marginBottom: 25,
+  linefirst: {
+    borderBottomColor: "black",
+    borderBottomWidth: 1,
+    width: "90%",
+    marginBottom: 80,
   },
   line: {
     borderBottomColor: "black",
     borderBottomWidth: 1,
     width: "80%",
     marginBottom: 10,
-  },
-  line2: {
-    width: "100%",
-    borderBottomColor: "black",
-    borderBottomWidth: 1,
-    marginBottom: 120,
   },
   footer: {
     width: "100%",
