@@ -34,7 +34,7 @@ export default function Home({ navigation }) {
         style={styles.button}
         onPress={() => navigation.navigate("Favorites")}
       >
-        <Text style={styles.buttonText}>Mėgstamiausi</Text>
+        <Text style={styles.buttonText}>Konfiguracijos</Text>
       </TouchableOpacity>
       <View style={styles.line}></View>
       <View style={styles.footer}>
