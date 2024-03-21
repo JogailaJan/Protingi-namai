@@ -16,14 +16,14 @@ import { getSystems } from "../Systems";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SaveConfigurationModal from "../components/SaveConfigurationModal";
 import { printToFile } from "../backend/PDFDownload"; // Import the PDFDownloadButton component
-
+ 
 const STORAGE_KEY = "savedConfigurations";
-
+ 
 const Questionnaire = ({ route }) => {
   const [serviceAreas, setServiceAreas] = useState([]);
   const [systems, setSystems] = useState([]);
   const { selectedConfiguration } = route.params || {};
-
+ 
   const [selectedItems, setSelectedItems] = useState({
     functionalities: [],
     serviceAreas: [],
@@ -34,8 +34,10 @@ const Questionnaire = ({ route }) => {
   const [savedConfigurations, setSavedConfigurations] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [configurationName, setConfigurationName] = useState("");
-  const [directions, setDirections] = useState(Array(serviceAreas.length).fill('up'));
-
+  const [directions, setDirections] = useState(
+    Array(serviceAreas.length).fill("up")
+  );
+ 
   useEffect(() => {
     const loadSavedConfigurations = async () => {
       try {
@@ -51,26 +53,25 @@ const Questionnaire = ({ route }) => {
       const areas = await getServiceAreas();
       setServiceAreas(areas);
       setSystems(await getSystems());
-
     };
     fetchData();
     loadSavedConfigurations();
   }, []);
-
+ 
   useEffect(() => {
     if (selectedConfiguration) {
       setSelectedItems(selectedConfiguration.items);
     }
   }, [selectedConfiguration]);
-
+ 
   const toggleDirection = (index) => {
     setDirections((prevDirections) => {
       const newDirections = [...prevDirections];
-      newDirections[index] = newDirections[index] === 'up' ? 'down' : 'up';
+      newDirections[index] = newDirections[index] === "up" ? "down" : "up";
       return newDirections;
     });
   };
-
+ 
   const handleSaveButtonPress = () => {
     if (selectedConfiguration) {
       handleSave(selectedConfiguration.name);
@@ -78,7 +79,7 @@ const Questionnaire = ({ route }) => {
       setIsModalVisible(true);
     }
   };
-
+ 
   const handleSave = async (name) => {
     if (selectedConfiguration) {
       const updatedConfigurations = savedConfigurations.map((config) => {
@@ -98,7 +99,7 @@ const Questionnaire = ({ route }) => {
     setIsModalVisible(false);
     setConfigurationName("");
   };
-
+ 
   const saveConfiguration = async (name) => {
     try {
       console.log("Saving configuration with name:", name);
@@ -120,12 +121,12 @@ const Questionnaire = ({ route }) => {
       console.error("Error saving configuration:", error);
     }
   };
-
+ 
   const handleCancel = () => {
     setIsModalVisible(false);
     setConfigurationName("");
   };
-
+ 
   const handleServiceAreaCheckboxPress = (group, name) => {
     setSelectedItems((prevState) => {
       const serviceAreaIndex = prevState.serviceAreas.findIndex(
@@ -134,12 +135,12 @@ const Questionnaire = ({ route }) => {
       if (serviceAreaIndex !== -1) {
         prevState.serviceAreas.splice(serviceAreaIndex, 1);
       } else {
-        prevState.serviceAreas.push({ group , name});
+        prevState.serviceAreas.push({ group, name });
       }
       return { ...prevState };
     });
   };
-
+ 
   const toggleFunctionalityVisibility = (index) => {
     setFunctionalityVisibility((prevState) => {
       const newState = [...prevState];
@@ -147,11 +148,11 @@ const Questionnaire = ({ route }) => {
       return newState;
     });
   };
-
+ 
   const handleServiceAreaTextPress = (index) => {
     toggleFunctionalityVisibility(index);
   };
-
+ 
   const handleFunctionalityPress = (group, value, name) => {
     setSelectedItems((prevState) => {
       const functionalityIndex = prevState.functionalities.findIndex(
@@ -160,12 +161,12 @@ const Questionnaire = ({ route }) => {
       if (functionalityIndex !== -1) {
         prevState.functionalities.splice(functionalityIndex, 1);
       } else {
-        prevState.functionalities.push({ group, value, name});
+        prevState.functionalities.push({ group, value, name });
       }
       return { ...prevState };
     });
   };
-
+ 
   function filterSystems() {
     const filteredSystems = [];
     systems.forEach((system) => {
@@ -206,21 +207,21 @@ const Questionnaire = ({ route }) => {
     });
     return filteredSystems;
   }
-
+ 
   return (
     <FlatList
-    data={serviceAreas}
-    renderItem={({ item, index }) => (
-      // Visas paslaugos srities su funkcijomis konteineris
-      <View style={styles.serviceAreaContainer}>
-        {/* Paslaugos srities checkboxas su pavadinimu */}
-        <View style={styles.row}>
-          <Checkbox
-            value={selectedItems.serviceAreas.some(
-              (category) => category.group === item.group
-            )}
-            onValueChange={() => handleServiceAreaCheckboxPress(item.group, item.name)}
-          />
+      data={serviceAreas}
+      renderItem={({ item, index }) => (
+        // Visas paslaugos srities su funkcijomis konteineris
+        <View style={styles.serviceAreaContainer}>
+          {/* Paslaugos srities checkboxas su pavadinimu */}
+          <View style={styles.row}>
+            <Checkbox
+              value={selectedItems.serviceAreas.some(
+                (category) => category.group === item.group
+              )}
+              onValueChange={() => handleServiceAreaCheckboxPress(item.group, item.name)}
+            />
             <TouchableOpacity
               onPress={() => {
                 handleServiceAreaTextPress(index);
@@ -239,175 +240,188 @@ const Questionnaire = ({ route }) => {
             >
               <Image
                 source={
-                  directions[index] === 'up'
+                  directions[index] === "up"
                     ? require("../arrow-down.png")
                     : require("../arrow-right.png")
                 }
                 style={styles.arrow}
               />
             </TouchableOpacity>
-        </View>
-        {/* Atskiriamoji linija */}
-        <View style={styles.separator}></View>
-        {functionalityVisibility[index] && (
-          <FlatList
-            data={item.functionalities}
-            renderItem={({ item: functionality }) => (
-              //Funkcijos chekboxas ir pavadinimas
-              <TouchableOpacity
-                onPress={() =>
-                  handleFunctionalityPress(
-                    functionality.group,
-                    functionality.value,
-                    functionality.name
-                  )
-                }
-                style={styles.functionalitiesContainer}
-              >
-                <View style={styles.row}>
-                  <Checkbox
-                    value={selectedItems.functionalities.some(
-                      (category) =>
-                        category.value === functionality.value &&
-                        category.group === functionality.group
-                    )}
-                    onValueChange={() =>
-                      handleFunctionalityPress(
-                        functionality.group,
-                        functionality.value,
-                        functionality.name
-                      )
-                    }
-                  />
-                  <Text style={styles.functionalityText}>{functionality.name}</Text>
-                </View>
-              </TouchableOpacity>
-            )}
-            keyExtractor={(functionality, index) => index.toString()}
-          />
-        )}
-      </View>
-    )}
-    keyExtractor={(item, index) => index.toString()}
-    ListFooterComponent={() => (
-      <>
-        <Text>Jums tinkančios sistemos</Text>
-        {/* Sistemu sarasas */}
-        <FlatList
-          data={filterSystems()}
-          renderItem={({ item }) => (
-            <View style={styles.systemContainer}>
-              <Text>{item.name}</Text>
-              <Text>{item.link}</Text>
-            </View>
+          </View>
+          {/* Atskiriamoji linija */}
+          <View style={styles.separator}></View>
+          {functionalityVisibility[index] && (
+            <FlatList
+              data={item.functionalities}
+              renderItem={({ item: functionality }) => (
+                //Funkcijos chekboxas ir pavadinimas
+                <TouchableOpacity
+                  onPress={() =>
+                    handleFunctionalityPress(
+                      functionality.group,
+                      functionality.value,
+                      functionality.name
+                    )
+                  }
+                  style={styles.functionalitiesContainer}
+                >
+                  <View style={styles.row}>
+                    <Checkbox
+                      value={selectedItems.functionalities.some(
+                        (category) =>
+                          category.value === functionality.value &&
+                          category.group === functionality.group
+                      )}
+                      onValueChange={() =>
+                        handleFunctionalityPress(
+                          functionality.group,
+                          functionality.value,
+                          functionality.name
+                        )
+                      }
+                    />
+                    <Text style={styles.functionalityText}>{functionality.name}</Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(functionality, index) => index.toString()}
+            />
           )}
-          keyExtractor={(item, index) => index.toString()}
-        />
-        <View style={[styles.row, { paddingBottom: 20, paddingLeft: 0, justifyContent: "space-around" }]}>
-          {/* Issaugoti konfiguracija mygtukas */}
-          <TouchableOpacity
-            onPress={handleSaveButtonPress}
-            style={[styles.saveButton]}
-          >
-            <Text style={styles.saveButtonText}>Išsaugoti konfigūraciją</Text>
-          </TouchableOpacity>
-          {/* Atsisiusti pdf mygtukas */}
-          {/* <PDFDownloadButton config={[{ items: selectedItems }]}  /> */}
-          <TouchableOpacity onPress={() => printToFile([{ items: selectedItems }])} style={styles.pdfButton}>
-            <Text style={styles.pdfButtonText}>Išsaugoti PDF</Text>
-          </TouchableOpacity>
         </View>
-
-        <SaveConfigurationModal
-          visible={isModalVisible}
-          onSave={handleSave}
-          onCancel={handleCancel}
-        />
-      </>
+      )}
+      keyExtractor={(item, index) => index.toString()}
+      ListFooterComponent={() => (
+<>
+          <Text>Jums tinkančios sistemos</Text>
+          {/* Sistemu sarasas */}
+          <View style={styles.table}>
+            <Text style={styles.tableHeader}>Tinkančios sistemos</Text>
+            {filterSystems().map((system, index) => (
+              <Text key={index} style={styles.tableRow}>
+                {system}
+              </Text>
+            ))}
+          </View>
+          <View style={[styles.row, { paddingBottom: 20, paddingLeft: 0, justifyContent: "space-around" }]}>
+            {/* Issaugoti konfiguracija mygtukas */}
+            <TouchableOpacity
+              onPress={handleSaveButtonPress}
+              style={[styles.saveButton]}
+            >
+              <Text style={styles.saveButtonText}>Išsaugoti konfigūraciją</Text>
+            </TouchableOpacity>
+            {/* Atsisiusti pdf mygtukas */}
+            {/* <PDFDownloadButton config={[{ items: selectedItems }]}  /> */}
+            <TouchableOpacity onPress={() => printToFile([{ items: selectedItems }])} style={styles.pdfButton}>
+              <Text style={styles.pdfButtonText}>Išsaugoti PDF</Text>
+            </TouchableOpacity>
+          </View >
+             <SaveConfigurationModal
+                visible={isModalVisible}
+                onSave={handleSave}
+                onCancel={handleCancel}
+              />
+            </>
     )}
-  />
+/>
   );
 };
-
-export default Questionnaire;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+ 
+          export default Questionnaire;
+ 
+          const styles = StyleSheet.create({
+            container: {
+            flex: 1,
+          backgroundColor: "#fff",
+          alignItems: "center",
+          justifyContent: "center",
   },
-  arrow: {
-    width: 30,
-    height: 30,
+          arrow: {
+            width: 30,
+          height: 30,
   },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
+          row: {
+            flexDirection: "row",
+          alignItems: "center",
   },
-  textContainer: {
-    flex: 1, // Occupy remaining space
+          textContainer: {
+            flex: 1, // Occupy remaining space
   },
-  arrowContainer: {
-    marginLeft: 'auto', // Push to the right
-    marginRight: 30,
+          arrowContainer: {
+            marginLeft: "auto", // Push to the right
+          marginRight: 30,
   },
-  serviceAreaContainer: {
-    marginBottom: 10,
-    marginTop: 10,
-    paddingLeft: 10,
+          serviceAreaContainer: {
+            marginBottom: 10,
+          marginTop: 10,
+          paddingLeft: 10,
   },
-  functionalitiesContainer: {
-    marginBottom: 10,
-    marginTop: 10,
-    paddingLeft: 10,
+          functionalitiesContainer: {
+            marginBottom: 10,
+          marginTop: 10,
+          paddingLeft: 10,
   },
-  serviceAreaText: {
-    fontSize: 30,
-    fontWeight: "bold",
-    marginLeft: 8,
+          serviceAreaText: {
+            fontSize: 30,
+          fontWeight: "bold",
+          marginLeft: 8,
   },
-  functionalityText: {
-    fontSize: 15,
-    marginLeft: 8,
+          functionalityText: {
+            fontSize: 15,
+          marginLeft: 8,
   },
-  separator: {
-    borderBottomWidth: 1,
-    borderBottomColor: "black",
-    marginBottom: 5,
-    marginTop: 15,
+          separator: {
+            borderBottomWidth: 1,
+          borderBottomColor: "black",
+          marginBottom: 5,
+          marginTop: 15,
   },
-  saveButton: {
-    backgroundColor: "white",
-    padding: 15,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "black",
-    marginTop: 20,
-    alignItems: "center",
+          saveButton: {
+            backgroundColor: "white",
+          padding: 15,
+          borderRadius: 10,
+          borderWidth: 1,
+          borderColor: "black",
+          marginTop: 20,
+          alignItems: "center",
   },
-  saveButtonText: {
-    color: "black",
-    fontSize: 18,
-    fontWeight: "bold",
+          saveButtonText: {
+            color: "black",
+          fontSize: 18,
+          fontWeight: "bold",
   },
-  systemContainer: {
-    marginTop: 10,
-    alignItems: "center",
+          systemContainer: {
+            marginTop: 10,
+          alignItems: "center",
   },
-  pdfButton: {
-    backgroundColor: "white",
-    padding: 15,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "black",
-    marginTop: 20,
-    alignItems: "center",
+ 
+          table: {
+            marginTop: 20,
+          borderWidth: 1,
+          borderColor: "black",
   },
-  pdfButtonText: {
-    color: "black",
-    fontSize: 18,
-    fontWeight: "bold",
+          tableHeader: {
+            backgroundColor: "lightgray",
+          padding: 10,
+          fontWeight: "bold",
+  },
+          tableRow: {
+            padding: 10,
+          borderBottomWidth: 1,
+          borderBottomColor: "black",
+  },
+          pdfButton: {
+            backgroundColor: "white",
+          padding: 15,
+          borderRadius: 10,
+          borderWidth: 1,
+          borderColor: "black",
+          marginTop: 20,
+          alignItems: "center",
+  },
+          pdfButtonText: {
+            color: "black",
+          fontSize: 18,
+          fontWeight: "bold",
   },
 });

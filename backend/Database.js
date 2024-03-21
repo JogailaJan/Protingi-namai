@@ -1,13 +1,29 @@
-import * as SQLite from 'expo-sqlite';
-import { useState, useEffect } from 'react';
-import { executeSql } from './ExecuteSQL';
-import { dropFunctionalitiesTable, createFunctionalitiesTable, addFunctionalities } from './Functionalities/Functions';
-import { dropSystemsFunctionalitiesTable,  createSystemsFunctionalitiesTable, addSystemsFunctionalities} from './SystemsFunctionalities/Functions';
-import { dropSystemsTable, createSystemsTable, addSystems } from './Systems/Functions';
-import { dropServiceAreasTable, createServiceAreasTable, addServiceAreas } from './ServiceAreas/Functions';
+import * as SQLite from "expo-sqlite";
+import { useState, useEffect } from "react";
+import { executeSql } from "./ExecuteSQL";
+import {
+  dropFunctionalitiesTable,
+  createFunctionalitiesTable,
+  addFunctionalities,
+} from "./Functionalities/Functions";
+import {
+  dropSystemsFunctionalitiesTable,
+  createSystemsFunctionalitiesTable,
+  addSystemsFunctionalities,
+} from "./SystemsFunctionalities/Functions";
+import {
+  dropSystemsTable,
+  createSystemsTable,
+  addSystems,
+} from "./Systems/Functions";
+import {
+  dropServiceAreasTable,
+  createServiceAreasTable,
+  addServiceAreas,
+} from "./ServiceAreas/Functions";
 
 // const INSERT_SYSTEMS_DATA = `
-//   INSERT INTO Systems (name, link, description) VALUES 
+//   INSERT INTO Systems (name, link, description) VALUES
 //   ('LB MANAGEMENT', 'http://system1', ''),
 //   ('eNet SMART HOME', 'http://system2', ''),
 //   ('KNX SMART VISU SERVER', 'http://system3', ''),
@@ -15,13 +31,11 @@ import { dropServiceAreasTable, createServiceAreasTable, addServiceAreas } from 
 // `;
 
 // const INSERT_SERVICE_AREAS_DATA = `
-//   INSERT INTO ServiceAreas (name, value, longDescription, shortDescription) VALUES 
+//   INSERT INTO ServiceAreas (name, value, longDescription, shortDescription) VALUES
 //   ('Lighting', 'lighting', '', ''),
 //   ('Security', 'security', '', ''),
 //   ('Weather', 'weather', '', '');
 // `;
-
-
 
 export function fetchSystemsData() {
   const [systems, setSystems] = useState([]);
@@ -47,34 +61,43 @@ export function fetchSystemsData() {
 }
 
 export async function getServiceAreasData() {
-    try {
-        const serviceAreasQuery = await executeSql("SELECT name, `group`, longDescription, shortDescription FROM ServiceAreas");
-        const serviceAreasData = await Promise.all(serviceAreasQuery.rows._array.map(async area => {
-            //console.log("Fetching service area:", area.name);
-            const functionalitiesQuery = await executeSql("SELECT name, `group`, value, longDescription, shortDescription FROM Functionalities WHERE `group` = ?", [area.group]);
-            const functionalitiesData = functionalitiesQuery.rows._array.map(functionality => ({
-                name: functionality.name,
-                group: functionality.group,
-                value: functionality.value,
-                longDescription: functionality.longDescription,
-                shortDescription: functionality.shortDescription
-            }));
-            //console.log("Functionalities - " + JSON.stringify(functionalitiesData));
-            return {
-                name: area.name,
-                group: area.group,
-                longDescription: area.longDescription,
-                shortDescription: area.shortDescription,
-                functionalities: functionalitiesData
-            };
-        }));
-        //console.log(serviceAreasData);
-        return serviceAreasData;
-    } catch (error) {
-        throw error;
-    }
+  try {
+    const serviceAreasQuery = await executeSql(
+      "SELECT name, `group`, longDescription, shortDescription FROM ServiceAreas"
+    );
+    const serviceAreasData = await Promise.all(
+      serviceAreasQuery.rows._array.map(async (area) => {
+        //console.log("Fetching service area:", area.name);
+        const functionalitiesQuery = await executeSql(
+          "SELECT name, `group`, value, longDescription, shortDescription FROM Functionalities WHERE `group` = ?",
+          [area.group]
+        );
+        const functionalitiesData = functionalitiesQuery.rows._array.map(
+          (functionality) => ({
+            name: functionality.name,
+            group: functionality.group,
+            value: functionality.value,
+            longDescription: functionality.longDescription,
+            shortDescription: functionality.shortDescription,
+          })
+        );
+        //console.log("Functionalities - " + JSON.stringify(functionalitiesData));
+        return {
+          name: area.name,
+          group: area.group,
+          longDescription: area.longDescription,
+          shortDescription: area.shortDescription,
+          functionalities: functionalitiesData,
+        };
+      })
+    );
+    //console.log(serviceAreasData);
+    return serviceAreasData;
+  } catch (error) {
+    throw error;
+  }
 }
-  
+
 // export async function getFunctionalitiesData() {
 //   try {
 //       const functionalitiesQuery = await executeSql("SELECT name, `group`, value, longDescription, shortDescription FROM Functionalities WHERE `group` = ?", ["lighting"]);
@@ -96,7 +119,7 @@ export const getTableNames = async (db) => {
   try {
     const query = "SELECT name FROM sqlite_master WHERE type='table'";
     const result = await executeSql(query, []);
-    const tableNames = result.rows._array.map(row => row.name);
+    const tableNames = result.rows._array.map((row) => row.name);
     console.log("Table names:", tableNames);
     console.log("Number of tables:", tableNames.length);
     return tableNames;
@@ -108,20 +131,21 @@ export const getTableNames = async (db) => {
 
 export async function checkIfTablesExist() {
   try {
-      // Query to check if there are any tables in the database, excluding sqlite_sequence
-      const query = "SELECT count(*) AS tableCount FROM sqlite_master WHERE type='table' AND name <> 'sqlite_sequence';";
+    // Query to check if there are any tables in the database, excluding sqlite_sequence
+    const query =
+      "SELECT count(*) AS tableCount FROM sqlite_master WHERE type='table' AND name <> 'sqlite_sequence';";
 
-      // Execute the query
-      const result = await executeSql(query);
+    // Execute the query
+    const result = await executeSql(query);
 
-      // Get the number of tables
-      const tableCount = result.rows.item(0).tableCount;
+    // Get the number of tables
+    const tableCount = result.rows.item(0).tableCount;
 
-      // Return true if there are tables (excluding sqlite_sequence), false otherwise
-      return tableCount > 0;
+    // Return true if there are tables (excluding sqlite_sequence), false otherwise
+    return tableCount > 0;
   } catch (error) {
-      console.error('Error checking if tables exist:', error);
-      throw error;
+    console.error("Error checking if tables exist:", error);
+    throw error;
   }
 }
 
@@ -130,7 +154,9 @@ export async function checkIfTablesExist() {
 export async function getSystemsData() {
   try {
     // Fetch systems data from the Systems table
-    const systemsQuery = await executeSql("SELECT name, link, description FROM Systems");
+    const systemsQuery = await executeSql(
+      "SELECT name, link, description FROM Systems"
+    );
     const systemsData = systemsQuery.rows._array;
 
     // Initialize an array to store the final systems data
@@ -142,27 +168,37 @@ export async function getSystemsData() {
       const serviceAreas = [];
 
       // Fetch functionalities associated with the current system
-      const functionalitiesQuery = await executeSql("SELECT functionalityValue FROM SystemsFunctionalities WHERE systemName = ?", [system.name]);
+      const functionalitiesQuery = await executeSql(
+        "SELECT functionalityValue FROM SystemsFunctionalities WHERE systemName = ?",
+        [system.name]
+      );
       const functionalitiesData = functionalitiesQuery.rows._array;
 
       // Iterate over each functionality to fetch its group information
       for (const functionality of functionalitiesData) {
         // Fetch group information from the Functionalities table
-        const groupQuery = await executeSql("SELECT `group` FROM Functionalities WHERE value = ?", [functionality.functionalityValue]);
+        const groupQuery = await executeSql(
+          "SELECT `group` FROM Functionalities WHERE value = ?",
+          [functionality.functionalityValue]
+        );
         const group = groupQuery.rows._array[0].group;
 
         // Check if a service area with the same group already exists in the serviceAreas array
-        const existingServiceArea = serviceAreas.find(area => area.name === group);
+        const existingServiceArea = serviceAreas.find(
+          (area) => area.name === group
+        );
 
         // If the service area doesn't exist, create a new one
         if (!existingServiceArea) {
           serviceAreas.push({
             name: group,
-            functionalities: [functionality.functionalityValue]
+            functionalities: [functionality.functionalityValue],
           });
         } else {
           // If the service area already exists, add the functionality to its functionalities array
-          existingServiceArea.functionalities.push(functionality.functionalityValue);
+          existingServiceArea.functionalities.push(
+            functionality.functionalityValue
+          );
         }
       }
 
@@ -171,7 +207,7 @@ export async function getSystemsData() {
         name: system.name,
         link: system.link,
         description: system.description,
-        serviceAreas: serviceAreas
+        serviceAreas: serviceAreas,
       });
     }
 
