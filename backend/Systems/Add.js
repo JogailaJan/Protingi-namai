@@ -1,22 +1,22 @@
 export const systemsToAdd = [
     {
       name: 'LB MANAGEMENT',
-      link: 'http://system1',
+      link: 'https://www.jung-group.com/de-DE/Service/Tools-Services/Schalter-Konfigurator/',
       description: 'description of LB MANAGEMENT',
     },
     {
       name: 'eNet SMART HOME',
-      link: 'http://system2',
+      link: '',
       description: 'description of eNet SMART HOME',
     },
     {
       name: 'KNX VISU PRO SERVER',
-      link: 'http://system3',
+      link: 'https://www.jung-group.com/de-DE/Service/Tools-Services/KNX-Konfigurator/',
       description: 'description of KNX',
     },
     {
       name: 'JUNG HOME',
-      link: 'http://system4',
+      link: 'https://www.jung-group.com/de-DE/Service/Tools-Services/KNX-Konfigurator/',
       description: 'description of JUNG HOME',
     },
 ];

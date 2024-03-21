@@ -103,5 +103,7 @@ const updateSystemsInDatabase = async (systemsToUpdate) => {
       console.error('Error updating systems in the database:', error);
     }
 };
-  
-//updateSystemsInDatabase(systemsToUpdate);
+
+export const updateSystems = async () => {
+  updateSystemsInDatabase(systemsToUpdate);
+};

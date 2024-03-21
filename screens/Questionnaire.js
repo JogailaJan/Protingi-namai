@@ -15,15 +15,15 @@ import { getServiceAreas } from "../ServiceAreasAndFunctionalities";
 import { getSystems } from "../Systems";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import SaveConfigurationModal from "../components/SaveConfigurationModal";
-import PDFDownloadButton from "../components/PDFDownloadButton"; // Import the PDFDownloadButton component
-
+import { printToFile } from "../backend/PDFDownload"; // Import the PDFDownloadButton component
+ 
 const STORAGE_KEY = "savedConfigurations";
-
+ 
 const Questionnaire = ({ route }) => {
   const [serviceAreas, setServiceAreas] = useState([]);
   const [systems, setSystems] = useState([]);
   const { selectedConfiguration } = route.params || {};
-
+ 
   const [selectedItems, setSelectedItems] = useState({
     functionalities: [],
     serviceAreas: [],
@@ -37,7 +37,7 @@ const Questionnaire = ({ route }) => {
   const [directions, setDirections] = useState(
     Array(serviceAreas.length).fill("up")
   );
-
+ 
   useEffect(() => {
     const loadSavedConfigurations = async () => {
       try {
@@ -57,7 +57,13 @@ const Questionnaire = ({ route }) => {
     fetchData();
     loadSavedConfigurations();
   }, []);
-
+ 
+  useEffect(() => {
+    if (selectedConfiguration) {
+      setSelectedItems(selectedConfiguration.items);
+    }
+  }, [selectedConfiguration]);
+ 
   const toggleDirection = (index) => {
     setDirections((prevDirections) => {
       const newDirections = [...prevDirections];
@@ -65,7 +71,7 @@ const Questionnaire = ({ route }) => {
       return newDirections;
     });
   };
-
+ 
   const handleSaveButtonPress = () => {
     if (selectedConfiguration) {
       handleSave(selectedConfiguration.name);
@@ -73,7 +79,7 @@ const Questionnaire = ({ route }) => {
       setIsModalVisible(true);
     }
   };
-
+ 
   const handleSave = async (name) => {
     if (selectedConfiguration) {
       const updatedConfigurations = savedConfigurations.map((config) => {
@@ -93,6 +99,7 @@ const Questionnaire = ({ route }) => {
     setIsModalVisible(false);
     setConfigurationName("");
   };
+ 
   const saveConfiguration = async (name) => {
     try {
       console.log("Saving configuration with name:", name);
@@ -114,19 +121,13 @@ const Questionnaire = ({ route }) => {
       console.error("Error saving configuration:", error);
     }
   };
-
+ 
   const handleCancel = () => {
     setIsModalVisible(false);
     setConfigurationName("");
   };
-
-  useEffect(() => {
-    if (selectedConfiguration) {
-      setSelectedItems(selectedConfiguration.items);
-    }
-  }, [selectedConfiguration]);
-
-  const handleServiceAreaCheckboxPress = (group) => {
+ 
+  const handleServiceAreaCheckboxPress = (group, name) => {
     setSelectedItems((prevState) => {
       const serviceAreaIndex = prevState.serviceAreas.findIndex(
         (item) => item.group === group
@@ -134,12 +135,12 @@ const Questionnaire = ({ route }) => {
       if (serviceAreaIndex !== -1) {
         prevState.serviceAreas.splice(serviceAreaIndex, 1);
       } else {
-        prevState.serviceAreas.push({ group });
+        prevState.serviceAreas.push({ group, name });
       }
       return { ...prevState };
     });
   };
-
+ 
   const toggleFunctionalityVisibility = (index) => {
     setFunctionalityVisibility((prevState) => {
       const newState = [...prevState];
@@ -147,12 +148,12 @@ const Questionnaire = ({ route }) => {
       return newState;
     });
   };
-
+ 
   const handleServiceAreaTextPress = (index) => {
     toggleFunctionalityVisibility(index);
   };
-
-  const handleFunctionalityPress = (group, value) => {
+ 
+  const handleFunctionalityPress = (group, value, name) => {
     setSelectedItems((prevState) => {
       const functionalityIndex = prevState.functionalities.findIndex(
         (item) => item.group === group && item.value === value
@@ -160,12 +161,12 @@ const Questionnaire = ({ route }) => {
       if (functionalityIndex !== -1) {
         prevState.functionalities.splice(functionalityIndex, 1);
       } else {
-        prevState.functionalities.push({ group, value });
+        prevState.functionalities.push({ group, value, name });
       }
       return { ...prevState };
     });
   };
-
+ 
   function filterSystems() {
     const filteredSystems = [];
     systems.forEach((system) => {
@@ -201,12 +202,12 @@ const Questionnaire = ({ route }) => {
         });
       }
       if (meetsCriteria) {
-        filteredSystems.push(system.name);
+        filteredSystems.push({ name: system.name, link: system.link });
       }
     });
     return filteredSystems;
   }
-
+ 
   return (
     <FlatList
       data={serviceAreas}
@@ -219,7 +220,7 @@ const Questionnaire = ({ route }) => {
               value={selectedItems.serviceAreas.some(
                 (category) => category.group === item.group
               )}
-              onValueChange={() => handleServiceAreaCheckboxPress(item.group)}
+              onValueChange={() => handleServiceAreaCheckboxPress(item.group, item.name)}
             />
             <TouchableOpacity
               onPress={() => {
@@ -258,7 +259,8 @@ const Questionnaire = ({ route }) => {
                   onPress={() =>
                     handleFunctionalityPress(
                       functionality.group,
-                      functionality.value
+                      functionality.value,
+                      functionality.name
                     )
                   }
                   style={styles.functionalitiesContainer}
@@ -273,13 +275,12 @@ const Questionnaire = ({ route }) => {
                       onValueChange={() =>
                         handleFunctionalityPress(
                           functionality.group,
-                          functionality.value
+                          functionality.value,
+                          functionality.name
                         )
                       }
                     />
-                    <Text style={styles.functionalityText}>
-                      {functionality.name}
-                    </Text>
+                    <Text style={styles.functionalityText}>{functionality.name}</Text>
                   </View>
                 </TouchableOpacity>
               )}
@@ -290,8 +291,9 @@ const Questionnaire = ({ route }) => {
       )}
       keyExtractor={(item, index) => index.toString()}
       ListFooterComponent={() => (
-        <>
-          {/* Papildoma lentelė */}
+<>
+          <Text>Jums tinkančios sistemos</Text>
+          {/* Sistemu sarasas */}
           <View style={styles.table}>
             <Text style={styles.tableHeader}>Tinkančios sistemos</Text>
             {filterSystems().map((system, index) => (
@@ -300,16 +302,7 @@ const Questionnaire = ({ route }) => {
               </Text>
             ))}
           </View>
-          <View
-            style={[
-              styles.row,
-              {
-                paddingBottom: 20,
-                paddingLeft: 0,
-                justifyContent: "space-around",
-              },
-            ]}
-          >
+          <View style={[styles.row, { paddingBottom: 20, paddingLeft: 0, justifyContent: "space-around" }]}>
             {/* Issaugoti konfiguracija mygtukas */}
             <TouchableOpacity
               onPress={handleSaveButtonPress}
@@ -318,101 +311,117 @@ const Questionnaire = ({ route }) => {
               <Text style={styles.saveButtonText}>Išsaugoti konfigūraciją</Text>
             </TouchableOpacity>
             {/* Atsisiusti pdf mygtukas */}
-            <PDFDownloadButton config={[{ items: selectedItems }]} />
-          </View>
-
-          <SaveConfigurationModal
-            visible={isModalVisible}
-            onSave={handleSave}
-            onCancel={handleCancel}
-          />
-        </>
-      )}
-    />
+            {/* <PDFDownloadButton config={[{ items: selectedItems }]}  /> */}
+            <TouchableOpacity onPress={() => printToFile([{ items: selectedItems }])} style={styles.pdfButton}>
+              <Text style={styles.pdfButtonText}>Išsaugoti PDF</Text>
+            </TouchableOpacity>
+          </View >
+             <SaveConfigurationModal
+                visible={isModalVisible}
+                onSave={handleSave}
+                onCancel={handleCancel}
+              />
+            </>
+    )}
+/>
   );
 };
-
-export default Questionnaire;
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+ 
+          export default Questionnaire;
+ 
+          const styles = StyleSheet.create({
+            container: {
+            flex: 1,
+          backgroundColor: "#fff",
+          alignItems: "center",
+          justifyContent: "center",
   },
-  arrow: {
-    width: 30,
-    height: 30,
+          arrow: {
+            width: 30,
+          height: 30,
   },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
+          row: {
+            flexDirection: "row",
+          alignItems: "center",
   },
-  textContainer: {
-    flex: 1, // Occupy remaining space
+          textContainer: {
+            flex: 1, // Occupy remaining space
   },
-  arrowContainer: {
-    marginLeft: "auto", // Push to the right
-    marginRight: 30,
+          arrowContainer: {
+            marginLeft: "auto", // Push to the right
+          marginRight: 30,
   },
-  serviceAreaContainer: {
-    marginBottom: 10,
-    marginTop: 10,
-    paddingLeft: 10,
+          serviceAreaContainer: {
+            marginBottom: 10,
+          marginTop: 10,
+          paddingLeft: 10,
   },
-  functionalitiesContainer: {
-    marginBottom: 10,
-    marginTop: 10,
-    paddingLeft: 10,
+          functionalitiesContainer: {
+            marginBottom: 10,
+          marginTop: 10,
+          paddingLeft: 10,
   },
-  serviceAreaText: {
-    fontSize: 30,
-    fontWeight: "bold",
-    marginLeft: 8,
+          serviceAreaText: {
+            fontSize: 30,
+          fontWeight: "bold",
+          marginLeft: 8,
   },
-  functionalityText: {
-    fontSize: 15,
-    marginLeft: 8,
+          functionalityText: {
+            fontSize: 15,
+          marginLeft: 8,
   },
-  separator: {
-    borderBottomWidth: 1,
-    borderBottomColor: "black",
-    marginBottom: 5,
-    marginTop: 15,
+          separator: {
+            borderBottomWidth: 1,
+          borderBottomColor: "black",
+          marginBottom: 5,
+          marginTop: 15,
   },
-  saveButton: {
-    backgroundColor: "white",
-    padding: 15,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: "black",
-    marginTop: 20,
-    alignItems: "center",
+          saveButton: {
+            backgroundColor: "white",
+          padding: 15,
+          borderRadius: 10,
+          borderWidth: 1,
+          borderColor: "black",
+          marginTop: 20,
+          alignItems: "center",
   },
-  saveButtonText: {
-    color: "black",
-    fontSize: 18,
-    fontWeight: "bold",
+          saveButtonText: {
+            color: "black",
+          fontSize: 18,
+          fontWeight: "bold",
   },
-  systemContainer: {
-    marginTop: 10,
-    alignItems: "center",
+          systemContainer: {
+            marginTop: 10,
+          alignItems: "center",
   },
-
-  table: {
-    marginTop: 20,
-    borderWidth: 1,
-    borderColor: "black",
+ 
+          table: {
+            marginTop: 20,
+          borderWidth: 1,
+          borderColor: "black",
   },
-  tableHeader: {
-    backgroundColor: "lightgray",
-    padding: 10,
-    fontWeight: "bold",
+          tableHeader: {
+            backgroundColor: "lightgray",
+          padding: 10,
+          fontWeight: "bold",
   },
-  tableRow: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "black",
+          tableRow: {
+            padding: 10,
+          borderBottomWidth: 1,
+          borderBottomColor: "black",
+  },
+          pdfButton: {
+            backgroundColor: "white",
+          padding: 15,
+          borderRadius: 10,
+          borderWidth: 1,
+          borderColor: "black",
+          marginTop: 20,
+          alignItems: "center",
+  },
+          pdfButtonText: {
+            color: "black",
+          fontSize: 18,
+          fontWeight: "bold",
   },
 });
