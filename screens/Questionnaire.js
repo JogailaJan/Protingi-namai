@@ -296,13 +296,12 @@ const Questionnaire = ({ route }) => {
       keyExtractor={(item, index) => index.toString()}
       ListFooterComponent={() => (
         <>
-          <Text>Jums tinkančios sistemos</Text>
           {/* Sistemu sarasas */}
           <View style={styles.table}>
             <Text style={styles.tableHeader}>Tinkančios sistemos</Text>
             {filterSystems().map((system, index) => (
               <Text key={index} style={styles.tableRow}>
-                {system.name} {/* Pasiimame tik sistemos pavadinimą */}
+                {system.name} - {system.link}
               </Text>
             ))}
           </View>
