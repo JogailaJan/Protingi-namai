@@ -36,23 +36,26 @@ export async function dropSystemsFunctionalitiesTable(){
 
 const addSystemsFunctionalitiesToDatabase = async (systemsFunctionalities) => {
     try {
-        for (const systemFunctionality of systemsFunctionalities) {
-        // Check if the system functionality already exists in the database
-        const existingFunctionalityQuery = await executeSql("SELECT COUNT(*) AS count FROM SystemsFunctionalities WHERE systemName = ? AND functionalityValue = ?", [systemFunctionality.systemName, systemFunctionality.functionalityValue]);
-        const existingFunctionalityCount = existingFunctionalityQuery.rows._array[0].count;
-        
-        if (existingFunctionalityCount === 0) {
+      for (const systemFunctionality of systemsFunctionalities) {
+        for (const functionalityValue of systemFunctionality.functionalityValues) {
+          // Check if the system functionality already exists in the database
+          const existingFunctionalityQuery = await executeSql("SELECT COUNT(*) AS count FROM SystemsFunctionalities WHERE systemName = ? AND functionalityValue = ?", [systemFunctionality.systemName, functionalityValue]);
+          const existingFunctionalityCount = existingFunctionalityQuery.rows._array[0].count;
+          
+          if (existingFunctionalityCount === 0) {
             const insertQuery = "INSERT INTO SystemsFunctionalities (systemName, functionalityValue) VALUES (?, ?)";
-            await executeSql(insertQuery, [systemFunctionality.systemName, systemFunctionality.functionalityValue]);
-            console.log('System functionality added to the database:', systemFunctionality);
-        } else {
-            console.log('System functionality already exists in the database:', systemFunctionality);
+            await executeSql(insertQuery, [systemFunctionality.systemName, functionalityValue]);
+            console.log('System functionality added to the database:', { systemName: systemFunctionality.systemName, functionalityValue });
+          } else {
+            console.log('System functionality already exists in the database:', { systemName: systemFunctionality.systemName, functionalityValue });
+          }
         }
-        }
+      }
     } catch (error) {
-        console.error('Error adding systems functionalities to the database:', error);
+      console.error('Error adding systems functionalities to the database:', error);
     }
-};
+  };
+  
 
 export const addSystemsFunctionalities = async () => {
     addSystemsFunctionalitiesToDatabase(systemsFunctionalitiesToAdd);
