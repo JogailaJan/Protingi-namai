@@ -32,7 +32,7 @@ const Questionnaire = ({ route }) => {
     Array(serviceAreas.length).fill(false)
   );
   const [savedConfigurations, setSavedConfigurations] = useState([]);
-  const [isSaveModalVisible, setIsSaveModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [configurationName, setConfigurationName] = useState("");
   const [directions, setDirections] = useState(
     Array(serviceAreas.length).fill("up")
@@ -64,24 +64,67 @@ const Questionnaire = ({ route }) => {
     }
   }, [selectedConfiguration]);
 
-  const handleSaveButtonPress = () => {
-    if (selectedConfiguration) {
-      handleSave(selectedConfiguration.name);
-    } else {
-      setIsSaveModalVisible(true);
-    }
-  };
-
-  const handleSaveModalDismiss = () => {
-    setIsSaveModalVisible(false);
-  };
-
   const toggleDirection = (index) => {
     setDirections((prevDirections) => {
       const newDirections = [...prevDirections];
       newDirections[index] = newDirections[index] === "up" ? "down" : "up";
       return newDirections;
     });
+  };
+
+  const handleSaveButtonPress = () => {
+    if (selectedConfiguration) {
+      handleSave(selectedConfiguration.name);
+    } else {
+      setIsModalVisible(true);
+    }
+  };
+
+  const handleSave = async (name) => {
+    if (selectedConfiguration) {
+      const updatedConfigurations = savedConfigurations.map((config) => {
+        if (config.name === selectedConfiguration.name) {
+          return { name: selectedConfiguration.name, items: selectedItems };
+        }
+        return config;
+      });
+      setSavedConfigurations(updatedConfigurations);
+      await AsyncStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(updatedConfigurations)
+      );
+    } else {
+      saveConfiguration(name);
+    }
+    setIsModalVisible(false);
+    setConfigurationName("");
+  };
+
+  const saveConfiguration = async (name) => {
+    try {
+      console.log("Saving configuration with name:", name);
+      console.log("Items:", selectedItems);
+      const updatedConfigurations = [
+        ...savedConfigurations,
+        { name: name, items: selectedItems },
+      ];
+      await AsyncStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(updatedConfigurations)
+      );
+      setSavedConfigurations(updatedConfigurations);
+      console.log(
+        "Number of configurations saved:",
+        updatedConfigurations.length
+      );
+    } catch (error) {
+      console.error("Error saving configuration:", error);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+    setConfigurationName("");
   };
 
   const handleServiceAreaCheckboxPress = (group, name) => {
@@ -165,144 +208,137 @@ const Questionnaire = ({ route }) => {
     return filteredSystems;
   }
 
-  if(isSaveModalVisible){
-    return(
-      <SaveConfigurationModal
-      visible={isSaveModalVisible}
-      onDismiss={handleSaveModalDismiss} // Pass the callback function
-    />
-    );
-  }
-  else return (
-    <View>
-      <FlatList
-            data={serviceAreas}
-            renderItem={({ item, index }) => (
-              // Visas paslaugos srities su funkcijomis konteineris
-              <View style={styles.serviceAreaContainer}>
-                {/* Paslaugos srities checkboxas su pavadinimu */}
-                <View style={styles.row}>
-                  <Checkbox
-                    value={selectedItems.serviceAreas.some(
-                      (category) => category.group === item.group
-                    )}
-                    onValueChange={() =>
-                      handleServiceAreaCheckboxPress(item.group, item.name)
-                    }
-                  />
-                  <TouchableOpacity
-                    onPress={() => {
-                      handleServiceAreaTextPress(index);
-                      toggleDirection(index);
-                    }}
-                    style={styles.textContainer}
-                  >
-                    <Text style={styles.serviceAreaText}>{item.name}</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={() => {
-                      handleServiceAreaTextPress(index);
-                      toggleDirection(index); // Pass the index to toggle the direction for the specific item
-                    }}
-                    style={styles.arrowContainer}
-                  >
-                    <Image
-                      source={
-                        directions[index] === "up"
-                          ? require("../arrow-down.png")
-                          : require("../arrow-right.png")
-                      }
-                      style={styles.arrow}
-                    />
-                  </TouchableOpacity>
-                </View>
-                {/* Atskiriamoji linija */}
-                <View style={styles.separator}></View>
-                {functionalityVisibility[index] && (
-                  <FlatList
-                    data={item.functionalities}
-                    renderItem={({ item: functionality }) => (
-                      //Funkcijos chekboxas ir pavadinimas
-                      <TouchableOpacity
-                        onPress={() =>
-                          handleFunctionalityPress(
-                            functionality.group,
-                            functionality.value,
-                            functionality.name
-                          )
-                        }
-                        style={styles.functionalitiesContainer}
-                      >
-                        <View style={styles.row}>
-                          <Checkbox
-                            value={selectedItems.functionalities.some(
-                              (category) =>
-                                category.value === functionality.value &&
-                                category.group === functionality.group
-                            )}
-                            onValueChange={() =>
-                              handleFunctionalityPress(
-                                functionality.group,
-                                functionality.value,
-                                functionality.name
-                              )
-                            }
-                          />
-                          <Text style={styles.functionalityText}>
-                            {functionality.name}
-                          </Text>
-                        </View>
-                      </TouchableOpacity>
-                    )}
-                    keyExtractor={(functionality, index) => index.toString()}
-                  />
-                )}
-              </View>
-            )}
-            keyExtractor={(item, index) => index.toString()}
-            ListFooterComponent={() => (
-              <>
-                {/* Sistemu sarasas */}
-                <View style={styles.table}>
-                  <Text style={styles.tableHeader}>Tinkančios sistemos</Text>
-                  {filterSystems().map((system, index) => (
-                    <Text key={index} style={styles.tableRow}>
-                      {system.name} - {system.link}
-                    </Text>
-                  ))}
-                </View>
-                <View
-                  style={[
-                    styles.row,
-                    {
-                      paddingBottom: 20,
-                      paddingLeft: 0,
-                      justifyContent: "space-around",
-                    },
-                  ]}
+  return (
+    <FlatList
+      data={serviceAreas}
+      renderItem={({ item, index }) => (
+        // Visas paslaugos srities su funkcijomis konteineris
+        <View style={styles.serviceAreaContainer}>
+          {/* Paslaugos srities checkboxas su pavadinimu */}
+          <View style={styles.row}>
+            <Checkbox
+              value={selectedItems.serviceAreas.some(
+                (category) => category.group === item.group
+              )}
+              onValueChange={() =>
+                handleServiceAreaCheckboxPress(item.group, item.name)
+              }
+            />
+            <TouchableOpacity
+              onPress={() => {
+                handleServiceAreaTextPress(index);
+                toggleDirection(index);
+              }}
+              style={styles.textContainer}
+            >
+              <Text style={styles.serviceAreaText}>{item.name}</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                handleServiceAreaTextPress(index);
+                toggleDirection(index); // Pass the index to toggle the direction for the specific item
+              }}
+              style={styles.arrowContainer}
+            >
+              <Image
+                source={
+                  directions[index] === "up"
+                    ? require("../arrow-down.png")
+                    : require("../arrow-right.png")
+                }
+                style={styles.arrow}
+              />
+            </TouchableOpacity>
+          </View>
+          {/* Atskiriamoji linija */}
+          <View style={styles.separator}></View>
+          {functionalityVisibility[index] && (
+            <FlatList
+              data={item.functionalities}
+              renderItem={({ item: functionality }) => (
+                //Funkcijos chekboxas ir pavadinimas
+                <TouchableOpacity
+                  onPress={() =>
+                    handleFunctionalityPress(
+                      functionality.group,
+                      functionality.value,
+                      functionality.name
+                    )
+                  }
+                  style={styles.functionalitiesContainer}
                 >
-                  {/* Issaugoti konfiguracija mygtukas */}
-                  <TouchableOpacity
-                    onPress={handleSaveButtonPress}
-                    style={[styles.saveButton]}
-                  >
-                    <Text style={styles.saveButtonText}>Išsaugoti konfigūraciją</Text>
-                  </TouchableOpacity>
-                  {/* Atsisiusti pdf mygtukas */}
-                  {/* <PDFDownloadButton config={[{ items: selectedItems }]}  /> */}
-                  <TouchableOpacity
-                    onPress={() => printToFile([{ items: selectedItems }])}
-                    style={styles.pdfButton}
-                  >
-                    <Text style={styles.pdfButtonText}>Išsaugoti PDF</Text>
-                  </TouchableOpacity>
-                </View>
-              </>
-            )}
-            
-       />
-
-    </View>
+                  <View style={styles.row}>
+                    <Checkbox
+                      value={selectedItems.functionalities.some(
+                        (category) =>
+                          category.value === functionality.value &&
+                          category.group === functionality.group
+                      )}
+                      onValueChange={() =>
+                        handleFunctionalityPress(
+                          functionality.group,
+                          functionality.value,
+                          functionality.name
+                        )
+                      }
+                    />
+                    <Text style={styles.functionalityText}>
+                      {functionality.name}
+                    </Text>
+                  </View>
+                </TouchableOpacity>
+              )}
+              keyExtractor={(functionality, index) => index.toString()}
+            />
+          )}
+        </View>
+      )}
+      keyExtractor={(item, index) => index.toString()}
+      ListFooterComponent={() => (
+        <>
+          {/* Sistemu sarasas */}
+          <View style={styles.table}>
+            <Text style={styles.tableHeader}>Tinkančios sistemos</Text>
+            {filterSystems().map((system, index) => (
+              <Text key={index} style={styles.tableRow}>
+                {system.name} - {system.link}
+              </Text>
+            ))}
+          </View>
+          <View
+            style={[
+              styles.row,
+              {
+                paddingBottom: 20,
+                paddingLeft: 0,
+                justifyContent: "space-around",
+              },
+            ]}
+          >
+            {/* Issaugoti konfiguracija mygtukas */}
+            <TouchableOpacity
+              onPress={handleSaveButtonPress}
+              style={[styles.saveButton]}
+            >
+              <Text style={styles.saveButtonText}>Išsaugoti konfigūraciją</Text>
+            </TouchableOpacity>
+            {/* Atsisiusti pdf mygtukas */}
+            {/* <PDFDownloadButton config={[{ items: selectedItems }]}  /> */}
+            <TouchableOpacity
+              onPress={() => printToFile([{ items: selectedItems }])}
+              style={styles.pdfButton}
+            >
+              <Text style={styles.pdfButtonText}>Išsaugoti PDF</Text>
+            </TouchableOpacity>
+          </View>
+          <SaveConfigurationModal
+            visible={isModalVisible}
+            onSave={handleSave}
+            onCancel={handleCancel}
+          />
+        </>
+      )}
+    />
   );
 };
 
