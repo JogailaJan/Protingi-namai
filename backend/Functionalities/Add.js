@@ -381,6 +381,14 @@ export const functionalitiesToAdd = [
     shortDescription: "Short description 1",
   },
   {
+    name: "256 jungimo laikų",
+    group: "laikmacio-jungikliai",
+    value: "256-switching-times",
+    longDescription:
+      "Tai reiškia, kad įrenginys ar sistema gali būti sukonfigūruota įvykdyti tam tikrą veiksmą (pavyzdžiui, įjungti ar išjungti prietaisą) iki 256 kartų tam tikru laiko tarpeliu.",
+    shortDescription: "Short description 1",
+  },
+  {
     name: "Astro funkcija",
     group: "laikmacio-jungikliai",
     value: "astro-function",
@@ -547,11 +555,11 @@ export const functionalitiesToAdd = [
     shortDescription: "Short description 1",
   },
   {
-    name: "Vartotojas, neturintis leidimą keisti",
+    name: "Vartotojas su laisvai apibrėžtais leidimais",
     group: "vartotojo-valdymas",
-    value: "user-without-change-permission",
+    value: "user-with-freely-definable-permissions",
     longDescription:
-      "Vartotojas, neturintis leidimo keisti, yra asmuo arba vartotojas, kuriam nebuvo suteiktos galios redaguoti ar keisti išmaniojo namo funkcijų ar nustatymų. Šis vartotojas gali turėti ribotą prieigą prie sistemos, galbūt tik skaityti informaciją arba naudotis tam tikromis funkcijomis, bet negali jų keisti arba nustatyti. Tokia prieiga gali būti pritaikyta svečiams arba asmenims, kuriems nebuvo suteiktos tam tikros valdymo teisės, išlaikant sistemos saugumą ir stabilumą.",
+      "Vartotojas su laisvai apibrėžtais leidimais yra asmuo arba vartotojas, kuriam suteikta individuali prieiga ir galia valdyti tam tikras išmaniojo namo funkcijas arba nustatymus. Šis vartotojas gali turėti įvairių leidimų lygių, pritaikytų jo poreikiams arba atsakomybėms. Tai gali apimti teises valdyti apšvietimo, šildymo, vėdinimo ar saugumo sistemas, tačiau gali būti ribotos prieigos prie kitų funkcijų ar nustatymų, palyginti su administratoriumi. Ši prieiga leidžia vartotojui prisitaikyti ir asmeniškai valdyti išmanųjį namą, išlaikant saugumą ir kontrolę.",
     shortDescription: "Short description 1",
   },
   {

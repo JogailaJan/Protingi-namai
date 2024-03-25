@@ -29,7 +29,7 @@ export const serviceAreasToAdd = [
   },
   {
     name: "Scenos",
-    group: "scenes",
+    group: "scenos",
     longDescription:
       "Scenos išmaniuose namuose yra nustatytos apšvietimo, garso, temperatūros ir kitos namo srities parametrų kombinacijos, kurios gali būti lengvai aktyvuojamos vienu paspaudimu arba automatiškai pagal tam tikrus nustatytus scenarijus.",
     shortDescription: "Short description 2",
