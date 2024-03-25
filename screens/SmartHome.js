@@ -14,7 +14,7 @@ export default function SmartHome() {
 
   return (
     <View style={styles.container}>
-      <Image source={require("../photos/smart.png")} style={styles.logo} />
+      <Image source={require("../photos/logo.png")} style={styles.logo} />
       <View style={styles.line}></View>
       <ScrollView style={styles.scrollView}>
         <Text style={styles.description}>
