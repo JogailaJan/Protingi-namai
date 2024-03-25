@@ -182,7 +182,8 @@ export async function getSystemsData() {
           [functionality.functionalityValue]
         );
         const group = groupQuery.rows._array[0].group;
-        console.log(functionality.functionalityValue);
+        //console.log(functionality.functionalityValue);
+        
         // Check if a service area with the same group already exists in the serviceAreas array
         const existingServiceArea = serviceAreas.find(
           (area) => area.name === group
