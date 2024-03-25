@@ -63,7 +63,7 @@ export const functionalitiesToAdd = [
   {
     name: "Vėdinimo sklendės",
     group: "uzdangos",
-    value: "ventilation flaps",
+    value: "ventilation-flaps",
     longDescription:
       "Tai yra elementai, kurie leidžia reguliuoti oro srautą tarp vidaus ir išorės.",
     shortDescription: "Short description 1",
@@ -96,6 +96,14 @@ export const functionalitiesToAdd = [
     shortDescription: "Short description 1",
   },
   {
+    name: "Audra/lietus",
+    group: "apsauga",
+    value: "storm/rain",
+    longDescription:
+      "Išmaniųjų namų audros/ lietaus funkcija yra sistemos dalis, kuri naudoja jutiklius ir prognozes identifikuoti artėjančias audras arba lietų. Ši funkcija gali būti susijusi su oro stebėjimo jutikliais, kurie aptinka atmosferos sąlygas, ir leidžia sistemai imtis tinkamų veiksmų, pavyzdžiui, uždaryti langus, įjungti lietaus čiužinį arba reguliuoti lauko apšvietimą. Tai padeda apsaugoti namą nuo galimų audrų sukeltų žalų ir užtikrina vartotojų saugumą bei patogumą.",
+    shortDescription: "Short description 1",
+  },
+  {
     name: "Nuotėkis",
     group: "apsauga",
     value: "leakage",
@@ -114,7 +122,7 @@ export const functionalitiesToAdd = [
   {
     name: "CO2",
     group: "apsauga",
-    value: "CO2 ",
+    value: "co2",
     longDescription:
       "Smart home sistemoje gali būti suprantama kaip funkcija, skirta aptikti anglies dioksido lygį patalpose ir įvairiais būdais valdyti oro kokybę.",
     shortDescription: "Short description 1",
@@ -340,7 +348,7 @@ export const functionalitiesToAdd = [
   {
     name: "Veikimo valandos",
     group: "vertes-rodymas",
-    value: "operating-hours ",
+    value: "operating-hours",
     longDescription:
       "Tai nurodo bendrą laiką, per kurį prietaisas ar sistema buvo veikianti, išreikštą valandomis (h). Šis parametras svarbus norint įvertinti prietaiso ar sistemos naudojimą, nustatyti jo darbo trukmę arba vertinti jo veikimo efektyvumą.",
     shortDescription: "Short description 1",
@@ -357,11 +365,19 @@ export const functionalitiesToAdd = [
     shortDescription: "Short description 1",
   },
   {
-    name: "Astro funkcija",
+    name: "100 jungimo laikų",
     group: "laikmacio-jungikliai",
-    value: "astro-function",
+    value: "100-switching-times",
     longDescription:
-      "Tai yra funkcija, kuri leidžia automatizuoti namų apšvietimą ar kitus įrenginius pagal natūralų šviesos lygį, pasikeičiantį priklausomai nuo saulės pozicijos ir laiko. Ši funkcija remiasi geografinės padėties ir laiko duomenimis, kad būtų nustatyta, kada saulė leidžiasi ir kyla, ir pagal tai valdomi namų apšvietimo ar kiti parametrai.",
+      "Tai reiškia, kad įrenginys ar sistema gali būti sukonfigūruota įvykdyti tam tikrą veiksmą (pavyzdžiui, įjungti ar išjungti prietaisą) iki 100 kartų tam tikru laiko tarpeliu.",
+    shortDescription: "Short description 1",
+  },
+  {
+    name: "250 jungimo laikų",
+    group: "laikmacio-jungikliai",
+    value: "250-switching-times",
+    longDescription:
+      "Tai reiškia, kad įrenginys ar sistema gali būti sukonfigūruota įvykdyti tam tikrą veiksmą (pavyzdžiui, įjungti ar išjungti prietaisą) iki 250 kartų tam tikru laiko tarpeliu.",
     shortDescription: "Short description 1",
   },
   {
@@ -378,7 +394,7 @@ export const functionalitiesToAdd = [
   {
     name: "Laikmačių programos",
     group: "galutinio-vartotojo-konfiguravimo-galimybes",
-    value: "Timer programmes",
+    value: "timer-programmes",
     longDescription:
       "Tai yra funkcija, kuri leidžia nustatyti įvairius veikimo laikus ar programus tam tikriems įrenginiams ar sistemoms, kai kalbama apie smart namų sistemas ar kitus automatizuotus sprendimus.",
     shortDescription: "Short description 1",
