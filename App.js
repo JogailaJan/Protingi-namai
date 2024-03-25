@@ -1,4 +1,4 @@
-import { Text, View } from "react-native";
+import { Text, View, Image, StyleSheet } from "react-native";
 import React, { useState, useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -25,24 +25,39 @@ import {
 const Stack = createNativeStackNavigator();
 
 export default function App() {
-  dropAllTables();
+  const [isLoading, setIsLoading] = useState(true);
+  //dropAllTables();
   useEffect(() => {
     const initializeDatabase = async () => {
-      const tablesExist = await checkIfTablesExist();
-      if (!tablesExist) {
-        await createAllTables();
-        await insertDataToAllTables();
-      } else {
-        console.log("Tables already exist.");
+      // ... database operations
+      try {
+        //await dropAllTables();
+        const tablesExist = await checkIfTablesExist();
+        if (!tablesExist) {
+          await createAllTables();
+          await insertDataToAllTables();
+        }
+        const tableNames = await getTableNames();
+        console.log("Table Names:", tableNames);
+      } catch (error) {
+        console.error("Database error:", error);
+        // Handle errors appropriately, e.g., display an error message
+      } finally {
+        //setIsLoading(false); // Set loading to false after completion or errors
       }
-      const tableNames = await getTableNames();
-      console.log("Table Names:", tableNames);
-      // updateSystems();
     };
 
-    initializeDatabase();
+    initializeDatabase()
+    .then(() => setIsLoading(false)) // Update state after successful completion
+    .catch((error) => console.error(error));
   }, []);
-
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Image source={require("./photos/logo.png")} style={styles.logo} />
+      </View>
+    );
+  }
 
   return (
     <NavigationContainer>
@@ -151,3 +166,11 @@ export default function App() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  logo: {
+    width: 150,
+    height: 150,
+    marginBottom: 30,
+  },
+});

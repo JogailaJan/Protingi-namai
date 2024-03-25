@@ -228,15 +228,15 @@ export async function dropAllTables() {
 }
 
 export async function createAllTables() {
-  createFunctionalitiesTable();
-  createSystemsFunctionalitiesTable();
-  createSystemsTable();
-  createServiceAreasTable();
+  await createFunctionalitiesTable();
+  await createSystemsFunctionalitiesTable();
+  await createSystemsTable();
+  await createServiceAreasTable();
 }
 
 export async function insertDataToAllTables() {
-  addFunctionalities();
-  addServiceAreas();
-  addSystems();
-  addSystemsFunctionalities();
+  await addFunctionalities();
+  await addServiceAreas();
+  await addSystems();
+  await addSystemsFunctionalities();
 }
