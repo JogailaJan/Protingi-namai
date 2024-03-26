@@ -99,7 +99,7 @@ const AreasDescription = ({ navigation }) => {
             <View style={styles.separator}></View>
             {functionalityVisibility[index] && (
               <>
-                <Text>{item.longDescription}</Text>
+                <Text style={styles.serviceAreaDescription}>{item.longDescription}</Text>
                 <FlatList
                   data={item.functionalities}
                   renderItem={({ item: functionality, index: funcIndex }) => (
@@ -123,7 +123,7 @@ const AreasDescription = ({ navigation }) => {
                       {functionalityDescriptionVisibility.length > 0 &&
                         functionalityDescriptionVisibility[index][
                           funcIndex
-                        ] && <Text>{functionality.longDescription}</Text>}
+                        ] && <Text style={styles.functionalityDescription}>{functionality.longDescription}</Text>}
                     </View>
                   )}
                   keyExtractor={(functionality, index) => index.toString()}
@@ -187,9 +187,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginLeft: 8,
   },
-  functionalityText: {
+  serviceAreaDescription: {
     fontSize: 15,
     marginLeft: 8,
+  },
+  functionalityText: {
+    fontSize: 18,
+    marginLeft: 12,
+  },
+  functionalityDescription: {
+    fontSize: 15,
+    marginLeft: 20,
   },
   separator: {
     borderBottomWidth: 1,

@@ -9,11 +9,11 @@ import {
   FlatList,
   TouchableOpacity,
   ScrollView,
+  Linking
 } from "react-native";
 import React, { useState, useEffect } from "react";
 import { getServiceAreas } from "../ServiceAreasAndFunctionalities";
 import { getSystems } from "../Systems";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import SaveConfigurationModal from "../components/SaveConfigurationModal";
 import { printToFile } from "../backend/PDFDownload"; // Import the PDFDownloadButton component
 
@@ -31,45 +31,38 @@ const Questionnaire = ({ route }) => {
   const [functionalityVisibility, setFunctionalityVisibility] = useState(
     Array(serviceAreas.length).fill(false)
   );
-  const [savedConfigurations, setSavedConfigurations] = useState([]);
   const [isSaveModalVisible, setIsSaveModalVisible] = useState(false);
-  const [configurationName, setConfigurationName] = useState("");
+  const [SelectedConfigurationName, setSelectedConfigurationName] = useState("");
   const [directions, setDirections] = useState(
     Array(serviceAreas.length).fill("up")
   );
 
   useEffect(() => {
-    const loadSavedConfigurations = async () => {
-      try {
-        const saved = await AsyncStorage.getItem(STORAGE_KEY);
-        if (saved !== null) {
-          setSavedConfigurations(JSON.parse(saved));
-        }
-      } catch (error) {
-        console.error("Error loading saved configurations:", error);
-      }
-    };
     const fetchData = async () => {
       const areas = await getServiceAreas();
       setServiceAreas(areas);
       setSystems(await getSystems());
     };
     fetchData();
-    loadSavedConfigurations();
   }, []);
 
   useEffect(() => {
     if (selectedConfiguration) {
+      setSelectedConfigurationName(selectedConfiguration.name);
       setSelectedItems(selectedConfiguration.items);
     }
   }, [selectedConfiguration]);
 
+  const handleSystemButtonPress = (link) => {
+    Linking.openURL(link);
+  };
+
   const handleSaveButtonPress = () => {
-    if (selectedConfiguration) {
-      handleSave(selectedConfiguration.name);
-    } else {
+    // if (selectedConfiguration) {
+    //   handleSave(selectedConfiguration.name);
+    // } else {
       setIsSaveModalVisible(true);
-    }
+    //}
   };
 
   const handleSaveModalDismiss = () => {
@@ -165,15 +158,13 @@ const Questionnaire = ({ route }) => {
     return filteredSystems;
   }
 
-  if(isSaveModalVisible){
-    return(
-      <SaveConfigurationModal
-      visible={isSaveModalVisible}
-      onDismiss={handleSaveModalDismiss} // Pass the callback function
-    />
-    );
-  }
-  else return (
+  // if(isSaveModalVisible){
+  //   return(
+
+  //   );
+  // }
+  //else
+   return (
     <View>
       <FlatList
             data={serviceAreas}
@@ -262,19 +253,29 @@ const Questionnaire = ({ route }) => {
             keyExtractor={(item, index) => index.toString()}
             ListFooterComponent={() => (
               <>
+              <View style={styles.systemsContainer}>
+                <Text style={styles.systemsText}>Tinkančios sistemos</Text>
+                {filterSystems().map((system, index) => (
+                  <TouchableOpacity  key={index} style={styles.systemContainer} onPress={() => handleSystemButtonPress(system.link)}>
+                    <Text style={styles.systemNameText} >{system.name}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
                 {/* Sistemu sarasas */}
-                <View style={styles.table}>
+                {/* <View style={styles.table}>
                   <Text style={styles.tableHeader}>Tinkančios sistemos</Text>
                   {filterSystems().map((system, index) => (
                     <Text key={index} style={styles.tableRow}>
                       {system.name} - {system.link}
                     </Text>
                   ))}
-                </View>
+                </View> */}
                 <View
                   style={[
                     styles.row,
                     {
+                      marginTop: 25,
                       paddingBottom: 20,
                       paddingLeft: 0,
                       justifyContent: "space-around",
@@ -301,7 +302,13 @@ const Questionnaire = ({ route }) => {
             )}
             
        />
-
+      <SaveConfigurationModal
+      visible={isSaveModalVisible}
+      onDismiss={handleSaveModalDismiss} // Pass the callback function
+      selectedConfiguration={selectedConfiguration}
+      newItems={selectedItems}
+      selectedConfigurationName={SelectedConfigurationName}
+    />
     </View>
   );
 };
@@ -369,9 +376,27 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
+  systemsContainer: {
+    alignItems: "center",
+  },
   systemContainer: {
     marginTop: 10,
+    padding: 10,
     alignItems: "center",
+    borderColor: "black",
+    borderWidth: 1,
+    borderRadius: 15,
+    width: 250
+  },
+  systemsText: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    marginTop: 25,
+  },
+  systemNameText: {
+    fontSize: 19,
+    fontWeight: 'bold'
   },
 
   table: {

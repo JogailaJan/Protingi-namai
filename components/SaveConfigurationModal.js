@@ -1,49 +1,84 @@
 import React, { useState, useEffect } from 'react';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { View, Text, TextInput, Button, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 
-const SaveConfigurationModal = ({visible, onDismiss}) => {
-  const [configurationName, setConfigurationName] = useState('');
+const STORAGE_KEY = "savedConfigurations";
 
-  const handleSave = async (name) => {
-    // if (selectedConfiguration) {
-    //   const updatedConfigurations = savedConfigurations.map((config) => {
-    //     if (config.name === selectedConfiguration.name) {
-    //       return { name: selectedConfiguration.name, items: selectedItems };
-    //     }
-    //     return config;
-    //   });
-    //   setSavedConfigurations(updatedConfigurations);
-    //   await AsyncStorage.setItem(
-    //     STORAGE_KEY,
-    //     JSON.stringify(updatedConfigurations)
-    //   );
-    // } else {
-    //   saveConfiguration(name);
-    // }
-    // onDismiss();
-    // setConfigurationName("");
+const SaveConfigurationModal = ({visible, onDismiss, selectedConfiguration, newItems, selectedConfigurationName}) => {
+  const [configurationName, setConfigurationName] = useState('');
+  const [savedConfigurations, setSavedConfigurations] = useState([]);
+
+  useEffect(() => {
+    const loadSavedConfigurations = async () => {
+      try {
+        const saved = await AsyncStorage.getItem(STORAGE_KEY);
+        if (saved !== null) {
+          setSavedConfigurations(JSON.parse(saved));
+        }
+      } catch (error) {
+        console.error("Error loading saved configurations:", error);
+      }
+    };
+    if(selectedConfigurationName){
+      setConfigurationName(selectedConfigurationName);
+    }
+    loadSavedConfigurations();
+  }, []);
+
+
+  const handleSave = async () => {
+    if (selectedConfiguration) {
+      const updatedConfigurations = savedConfigurations.map((config) => {
+        if (config.name === selectedConfiguration.name) {
+          return { name: selectedConfiguration.name, items: newItems };
+        }
+        return config;
+      });
+      setSavedConfigurations(updatedConfigurations);
+      await AsyncStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(updatedConfigurations)
+      );
+    } else {
+      saveConfiguration(configurationName);
+    }
+    onDismiss();
+    setConfigurationName("");
   };
 
+  // const clearAsyncStorage = async (key) => {
+  //   try {
+  //     await AsyncStorage.removeItem(key);
+  //     console.log(`AsyncStorage data for key '${key}' has been cleared.`);
+  //   } catch (error) {
+  //     console.error(`Error clearing AsyncStorage data for key '${key}':`, error);
+  //   }
+  // };
+  
+  // // Call the function with the key you want to clear
+  // clearAsyncStorage(STORAGE_KEY);
+  
   const saveConfiguration = async (name) => {
-    // try {
-    //   console.log("Saving configuration with name:", name);
-    //   console.log("Items:", selectedItems);
-    //   const updatedConfigurations = [
-    //     ...savedConfigurations,
-    //     { name: name, items: selectedItems },
-    //   ];
-    //   await AsyncStorage.setItem(
-    //     STORAGE_KEY,
-    //     JSON.stringify(updatedConfigurations)
-    //   );
-    //   setSavedConfigurations(updatedConfigurations);
-    //   console.log(
-    //     "Number of configurations saved:",
-    //     updatedConfigurations.length
-    //   );
-    // } catch (error) {
-    //   console.error("Error saving configuration:", error);
-    // }
+    try {
+      console.log("Saving configuration with name:", name);
+      console.log("Items:", newItems);
+      const updatedConfigurations = [
+        ...savedConfigurations,
+        { name: name, items: newItems },
+      ];
+      await AsyncStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(updatedConfigurations)
+      );
+      setSavedConfigurations(updatedConfigurations);
+      console.log(
+        "Number of configurations saved:",
+        updatedConfigurations.length
+      );
+      console.log(updatedConfigurations);
+    } catch (error) {
+      console.error("Error saving configuration:", error);
+    }
   };
 
   const handleCancel = () => {
@@ -86,7 +121,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    zIndex: -1,
+    position: 'absolute', // Set position to absolute
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   modalContent: {
     backgroundColor: 'white',

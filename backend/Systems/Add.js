@@ -6,7 +6,7 @@ export const systemsToAdd = [
     },
     {
       name: 'eNet SMART HOME',
-      link: '',
+      link: 'https://www.jung.de/en/9444/products/technology/jung-enet-smart-home/',
       description: 'description of eNet SMART HOME',
     },
     {

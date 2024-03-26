@@ -68,7 +68,9 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   button: {
-    backgroundColor: "black",
+    backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: "black",
     width: 220,
     height: 50,
     borderRadius: 30,
@@ -77,7 +79,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   buttonText: {
-    color: "white",
+    color: "black",
     fontSize: 16,
     fontWeight: "bold",
   },

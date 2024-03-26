@@ -31,7 +31,7 @@ export default function App() {
     const initializeDatabase = async () => {
       // ... database operations
       try {
-        //await dropAllTables();
+        await dropAllTables();
         const tablesExist = await checkIfTablesExist();
         if (!tablesExist) {
           await createAllTables();
