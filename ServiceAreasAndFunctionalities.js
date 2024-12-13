@@ -1,4 +1,4 @@
-const hardCodedServiceAreas = [
+export const hardCodedServiceAreas = [
     {
       name: 'Lighting',
       value: 'lighting',
@@ -94,17 +94,19 @@ const hardCodedServiceAreas = [
       ]
     },
   ];
-export default hardCodedServiceAreas;
+
  
 import { getServiceAreasData } from "./backend/Database";
 
  
-//console.log("Hard coded services - " + JSON.stringify(serviceAreas));
+let serviceAreasPromise = null;
+
 export async function getServiceAreas() {
-    const serviceAreas = await getServiceAreasData();
-    // console.log("Table services - " + JSON.stringify(serviceAreas));
-    // console.log("Hard coded services - " + JSON.stringify(hardCodedServiceAreas));
-    // console.log(hardCodedServiceAreas === serviceAreas);
-    // console.log(JSON.stringify(hardCodedServiceAreas) === JSON.stringify(serviceAreas));
-    return serviceAreas;
+    // Check if serviceAreasPromise is already initialized
+    if (!serviceAreasPromise) {
+        // If not initialized, fetch the service areas data asynchronously
+        serviceAreasPromise = getServiceAreasData();
+    }
+    // Return the promise
+    return await serviceAreasPromise;
 }

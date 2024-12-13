@@ -34,17 +34,17 @@ export default function Home({ navigation }) {
         style={styles.button}
         onPress={() => navigation.navigate("Favorites")}
       >
-        <Text style={styles.buttonText}>Konfiguracijos</Text>
+        <Text style={styles.buttonText}>Konfigūracijos</Text>
       </TouchableOpacity>
       <View style={styles.line}></View>
-      <View style={styles.footer}>
+      {/* <View style={styles.footer}>
         <TouchableOpacity onPress={() => navigation.navigate("Home")}>
           <Image
             source={require("../photos/namas.png")}
             style={styles.footerImage}
           />
         </TouchableOpacity>
-      </View>
+      </View> */}
     </View>
   );
 }
@@ -57,8 +57,8 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   logo: {
-    width: 150,
-    height: 150,
+    maxWidth: 150,
+    maxHeight: 150,
     marginBottom: 30,
   },
   line: {

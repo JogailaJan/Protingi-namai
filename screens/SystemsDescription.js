@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, Text, TouchableOpacity, Image } from "react-native";
+import { View, StyleSheet, Text, TouchableOpacity, Image, Dimensions } from "react-native";
 
 export default function SystemsDescription({ navigation }) {
   return (
@@ -7,7 +7,6 @@ export default function SystemsDescription({ navigation }) {
       <Image source={require("../photos/logo.png")} style={styles.logo} />
       <View style={styles.linefirst}></View>
       <TouchableOpacity
-        style={styles.button}
         onPress={() => navigation.navigate("LBManagement")}
       >
         <Text style={styles.buttonText}>LB Management</Text>
@@ -15,7 +14,6 @@ export default function SystemsDescription({ navigation }) {
       <View style={styles.line}></View>
 
       <TouchableOpacity
-        style={styles.button}
         onPress={() => navigation.navigate("EnetSmartHome")}
       >
         <Text style={styles.buttonText}>eNet Smart Home</Text>
@@ -23,7 +21,6 @@ export default function SystemsDescription({ navigation }) {
       <View style={styles.line}></View>
 
       <TouchableOpacity
-        style={styles.button}
         onPress={() => navigation.navigate("JungHome")}
       >
         <Text style={styles.buttonText}>Jung Home</Text>
@@ -31,7 +28,6 @@ export default function SystemsDescription({ navigation }) {
       <View style={styles.line}></View>
 
       <TouchableOpacity
-        style={styles.button}
         onPress={() => navigation.navigate("Knx")}
       >
         <Text style={styles.buttonText}>KNX System</Text>
@@ -50,38 +46,35 @@ export default function SystemsDescription({ navigation }) {
   );
 }
 
+const height = Dimensions.get('window').height;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center",
   },
   logo: {
-    width: 150,
-    height: 150,
-    marginBottom: 10,
-  },
-  button: {
-    backgroundColor: "white",
-    paddingVertical: 20,
+    width: Math.min(150, Math.max(50, 80 * (height / 100))),
+    height: Math.min(150, Math.max(50, 80 * (height / 100))),
+    marginVertical: Math.min(50, Math.max(10, 5 * (height / 100))),
   },
   buttonText: {
     color: "black",
-    fontSize: 30,
+    fontSize: Math.min(30, Math.max(10, 3 * (height/ 100))),
+    marginVertical: Math.min(50, Math.max(5, 3 * (height / 100))),
     fontWeight: "bold",
   },
   linefirst: {
     borderBottomColor: "black",
     borderBottomWidth: 1,
     width: "90%",
-    marginBottom: 80,
+    marginBottom: Math.min(80, Math.max(20, 5 * (height / 100))),
   },
   line: {
     borderBottomColor: "black",
     borderBottomWidth: 1,
     width: "80%",
-    marginBottom: 10,
   },
   footer: {
     width: "100%",

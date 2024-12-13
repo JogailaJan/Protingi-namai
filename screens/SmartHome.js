@@ -50,9 +50,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   logo: {
-    width: 400,
-    height: 400,
-    marginBottom: 20,
+    width: 200,
+    height: 200,
+    marginBottom: 40,
+    marginTop: 40
   },
   description: {
     fontSize: 16,

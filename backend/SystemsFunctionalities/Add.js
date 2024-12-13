@@ -177,8 +177,6 @@ export const systemsFunctionalitiesToAdd = [
       "or",
       "xor",
       "up-to-250-if-then-actions",
-      "philips-hue",
-      "sonos",
       "amazon-alexa",
       "google-assistant",
     ],

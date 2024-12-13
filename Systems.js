@@ -318,14 +318,25 @@ const hardCodedSystems = [
   export default hardCodedSystems;
  // console.log(systems);
 
- import { getSystemsData } from "./backend/Database";
+import { getSystemsData } from "./backend/Database";
 
- export async function getSystems() {
-    const systems = await getSystemsData();
-    // console.log("Table services - " + JSON.stringify(serviceAreas));
-    // console.log("Hard coded services - " + JSON.stringify(hardCodedServiceAreas));
-    // console.log(hardCodedServiceAreas === serviceAreas);
-    // console.log(JSON.stringify(hardCodedServiceAreas) === JSON.stringify(serviceAreas));
-    return systems;
-}
+//  export async function getSystems() {
+//     const systems = await getSystemsData();
+//     // console.log("Table services - " + JSON.stringify(serviceAreas));
+//     // console.log("Hard coded services - " + JSON.stringify(hardCodedServiceAreas));
+//     // console.log(hardCodedServiceAreas === serviceAreas);
+//     // console.log(JSON.stringify(hardCodedServiceAreas) === JSON.stringify(serviceAreas));
+//     return systems;
+// }
  
+let systemsPromise = null;
+
+export async function getSystems() {
+    // Check if systemsPromise is already initialized
+    if (!systemsPromise) {
+        // If not initialized, fetch the service areas data asynchronously
+        systemsPromise = getSystemsData();
+    }
+    // Return the promise
+    return await systemsPromise;
+}

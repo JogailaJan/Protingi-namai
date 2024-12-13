@@ -20,6 +20,7 @@ import {
   createAllTables,
   insertDataToAllTables
 } from "./backend/Database";
+import { getServiceAreas } from "./ServiceAreasAndFunctionalities";
 // import { updateSystems } from "./backend/Systems/Functions";
 
 const Stack = createNativeStackNavigator();
@@ -37,18 +38,19 @@ export default function App() {
           await createAllTables();
           await insertDataToAllTables();
         }
-        const tableNames = await getTableNames();
-        console.log("Table Names:", tableNames);
+        //const tableNames = await getTableNames();
+        //console.log("Table Names:", tableNames);
+        await new Promise(resolve => setTimeout(resolve, 4000));
       } catch (error) {
         console.error("Database error:", error);
         // Handle errors appropriately, e.g., display an error message
       } finally {
-        //setIsLoading(false); // Set loading to false after completion or errors
+        setIsLoading(false); // Set loading to false after completion or errors
       }
     };
 
     initializeDatabase()
-    .then(() => setIsLoading(false)) // Update state after successful completion
+    //.then(() => setIsLoading(false)) // Update state after successful completion
     .catch((error) => console.error(error));
   }, []);
   if (isLoading) {
@@ -116,7 +118,7 @@ export default function App() {
           name="Favorites"
           component={FavoritesScreen}
           options={{
-            title: "Mėgstamiausi",
+            title: "Konfigūracijos",
             headerStyle: { backgroundColor: "black" },
             headerTintColor: "white",
             headerTitleStyle: { fontWeight: "bold" },

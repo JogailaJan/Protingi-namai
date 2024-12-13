@@ -190,6 +190,7 @@ const styles = StyleSheet.create({
   serviceAreaDescription: {
     fontSize: 15,
     marginLeft: 8,
+    paddingRight: "5%"
   },
   functionalityText: {
     fontSize: 18,
@@ -198,19 +199,21 @@ const styles = StyleSheet.create({
   functionalityDescription: {
     fontSize: 15,
     marginLeft: 20,
+    paddingRight: "10%"
   },
   separator: {
     borderBottomWidth: 1,
     borderBottomColor: "black",
     marginBottom: 5,
     marginTop: 15,
+    marginRight: "5%"
   },
   separator2: {
     borderBottomWidth: 0.5,
     borderBottomColor: "black",
     marginBottom: 5,
     marginTop: 5,
-    width: "80%",
+    width: "90%",
   },
   break: {
     marginTop: 50,

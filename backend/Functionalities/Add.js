@@ -175,7 +175,7 @@ export const functionalitiesToAdd = [
 
   {
     name: "Scenos per sieninį perdavėją",
-    group: "scenes",
+    group: "scenos",
     value: "scenes-via-wall-transmitter",
     longDescription:
       "Tai reiškia, kad per sieninį perdavėją (pultelį) galima valdyti skirtingus scenarijus arba nustatymus smart home sistemoje. Scenos gali apimti įvairius veiksmus, pvz., reguliuoti apšvietimą, temperatūrą, uždaryti ar atidaryti žaliuzes ir kt. Sieninis perdavėjas suteikia patogumą ir greitą prieigą prie įvairių namo funkcijų, leisdamas greitai prisitaikyti prie gyvenimo būdo ar pageidavimų.",
@@ -183,7 +183,7 @@ export const functionalitiesToAdd = [
   },
   {
     name: "Scenos per programėlę ",
-    group: "scenes",
+    group: "scenos",
     value: "scenes-via-app",
     longDescription:
       "Tai reiškia, kad per mobiliąją aplikaciją galima valdyti skirtingus scenarijus arba nustatymus smart home sistemoje. Scenos gali apimti įvairius veiksmus, pvz., įjungti ar išjungti apšvietimą, reguliuoti temperatūrą, valdyti saugumo sistemas ir kt. Mobili aplikacija suteikia patogumą ir galimybę valdyti namo funkcijas iš bet kurios vietos, kur yra interneto ryšys.",
@@ -191,7 +191,7 @@ export const functionalitiesToAdd = [
   },
   {
     name: "Scenos per balsų valdymą",
-    group: "scenes",
+    group: "scenos",
     value: "scenes-via-voice-control",
     longDescription:
       "Tai reiškia, kad galima valdyti skirtingus scenarijus ar nustatymus smart home sistemoje naudojant balso komandas arba balsų asistentus, tokius kaip 'Alexa' ar 'Google Assistant'. Ši funkcija leidžia vartotojams aktyvuoti norimus scenarijus ar nustatymus, tiesiog kalbant į įrenginį, kuris turi integruotą balso valdymo technologiją.",
@@ -199,7 +199,7 @@ export const functionalitiesToAdd = [
   },
   {
     name: "Iki 34 scenų",
-    group: "scenes",
+    group: "scenos",
     value: "up-to-34-scenes",
     longDescription:
       "Tai reiškia, kad yra galimybė sukurti arba programuoti iki 34 skirtingus scenarijus arba nustatymus smart home sistemoje. Šios scenos gali apimti įvairius veiksmus, tokius kaip įjungti/arba išjungti apšvietimą, reguliuoti temperatūrą, valdyti saugumo sistemas ir pan. Tai suteikia vartotojams didelį lankstumą ir galimybes pritaikyti savo namų automatizavimą pagal asmeninius poreikius ir gyvenimo būdą.",
@@ -207,7 +207,7 @@ export const functionalitiesToAdd = [
   },
   {
     name: "Iki 100 scenų",
-    group: "scenes",
+    group: "scenos",
     value: "up-to-100-scenes",
     longDescription:
       "Tai reiškia, kad yra galimybė sukurti arba programuoti daugiau nei 100 skirtingų scenarijų ar nustatymų smart home sistemoje. Šios scenos gali apimti įvairius veiksmus, pavyzdžiui, įjungti ar išjungti apšvietimą, reguliuoti temperatūrą, valdyti saugumo sistemas ir t.t. Tai suteikia vartotojams labai didelį lankstumą ir galimybes pritaikyti savo namų automatizavimą pagal asmeninius poreikius ir gyvenimo būdą.",
@@ -215,7 +215,7 @@ export const functionalitiesToAdd = [
   },
   {
     name: "Neribotas scenų kiekis",
-    group: "scenes",
+    group: "scenos",
     value: "unlimited-scenes",
     longDescription:
       "Tai reiškia, kad nėra jokio apribojimo, kiek scenų galima sukurti arba programuoti smart namų sistemoje. Vartotojai gali kurti tiek scenų, kiek nori, ir pritaikyti jas pagal savo individualius poreikius bei gyvenimo būdą. Tai suteikia didelį lankstumą ir galimybes maksimaliai pritaikyti automatizavimą pagal jų norus ir aplinkybes.",
